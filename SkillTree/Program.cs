@@ -18,7 +18,7 @@ namespace SkillTree
             //builder.Services.AddSwaggerGen();
 
             //database
-            builder.Services.AddSqlServer<SkillTreeDbContext>(opt => opt.)
+            builder.Services.AddSqlServer<SkillTreeDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
