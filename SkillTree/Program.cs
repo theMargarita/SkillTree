@@ -1,5 +1,6 @@
-
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace SkillTree
 {
@@ -18,7 +19,10 @@ namespace SkillTree
             //builder.Services.AddSwaggerGen();
 
             //database
-            builder.Services.AddSqlServer<SkillTreeDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<SkillDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<ISkillTreeDbContext>(sp =>
+                sp.GetRequiredService<SkillDbContext>());
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
