@@ -1,4 +1,4 @@
-﻿namespace Domian.Core
+﻿namespace Domain
 {
     public class ProgressEntries
     {
