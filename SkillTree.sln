@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.37301.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillTree", "SkillTree\SkillTree.csproj", "{5CCA93FD-06C6-4508-8D59-2230324E852A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domian", "Domain\Domian.csproj", "{5DE521E7-870D-4193-BEC3-482978E863A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5DE521E7-870D-4193-BEC3-482978E863A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{B51B5703-4498-47E5-A14A-2C0C6F0A5A04}"
 EndProject
