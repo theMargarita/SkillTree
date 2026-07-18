@@ -1,6 +1,6 @@
 ﻿namespace Domain
 {
-    public class SkillBorad
+    public class SkillBoard
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }

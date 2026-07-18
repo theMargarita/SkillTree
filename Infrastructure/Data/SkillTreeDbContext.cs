@@ -6,7 +6,7 @@ namespace Infrastructure.Data
     public interface ISkillTreeDbContext
     {
         //private
-        DbSet<SkillBorad> SkillBoard { get; set; }
+        DbSet<SkillBoard> SkillBoard { get; set; }
         DbSet<Skills> Skills { get; set; }
         DbSet<ProgressEntries> ProgressEntries { get; set; }
         DbSet<SkillConnections> SkillConnections { get; set; }
@@ -21,7 +21,7 @@ namespace Infrastructure.Data
         {
 
         }
-        public DbSet<SkillBorad> SkillBoard { get; set; }
+        public DbSet<SkillBoard> SkillBoard { get; set; }
         public DbSet<Skills> Skills { get; set; }
         public DbSet<ProgressEntries> ProgressEntries { get; set; }
         public DbSet<SkillConnections> SkillConnections { get; set; }

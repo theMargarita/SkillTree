@@ -48,7 +48,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("progressentries");
                 });
 
-            modelBuilder.Entity("Domain.SkillBorad", b =>
+            modelBuilder.Entity("Domain.SkillBoard", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
