@@ -1,4 +1,5 @@
 ﻿using Domain;
+using static Domain.Skills;
 
 namespace Infrastructure.Dtos.SKills
 {
@@ -12,10 +13,27 @@ namespace Infrastructure.Dtos.SKills
         public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
-        public int Shape { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public ShapeType Shape { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+
+        public static SkillResponse FromSkill(Skills skill)
+        {
+            return new SkillResponse
+            {
+                Id = skill.Id,
+                Name = skill.Name,
+                Description = skill.Description,
+                PositionX = skill.PositionX,
+                Shape = skill.Shape,
+                PositionY = skill.PositionY,
+                RequiredSubSkillCount = skill.RequiredSubSkillCount,
+                Color = skill.Color,
+                Icon = skill.Icon,
+                CreatedAt = skill.CreatedAt,
+                UpdatedAt = skill.UpdatedAt,
+            };
+        }
     }
+
 }
