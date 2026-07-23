@@ -11,7 +11,7 @@ namespace Infrastructure.Extensions
 
         //fetch all skills for given tree  (used when rendering the board)
         //GetById — fetch a single skill with its subskills loaded
-        public static async Task<List<Skills>> GetAllSkills(this ISkillTreeDbContext db, Guid sbId, CancellationToken ct = default)
+        public static async Task<List<Skills>> GetAllSkillsAsync(this ISkillTreeDbContext db, Guid sbId, CancellationToken ct = default)
         {
             if (db == null) throw new ArgumentNullException(nameof(db));
 
@@ -35,9 +35,3 @@ namespace Infrastructure.Extensions
         //}
     }
 }
-
-/*
-Create — add a skill to a tree, including position, color, shape, required subskill count
-Update — update any styling, position (drag/drop), name, description, summary text/photo
-Delete — remove a skill and its subskills, connections and progress entries
- */

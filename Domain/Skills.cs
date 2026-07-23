@@ -12,15 +12,13 @@
         public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
-        //shape of the skill
-        public int Shape { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
 
-        //this part might just be in subbskills - can stay for now
-        //public string? ProgressURL { get; set; } 
-        //public string? ProgressText { get; set; }
+        public ShapeType Shape { get; set; }
+  
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+
+        public enum ShapeType { Circle, Square, Hexagon, Diamond }
     }
+
 }
