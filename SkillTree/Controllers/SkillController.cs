@@ -24,10 +24,24 @@ namespace SkillTree.Controllers
             _service = service;
         }
 
-        [HttpGet("getById")]
-        public Task<IActionResult> GetById (Guid id)
+        [HttpGet("getAll")]
+        public async Task<ActionResult<List<SkillResponse>>> GetAll()
         {
+            var all = await _service.GetAllSkillsAsync();
+            return Ok(all);
+        }
 
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<SkillResponse>> GetById(Guid id)
+        {
+            var skillId = await _service.GetSkillTreeById(id);
+            if (skillId == null)
+            {
+                _logger.LogDebug($"Debug: Could not fetch the given id, {id} (this part is logdebug)");
+                _logger.LogInformation($"Information: Could not fetch the given is: {id}");
+                return NotFound();
+            }
+            return Ok(skillId);
         }
 
         [HttpPost("create")]
@@ -39,12 +53,17 @@ namespace SkillTree.Controllers
             }
 
             var created = await _service.Create(request);
-            if(created == null)
+            if (created == null)
             {
+
+                _logger.LogInformation($"Information: Could not create the new skill: {request.Name} (This part is loginformation)");
+                _logger.LogDebug($"Debug: Could not create a skill");
+
                 return BadRequest("Could not created a skill");
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
+            _logger.LogInformation($"Information: Created {created}");
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpDelete("{id:guid}")]
