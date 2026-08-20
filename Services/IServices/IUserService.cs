@@ -7,7 +7,7 @@ namespace Services.IServices
         Task<UserResponse> Create(UserRequest request);
         Task<UserResponse> Update(Guid id, UserRequest request);
         Task<bool> Delete(Guid id);
-        Task<UserResponse> GetAll();
-        Task<List<UserResponse>> GetById(string id);
+        Task<List<UserResponse>> GetAll();
+        Task<UserResponse> GetById(string id);
     }
 }
