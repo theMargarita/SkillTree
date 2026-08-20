@@ -6,20 +6,14 @@ using Services.Services;
 namespace SkillTree.Controllers
 {
     [ApiController]
-    [Route("controller")]
+    [Route("[controller]")]
     public class SkillController : ControllerBase
     {
-        private readonly string[] summarries =
-        {
-
-        };
-
         private readonly ILogger<SkillController> _logger;
         private readonly ISkillService _service;
 
-        public SkillController(string[] summarries, ILogger<SkillController> logger, ISkillService service)
+        public SkillController(ILogger<SkillController> logger, ISkillService service)
         {
-            this.summarries = summarries;
             _logger = logger;
             _service = service;
         }
@@ -37,8 +31,7 @@ namespace SkillTree.Controllers
             var skillId = await _service.GetSkillTreeById(id);
             if (skillId == null)
             {
-                _logger.LogDebug($"Debug: Could not fetch the given id, {id} (this part is logdebug)");
-                _logger.LogInformation($"Information: Could not fetch the given is: {id}");
+                _logger.LogWarning($"Warning: Could not fetch the given id, {id}");
                 return NotFound();
             }
             return Ok(skillId);
@@ -49,15 +42,14 @@ namespace SkillTree.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(); // returns which fields failed and why, as JSON
+                return BadRequest("Something went wrong with the creation of your skill"); // returns which fields failed and why, as JSON
             }
 
             var created = await _service.Create(request);
             if (created == null)
             {
 
-                _logger.LogInformation($"Information: Could not create the new skill: {request.Name} (This part is loginformation)");
-                _logger.LogDebug($"Debug: Could not create a skill");
+                _logger.LogWarning($"Warning: Could not create the new skill: {request.Name}");
 
                 return BadRequest("Could not created a skill");
             }
@@ -77,6 +69,7 @@ namespace SkillTree.Controllers
             }
 
             Console.WriteLine("It has now been deleted");
+            _logger.LogInformation("Your skill has now been removed");
             //return Ok(delete);
             return NoContent();
         }
