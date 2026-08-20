@@ -68,9 +68,25 @@ namespace Services.Services
             return UserResponse.FromUser(findId);
         }
 
-        public Task<UserResponse> Update(Guid id, UserRequest request)
+        public async Task<UserResponse> Update(Guid id, UserRequest request)
         {
-            throw new NotImplementedException();
+            var findId = await _ctx.User.FindAsync(id);
+            if(findId == null)
+            {
+                _logger.LogWarning($"Could not find the user id: {findId}");
+                //return null;
+            }
+
+            var update = new User
+            {
+                Id = id,
+                UserName = request.Name,
+                UserEmail = request.UserEmail,
+                HashPassword = request.HashPassword,
+            };
+            _ctx.Update(update);
+            await _ctx.SaveChangesAsync();
+            return UserResponse.FromUser(update);
         }
     }
 }
