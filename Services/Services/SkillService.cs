@@ -10,7 +10,7 @@ namespace Services.Services
     public class SkillService : ISkillService
     {
         private readonly ILogger<SkillService> _logger;
-        private readonly IServiceProvider _serviceProvider; //??
+        //private readonly IServiceProvider _serviceProvider; //??
         private readonly SkillDbContext _ctx;
         public SkillService(SkillDbContext ctx, ILogger<SkillService> logger)
         {
@@ -58,10 +58,6 @@ namespace Services.Services
             return await getSkills.Select(s => SkillResponse.FromSkill(s)).ToListAsync();
         }
 
-        public Task<List<SkillResponse>> GetAllSkillsAsync(SkillRequest request)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<SkillResponse> GetSkillTreeById(Guid id)
         {
