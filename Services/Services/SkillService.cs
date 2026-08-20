@@ -10,7 +10,7 @@ namespace Services.Services
     public class SkillService : ISkillService
     {
         private readonly ILogger<SkillService> _logger;
-        private readonly IServiceProvider _serviceProvider; //??
+        //private readonly IServiceProvider _serviceProvider; //??
         private readonly SkillDbContext _ctx;
         public SkillService(SkillDbContext ctx, ILogger<SkillService> logger)
         {
