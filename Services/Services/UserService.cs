@@ -1,6 +1,8 @@
 ﻿using Domain;
 using Infrastructure.Data;
 using Infrastructure.Dtos.Users;
+using Infrastructure.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Services.IServices;
 using System;
@@ -34,19 +36,36 @@ namespace Services.Services
             return UserResponse.FromUser(user);
         }
 
-        public Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var removeId = await _ctx.User.FindAsync(id);
+            if (removeId == null)
+            {
+                _logger.LogWarning($"Warning: Could not find id: {removeId}");
+                return false;
+            }
+            _ctx.Remove(removeId);
+            await _ctx.SaveChangesAsync();
+            _logger.LogInformation($"Information: Successfully removed user: {removeId}");
+            return true;
         }
 
-        public Task<UserResponse> GetAll()
+        public async Task<List<UserResponse>> GetAll()
         {
-            throw new NotImplementedException();
+            var getall = _ctx.User;
+            return await getall.Select(u => UserResponse.FromUser(u)).ToListAsync();
         }
 
-        public Task<List<UserResponse>> GetById(string id)
+        public async Task<UserResponse> GetById(string id)
         {
-            throw new NotImplementedException();
+            var findId = await _ctx.User.FindAsync(id);
+            if(findId == null)
+            {
+                _logger.LogWarning($"Warning: Could find the id: {id}");
+                return null;
+            }
+
+            return UserResponse.FromUser(findId);
         }
 
         public Task<UserResponse> Update(Guid id, UserRequest request)

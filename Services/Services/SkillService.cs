@@ -58,10 +58,6 @@ namespace Services.Services
             return await getSkills.Select(s => SkillResponse.FromSkill(s)).ToListAsync();
         }
 
-        public Task<List<SkillResponse>> GetAllSkillsAsync(SkillRequest request)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<SkillResponse> GetSkillTreeById(Guid id)
         {
