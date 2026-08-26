@@ -20,7 +20,7 @@ namespace SkillTree.Controllers
 
         [HttpGet("getall")]
         public async Task<ActionResult<UserResponse>> GetAll()
-        { 
+        {
             var all = await _service.GetAll();
             return Ok(all);
         }
@@ -34,8 +34,43 @@ namespace SkillTree.Controllers
             }
 
             var user = await _service.Create(request);
+            if (user == null)
+            {
+                _logger.LogWarning("Something went wrong");
+                return BadRequest("Could not create new user");
+            }
 
-            _logger.LogInformation("Successfully created user", user.Name);
+            _logger.LogInformation($"Successfully created user: {user.Name}");
+            return Ok(user);
+        }
+
+        [HttpDelete("remove")]
+        public async Task<ActionResult<UserResponse>> Delete(Guid id)
+        {
+            var user = await _service.Delete(id);
+
+            if (!user)
+            {
+                _logger.LogWarning($"Could not remove user with id: {id}");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"User {id} now deleted");
+            return Ok(user);
+        }
+
+        [HttpPatch("update")]
+        public async Task<ActionResult<UserResponse>> Update(Guid id, UserRequest request)
+        {
+            var user = await _service.Update(id, request);
+
+            if(user == null)
+            {
+                _logger.LogWarning($"Could not find the user with the given id: {id}");
+                return NotFound();
+            }
+
+            _logger.LogInformation("User now updated");
             return Ok(user);
         }
     }

@@ -62,7 +62,8 @@ namespace Services.Services
             if(findId == null)
             {
                 _logger.LogWarning($"Warning: Could find the id: {id}");
-                return null;
+                //return null;
+                throw new KeyNotFoundException($"Could not find the user with the ide: {findId}");
             }
 
             return UserResponse.FromUser(findId);
@@ -74,19 +75,16 @@ namespace Services.Services
             if(findId == null)
             {
                 _logger.LogWarning($"Could not find the user id: {findId}");
-                //return null;
+                throw new KeyNotFoundException($"User {id} not found");
             }
 
-            var update = new User
-            {
-                Id = id,
-                UserName = request.Name,
-                UserEmail = request.UserEmail,
-                HashPassword = request.HashPassword,
-            };
-            _ctx.Update(update);
+            findId.UserName = request.Name;
+            findId.UserEmail = request.UserEmail;
+            findId.HashPassword = request.HashPassword;
+
+            _ctx.Update(findId);
             await _ctx.SaveChangesAsync();
-            return UserResponse.FromUser(update);
+            return UserResponse.FromUser(findId);
         }
     }
 }
