@@ -65,7 +65,7 @@ namespace Services.Services
             if (skill == null)
             {
                 _logger.LogError($"Could not find tree id {id} to update");
-                return null;
+                throw new KeyNotFoundException($"Could not find the skill id: {skill}");
             }
      
             return SkillResponse.FromSkill(skill);
@@ -78,22 +78,19 @@ namespace Services.Services
             if (skillId == null) 
             {
                 _logger.LogError($"Could not find the givien tree id to update: {id}");
+                throw new KeyNotFoundException($"Could not find the skill id: {skillId}");
             }
 
-            var update = new Skills
-            {
-                Id = id,
-                Name = request.Name,
-                Description = request.Description,
-                Color = request.Color,
-                Icon = request.Icon,
-                UpdatedAt = DateTime.UtcNow,
-                RequiredSubSkillCount = request.RequiredSubSkillCount,
-            };
+            skillId.Name = request.Name;
+            skillId.Description = request.Description;
+            skillId.Color = request.Color;
+            skillId.Icon = request.Icon;
+            skillId.UpdatedAt = DateTime.UtcNow;
+            skillId.RequiredSubSkillCount = request.RequiredSubSkillCount;
 
-            _ctx.Skills.Update(update);
+            _ctx.Skills.Update(skillId);
             await _ctx.SaveChangesAsync();
-            return SkillResponse.FromSkill(update);
+            return SkillResponse.FromSkill(skillId);
         }
     }
 }

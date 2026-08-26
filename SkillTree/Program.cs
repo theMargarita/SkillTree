@@ -14,6 +14,7 @@ namespace SkillTree
 
             // Add services to the container.
             builder.Services.AddScoped<ISkillService, SkillService>();
+            builder.Services.AddScoped<IUserService,  UserService>();
 
             // Controllers
             builder.Services.AddControllers();
