@@ -73,5 +73,20 @@ namespace SkillTree.Controllers
             //return Ok(delete);
             return NoContent();
         }
+
+        [HttpPatch("update")]
+        public async Task<ActionResult<SkillResponse>> Update(Guid id, SkillRequest request)
+        {
+            var skillId = await _service.Update(id, request);
+
+            if(skillId == null)
+            {
+                _logger.LogWarning($"Could not find the skill id: {skillId}");
+                return NotFound("Id not found");
+            }
+
+            _logger.LogInformation("Skill now updated");
+            return Ok(skillId);
+        }
     }
 }
