@@ -11,10 +11,10 @@ namespace Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<UserService> _logger;
         private readonly SkillDbContext _ctx;
 
-        public UserService(SkillDbContext ctx, ILogger logger)
+        public UserService(SkillDbContext ctx, ILogger<UserService> logger)
         {
             _ctx = ctx;
             _logger = logger;
