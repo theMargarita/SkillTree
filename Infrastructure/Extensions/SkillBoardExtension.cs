@@ -1,5 +1,4 @@
 ﻿using Domain;
-using System.Linq;
 
 namespace Infrastructure.Extensions
 {
@@ -9,12 +8,12 @@ namespace Infrastructure.Extensions
 
         public static IQueryable<SkillBoard> GetTreeById(this IQueryable<SkillBoard> query, Guid id) => query.Where(i => i.Id == id);
     }
-    /*
-     GetAllForUser — fetch all trees belonging to the logged in user
-    GetById — fetch a single tree with its skills and connections loaded
-    Create — create a new tree for a user
-    Update — update name, description, background color
-    Delete — delete a tree and cascade everything under it (skills, subskills, connections, progress entries)
-     */
+    
 
+     //GetAllForUser — fetch all trees belonging to the logged in user
+    //    GetAllByUserId — filters trees by the logged in user.You need this because a user should never see another user's trees. Loads basic tree properties only, no deep includes. Used on the dashboard.
+
+    //GetByIdWithSkills — fetches one tree and includes its skills and connections.Used when opening the board.Needs the connections too because you need to draw the lines between nodes.
+
+    //GetByIdBasic — fetches just the tree itself with no related data.Used when you just need to verify the tree exists and belongs to the current user before doing something to it, like updating its name or deleting it.
 }
