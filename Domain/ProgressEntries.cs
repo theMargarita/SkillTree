@@ -3,11 +3,12 @@
     public class ProgressEntries
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid SubSKillId { get; set; }
+        public Guid SubSkillId { get; set; }
         public ProgressType? Type { get; set; } //photo, text or both
         public string? ImageUrl { get; set; }
         public string? ContentText { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
+        public SubSkills SubSkills { get; set; } = null!;
     }
 
     //photo, text or both

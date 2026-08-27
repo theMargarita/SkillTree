@@ -15,5 +15,7 @@
         public bool IsComplete { get; set; } = false;
         public DateTimeOffset CompletedAt { get; set; }
 
+        public Skills Skills { get; set; } = null!;
+        public ICollection<ProgressEntries> ProgressEntries = new List<ProgressEntries>();
     }
 }
