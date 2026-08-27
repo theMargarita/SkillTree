@@ -1,4 +1,5 @@
-﻿namespace Infrastructure.Dtos.SubSkill
+﻿using Domain;
+namespace Infrastructure.Dtos.SubSkill
 {
     public class SubSkillResponse
     {
@@ -12,5 +13,22 @@
         public string? Color { get; set; }
         public bool IsComplete { get; set; } = false;
         public DateTimeOffset CompletedAt { get; set; }
+
+        public static SubSkillResponse FromSubSkill(SubSkills sb)
+        {
+            return new SubSkillResponse
+            {
+                Id = sb.Id,
+                SkillId = sb.SkillId,
+                Name = sb.Name,
+                Description = sb.Description,
+                ProgressURL = sb.ProgressURL,
+                ProgressText = sb.ProgressText,
+                OrderIndex = sb.OrderIndex,
+                Color = sb.Color,
+                CompletedAt = sb.CompletedAt,
+                IsComplete = sb.IsComplete,
+            };
+        }
     }
 }
