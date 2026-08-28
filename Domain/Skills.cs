@@ -19,6 +19,8 @@
         public DateTimeOffset UpdatedAt { get; set; }
 
         public enum ShapeType { Circle, Square, Hexagon, Diamond }
+
+        public ICollection<SubSkills> SubSkills { get; set; } = new List<SubSkills>();
     }
 
 }
