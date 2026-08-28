@@ -1,15 +1,23 @@
-﻿namespace Infrastructure.Extensions
+﻿using Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Extensions
 {
-    public class SubSkillExtension
+    public static class SubSkillExtension
     {
+        //fetches all subskills belonging to a parent skill, ordered by sequence index
+        public static IQueryable<SubSkills> GetAllBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query
+            .Where(x => x.SkillId == skillId)
+            .OrderBy(s => s.OrderIndex);
 
+        //fetches only completed subskills for a parent skill
+        public static IQueryable<SubSkills> GetCompletedBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query.Where(x => x.SkillId == skillId && x.IsComplete);
 
-        //GetAllBySkillId — fetches all subskills for a given skill ordered by OrderIndex.Used in the skill detail panel to show the list of things to complete. Ordering matters here because the user defined a sequence.
-
-        //GetCompletedBySkillId — fetches only the completed subskills for a skill. Used by SkillStatusService when computing whether a skill's RequiredSubSkillCount has been reached. You only need the count really, but having the extension lets you reuse it cleanly.
-
-        //GetByIdWithProgressEntries — fetches one subskill and includes all its progress entries ordered by date. Used when the user opens a specific subskill to review their proof and journal entries.This is your "growth view" for that subskill.
+        //fetches a single subskill by id and eagerly loads its progress entires orded by date
+        public static IQueryable<SubSkills> GetByIdWithProgressEntries(IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId)
+            .Include(x => x.ProgressEntries.OrderByDescending(p => p.CreatedAt));
 
         //GetByIdBasic — again just for existence and ownership checks before writes.
+        public static IQueryable<SubSkills> GetByIdBasic(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId);
     }
 }
