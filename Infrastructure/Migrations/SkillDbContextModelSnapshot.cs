@@ -37,7 +37,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SubSKillId")
+                    b.Property<Guid>("SubSkillId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Type")
