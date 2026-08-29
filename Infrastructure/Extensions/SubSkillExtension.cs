@@ -14,10 +14,10 @@ namespace Infrastructure.Extensions
         public static IQueryable<SubSkills> GetCompletedBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query.Where(x => x.SkillId == skillId && x.IsComplete);
 
         //fetches a single subskill by id and eagerly loads its progress entires orded by date
-        public static IQueryable<SubSkills> GetByIdWithProgressEntries(IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId)
+        public static IQueryable<SubSkills> GetByIdWithProgressEntries(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId)
             .Include(x => x.ProgressEntries.OrderByDescending(p => p.CreatedAt));
 
-        //GetByIdBasic — again just for existence and ownership checks before writes.
-        public static IQueryable<SubSkills> GetByIdBasic(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId);
+        //GetById — again just for existence and ownership checks before writes.
+        public static IQueryable<SubSkills> GetById(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId);
     }
 }

@@ -15,5 +15,5 @@ namespace Infrastructure.Extensions
 
     //GetByIdWithSkills — fetches one tree and includes its skills and connections.Used when opening the board.Needs the connections too because you need to draw the lines between nodes.
 
-    //GetByIdBasic — fetches just the tree itself with no related data.Used when you just need to verify the tree exists and belongs to the current user before doing something to it, like updating its name or deleting it.
+    //GetById — fetches just the tree itself with no related data.Used when you just need to verify the tree exists and belongs to the current user before doing something to it, like updating its name or deleting it.
 }

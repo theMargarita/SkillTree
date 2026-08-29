@@ -34,7 +34,7 @@ namespace Infrastructure.Extensions
 
         //GetByIdWithSubSkills — fetches one skill and includes all its subskills.Used when the user opens the skill detail panel. This is where RequiredSubSkillCount becomes relevant because you're showing progress.
 
-        //GetByIdBasic — same pattern as SkillTree — just the skill itself, no includes. Used for existence and ownership checks before updates or deletes.
+        //GetById — same pattern as SkillTree — just the skill itself, no includes. Used for existence and ownership checks before updates or deletes.
 
         //GetPrerequisites — fetches all skills that are connected as prerequisites to a given skill via SkillConnections.Used by your SkillStatusService to determine if a skill should be locked or unlocked.This one is important because without it your status computation has to do extra work.
 
