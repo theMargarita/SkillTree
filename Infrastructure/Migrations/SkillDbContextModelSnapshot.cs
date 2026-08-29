@@ -37,13 +37,18 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SubSKillId")
+                    b.Property<Guid>("SubSkillId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SubSkillsId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubSkillsId");
 
                     b.ToTable("progressentries");
                 });
@@ -55,7 +60,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BackgroundColor")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -158,7 +162,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("ComletedAt")
+                    b.Property<DateTimeOffset>("CompletedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
@@ -184,7 +188,12 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("SkillId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SkillsId");
 
                     b.ToTable("subskills");
                 });
@@ -213,6 +222,33 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("user");
+                });
+
+            modelBuilder.Entity("Domain.ProgressEntries", b =>
+                {
+                    b.HasOne("Domain.SubSkills", "SubSkills")
+                        .WithMany()
+                        .HasForeignKey("SubSkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubSkills");
+                });
+
+            modelBuilder.Entity("Domain.SubSkills", b =>
+                {
+                    b.HasOne("Domain.Skills", "Skills")
+                        .WithMany("SubSkills")
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("Domain.Skills", b =>
+                {
+                    b.Navigation("SubSkills");
                 });
 #pragma warning restore 612, 618
         }

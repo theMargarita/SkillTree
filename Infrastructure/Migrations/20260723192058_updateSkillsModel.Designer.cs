@@ -40,7 +40,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SubSKillId")
+                    b.Property<Guid>("SubSkillId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Type")
@@ -161,7 +161,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("ComletedAt")
+                    b.Property<DateTimeOffset>("CompletedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")

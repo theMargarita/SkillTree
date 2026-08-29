@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SkillDbContext))]
-    [Migration("20260701173707_init1")]
-    partial class init1
+    [Migration("20260828080456_addNewRelations")]
+    partial class addNewRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,10 +43,15 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("SubSkillId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("SubSkillsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubSkillsId");
 
                     b.ToTable("progressentries");
                 });
@@ -58,7 +63,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BackgroundColor")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -125,9 +129,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
-
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
@@ -149,9 +150,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -193,7 +191,12 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("SkillId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SkillsId");
 
                     b.ToTable("subskills");
                 });
@@ -222,6 +225,33 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("user");
+                });
+
+            modelBuilder.Entity("Domain.ProgressEntries", b =>
+                {
+                    b.HasOne("Domain.SubSkills", "SubSkills")
+                        .WithMany()
+                        .HasForeignKey("SubSkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubSkills");
+                });
+
+            modelBuilder.Entity("Domain.SubSkills", b =>
+                {
+                    b.HasOne("Domain.Skills", "Skills")
+                        .WithMany("SubSkills")
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("Domain.Skills", b =>
+                {
+                    b.Navigation("SubSkills");
                 });
 #pragma warning restore 612, 618
         }
