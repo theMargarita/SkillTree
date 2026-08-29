@@ -1,11 +1,9 @@
 ﻿using Domain;
 using Infrastructure.Data;
 using Infrastructure.Dtos.Users;
-using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Services.IServices;
-using System;
 
 namespace Services.Services
 {
