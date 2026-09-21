@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Infrastructure.Dto;
 namespace Infrastructure.Dtos.SubSkill
 {
     public class SubSkillResponse
@@ -9,6 +10,7 @@ namespace Infrastructure.Dtos.SubSkill
         public string Description { get; set; } = string.Empty;
         public string? ProgressURL { get; set; }
         public string? ProgressText { get; set; }
+        public List<ProgressEntryResponse> ProgressEntries { get; set; } = new(); //remeber that this is only in repsonse and not in request
         public int OrderIndex { get; set; }
         public string? Color { get; set; }
         public bool IsComplete { get; set; } = false;
@@ -23,6 +25,7 @@ namespace Infrastructure.Dtos.SubSkill
                 Name = sb.Name,
                 Description = sb.Description,
                 ProgressURL = sb.ProgressURL,
+                ProgressEntries = sb.ProgressEntries.Select(ProgressEntryResponse.FromEntry).ToList(),
                 ProgressText = sb.ProgressText,
                 OrderIndex = sb.OrderIndex,
                 Color = sb.Color,
