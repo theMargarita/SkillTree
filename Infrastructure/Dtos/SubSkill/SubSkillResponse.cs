@@ -12,7 +12,7 @@ namespace Infrastructure.Dtos.SubSkill
         public int OrderIndex { get; set; }
         public string? Color { get; set; }
         public bool IsComplete { get; set; } = false;
-        public DateTimeOffset CompletedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get; set; }
 
         public static SubSkillResponse FromSubSkill(SubSkills sb)
         {
