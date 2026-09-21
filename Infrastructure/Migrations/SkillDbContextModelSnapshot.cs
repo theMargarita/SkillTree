@@ -185,9 +185,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ProgressURL")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("SkillsId")
                         .HasColumnType("uniqueidentifier");
 

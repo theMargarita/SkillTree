@@ -85,7 +85,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SkillsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProgressURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -93,8 +93,7 @@ namespace Infrastructure.Migrations
                     OrderIndex = table.Column<int>(type: "int", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsComplete = table.Column<bool>(type: "bit", nullable: false),
-                    CompletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    SkillsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CompletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {

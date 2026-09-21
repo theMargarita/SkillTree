@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SkillDbContext))]
-    [Migration("20260921132230_firstNewMigration")]
+    [Migration("20260921170933_firstNewMigration")]
     partial class firstNewMigration
     {
         /// <inheritdoc />
@@ -187,9 +187,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("ProgressURL")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("SkillsId")
                         .HasColumnType("uniqueidentifier");
