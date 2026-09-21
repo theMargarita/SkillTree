@@ -3,7 +3,7 @@
     public class SubSkills
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid SkillId { get; set; }
+        public Guid SkillsId { get; set; }
 
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -16,6 +16,6 @@
         public DateTimeOffset? CompletedAt { get; set; }
 
         public Skills Skills { get; set; } = null!;
-        public ICollection<ProgressEntries> ProgressEntries = new List<ProgressEntries>();
+        public ICollection<ProgressEntries> ProgressEntries { get; set; } = new List<ProgressEntries>();
     }
 }
