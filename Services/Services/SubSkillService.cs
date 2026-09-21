@@ -23,7 +23,7 @@ namespace Services.Services
         {
             var sub = new SubSkills
             {
-                SkillId = request.SkillId,
+                SkillsId = request.SkillId,
                 Name = request.Name,
                 Description = request.Description,
                 ProgressText = request.ProgressText,
