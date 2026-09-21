@@ -23,6 +23,7 @@ namespace Services.Services
         {
             var sub = new SubSkills
             {
+                SkillsId = request.SkillId,
                 Name = request.Name,
                 Description = request.Description,
                 ProgressText = request.ProgressText,
@@ -34,7 +35,15 @@ namespace Services.Services
             };
 
             _ctx.Add(sub);
-            await _ctx.SaveChangesAsync();
+            try
+            {
+                await _ctx.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message, ex);
+                throw;
+            }
             _logger.LogInformation($"Sub skills is now created with ID: {sub.Id}");
             return SubSkillResponse.FromSubSkill(sub);
         }
@@ -84,7 +93,7 @@ namespace Services.Services
             }
 
             //because dto return a response in iqueryable and not list 
-            return new List<SubSkillResponse>{SubSkillResponse.FromSubSkill(subskill)};
+            return new List<SubSkillResponse> { SubSkillResponse.FromSubSkill(subskill) };
         }
 
         public async Task<bool> MarkAsComplete(Guid subskillId)
@@ -133,7 +142,7 @@ namespace Services.Services
                 .GetById(subskillId)
                 .FirstOrDefaultAsync();
 
-            if(subskill == null)
+            if (subskill == null)
             {
                 throw new KeyNotFoundException(nameof(subskillId));
             }

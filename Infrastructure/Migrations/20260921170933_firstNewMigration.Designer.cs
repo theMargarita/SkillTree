@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SkillDbContext))]
-    [Migration("20260828080456_addNewRelations")]
-    partial class addNewRelations
+    [Migration("20260921170933_firstNewMigration")]
+    partial class firstNewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,7 +165,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CompletedAt")
+                    b.Property<DateTimeOffset?>("CompletedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
@@ -187,9 +187,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("ProgressURL")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("SkillsId")
                         .HasColumnType("uniqueidentifier");

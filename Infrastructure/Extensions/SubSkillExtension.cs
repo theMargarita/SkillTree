@@ -7,11 +7,11 @@ namespace Infrastructure.Extensions
     {
         //fetches all subskills belonging to a parent skill, ordered by sequence index
         public static IQueryable<SubSkills> GetAllBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query
-            .Where(x => x.SkillId == skillId)
+            .Where(x => x.SkillsId == skillId)
             .OrderBy(s => s.OrderIndex);
 
         //fetches only completed subskills for a parent skill
-        public static IQueryable<SubSkills> GetCompletedBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query.Where(x => x.SkillId == skillId && x.IsComplete);
+        public static IQueryable<SubSkills> GetCompletedBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query.Where(x => x.SkillsId == skillId && x.IsComplete);
 
         //fetches a single subskill by id and eagerly loads its progress entires orded by date
         public static IQueryable<SubSkills> GetByIdWithProgressEntries(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId)

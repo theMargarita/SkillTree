@@ -162,7 +162,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CompletedAt")
+                    b.Property<DateTimeOffset?>("CompletedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
@@ -184,9 +184,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("ProgressURL")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("SkillsId")
                         .HasColumnType("uniqueidentifier");
