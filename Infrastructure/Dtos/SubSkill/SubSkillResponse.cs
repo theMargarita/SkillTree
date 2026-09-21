@@ -4,7 +4,7 @@ namespace Infrastructure.Dtos.SubSkill
     public class SubSkillResponse
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid SkillId { get; set; }
+        public Guid SkillsId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string? ProgressURL { get; set; }
@@ -19,7 +19,7 @@ namespace Infrastructure.Dtos.SubSkill
             return new SubSkillResponse
             {
                 Id = sb.Id,
-                SkillId = sb.SkillId,
+                SkillsId = sb.SkillsId,
                 Name = sb.Name,
                 Description = sb.Description,
                 ProgressURL = sb.ProgressURL,
