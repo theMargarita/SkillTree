@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Dtos.SkillBoards
 {
-    public record SkillBoardResponse
+    public class SkillBoardResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;

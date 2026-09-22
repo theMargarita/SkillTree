@@ -1,5 +1,4 @@
-﻿using Infrastructure.Dtos.SkillConnections;
-using Infrastructure.Dtos.SKills;
+﻿using Infrastructure.Dtos.SKills;
 using Domain;
 
 namespace Infrastructure.Dtos.SkillBoards
@@ -16,11 +15,6 @@ namespace Infrastructure.Dtos.SkillBoards
         public List<SkillResponse> Skills { get; set; } = new();
         public List<SkillConnectionResponse> Connections { get; set; } = new();
 
-        // Built by the service from three already-queried pieces:
-        // the board itself, its skills (with completed-subskill counts),
-        // and its connections. Kept as a plain composer, not a FromX(entity)
-        // method, since there's no single entity that represents "a board
-        // with its skills and connections" - that shape only exists here.
         public static SkillBoardDetailResponse Compose(
             Domain.SkillBoard board,
             List<SkillResponse> skills,
