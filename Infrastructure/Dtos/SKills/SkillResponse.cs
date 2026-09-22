@@ -6,6 +6,7 @@ namespace Infrastructure.Dtos.SKills
     public record SkillResponse
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid SkillBoardId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal PositionX { get; set; }
@@ -17,11 +18,17 @@ namespace Infrastructure.Dtos.SKills
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
-        public static SkillResponse FromSkill(Skills skill)
+        // How many of this skill's subskills are complete.
+        // Filled in by the service with a Count() query - NOT by loading
+        // every subskill - so the board load stays light.
+        public int CompletedSubSkillCount { get; set; }
+
+        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0)
         {
             return new SkillResponse
             {
                 Id = skill.Id,
+                SkillBoardId = skill.SkillBoardId,
                 Name = skill.Name,
                 Description = skill.Description,
                 PositionX = skill.PositionX,
@@ -32,8 +39,8 @@ namespace Infrastructure.Dtos.SKills
                 Icon = skill.Icon,
                 CreatedAt = skill.CreatedAt,
                 UpdatedAt = skill.UpdatedAt,
+                CompletedSubSkillCount = completedSubSkillCount,
             };
         }
     }
-
 }
