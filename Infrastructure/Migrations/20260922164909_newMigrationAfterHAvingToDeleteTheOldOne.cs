@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class firstNewMigration : Migration
+    public partial class newMigrationAfterHAvingToDeleteTheOldOne : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +17,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SkillsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BackgroundColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -33,7 +34,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SkillBoradId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SkillBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FromSkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ToSkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LineColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -42,27 +43,6 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_skillconnections", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "skills",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PositionX = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PositionY = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RequiredSubSkillCount = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Shape = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_skills", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,6 +58,34 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_user", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "skills",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SkillBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PositionX = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PositionY = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RequiredSubSkillCount = table.Column<int>(type: "int", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Shape = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skills", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_skills_skillboard_SkillBoardId",
+                        column: x => x.SkillBoardId,
+                        principalTable: "skillboard",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,6 +143,11 @@ namespace Infrastructure.Migrations
                 column: "SubSkillsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_skills_SkillBoardId",
+                table: "skills",
+                column: "SkillBoardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_subskills_SkillsId",
                 table: "subskills",
                 column: "SkillsId");
@@ -147,9 +160,6 @@ namespace Infrastructure.Migrations
                 name: "progressentries");
 
             migrationBuilder.DropTable(
-                name: "skillboard");
-
-            migrationBuilder.DropTable(
                 name: "skillconnections");
 
             migrationBuilder.DropTable(
@@ -160,6 +170,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "skills");
+
+            migrationBuilder.DropTable(
+                name: "skillboard");
         }
     }
 }
