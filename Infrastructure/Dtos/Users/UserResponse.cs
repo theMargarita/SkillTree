@@ -1,5 +1,4 @@
-﻿using DataAnnotationsExtensions;
-using Domain;
+﻿using Domain;
 
 namespace Infrastructure.Dtos.Users
 {
@@ -7,7 +6,6 @@ namespace Infrastructure.Dtos.Users
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        [Email]
         public string UserEmail { get; set; } = string.Empty.ToString();
         public DateTimeOffset CreatedAt { get; set; }
 
