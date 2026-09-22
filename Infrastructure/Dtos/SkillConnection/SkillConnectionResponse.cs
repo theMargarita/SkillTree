@@ -1,6 +1,6 @@
 ﻿using Domain;
 
-namespace Infrastructure.Dtos.SkillConnections
+namespace Infrastructure.Dtos
 {
     public record SkillConnectionResponse
     {
@@ -11,7 +11,7 @@ namespace Infrastructure.Dtos.SkillConnections
         public string? LineColor { get; set; }
         public string? LineStyle { get; set; }
 
-        public static SkillConnectionResponse FromConnection(Domain.SkillConnections c)
+        public static SkillConnectionResponse FromConnection(SkillConnections c)
         {
             return new SkillConnectionResponse
             {

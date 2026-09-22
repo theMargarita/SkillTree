@@ -4,7 +4,7 @@ namespace Infrastructure.Dtos.SkillConnection
 {
     public class SkillConnectionRequest
     {
-        [JsonPropertyName("skillboardId")]
+        //[JsonPropertyName("skillboardId")]
         public Guid SkillBoardId { get; set; }
         public Guid FromSkillId { get; set; } 
         public Guid ToSkillId { get; set; }
