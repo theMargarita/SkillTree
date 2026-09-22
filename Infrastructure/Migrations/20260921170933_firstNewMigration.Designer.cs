@@ -102,7 +102,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("LineStyle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SkillBoradId")
+                    b.Property<Guid>("SkillBoardId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ToSkillId")
