@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SkillDbContext))]
-    [Migration("20260921170933_firstNewMigration")]
-    partial class firstNewMigration
+    [Migration("20260922164909_newMigrationAfterHAvingToDeleteTheOldOne")]
+    partial class newMigrationAfterHAvingToDeleteTheOldOne
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -102,7 +105,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("LineStyle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SkillBoradId")
+                    b.Property<Guid>("SkillBoardId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ToSkillId")
@@ -148,10 +151,15 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Shape")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("SkillBoardId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SkillBoardId");
 
                     b.ToTable("skills");
                 });
@@ -227,12 +235,21 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.ProgressEntries", b =>
                 {
                     b.HasOne("Domain.SubSkills", "SubSkills")
-                        .WithMany()
+                        .WithMany("ProgressEntries")
                         .HasForeignKey("SubSkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("SubSkills");
+                });
+
+            modelBuilder.Entity("Domain.Skills", b =>
+                {
+                    b.HasOne("Domain.SkillBoard", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("SkillBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.SubSkills", b =>
@@ -246,9 +263,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("Skills");
                 });
 
+            modelBuilder.Entity("Domain.SkillBoard", b =>
+                {
+                    b.Navigation("Skills");
+                });
+
             modelBuilder.Entity("Domain.Skills", b =>
                 {
                     b.Navigation("SubSkills");
+                });
+
+            modelBuilder.Entity("Domain.SubSkills", b =>
+                {
+                    b.Navigation("ProgressEntries");
                 });
 #pragma warning restore 612, 618
         }

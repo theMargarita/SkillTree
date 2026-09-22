@@ -1,8 +1,9 @@
-﻿namespace Domain
+﻿using Domain;
+
+namespace Infrastructure.Dtos.SkillBoard
 {
-    public class SkillBoard
+    public class SkillBoardRequest
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public Guid SkillsId { get; set; }
         public string Name { get; set; } = string.Empty;

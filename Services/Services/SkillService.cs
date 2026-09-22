@@ -27,7 +27,7 @@ namespace Services.Services
                 RequiredSubSkillCount = request.RequiredSubSkillCount,
                 Color = request.Color,
                 Icon = request.Icon,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             _ctx.Skills.Add(create);
@@ -42,7 +42,7 @@ namespace Services.Services
 
             if (skillId == null)
             {
-                _logger.LogError($"Could find the given tree id {id}");
+                _logger.LogError($"Could not find the given tree id {id}");
                 return false;
             }
 
@@ -55,7 +55,7 @@ namespace Services.Services
         public async Task<List<SkillResponse>> GetAllSkillsAsync()
         {
             var getSkills = _ctx.Skills;
-            return await getSkills.Select(s => SkillResponse.FromSkill(s)).ToListAsync();
+            return await getSkills.Select(s => SkillResponse.FromSkill(s, 0)).ToListAsync(); //added the zero for now just to remove the error 
         }
 
 
@@ -77,15 +77,15 @@ namespace Services.Services
 
             if (skillId == null) 
             {
-                _logger.LogError($"Could not find the givien tree id to update: {id}");
-                throw new KeyNotFoundException($"Could not find the skill id: {skillId}");
+                _logger.LogError($"Could not find the given tree id to update: {id}");
+                throw new KeyNotFoundException($"Could not find the skill id: {id}");
             }
 
             skillId.Name = request.Name;
             skillId.Description = request.Description;
             skillId.Color = request.Color;
             skillId.Icon = request.Icon;
-            skillId.UpdatedAt = DateTime.UtcNow;
+            skillId.UpdatedAt = DateTimeOffset.UtcNow;
             skillId.RequiredSubSkillCount = request.RequiredSubSkillCount;
 
             _ctx.Skills.Update(skillId);
