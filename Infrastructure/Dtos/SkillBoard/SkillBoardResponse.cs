@@ -15,7 +15,7 @@ namespace Infrastructure.Dtos.SkillBoards
         // Cheap to add if the query behind it is a Count(), not a full Include.
         public int SkillCount { get; set; }
 
-        public static SkillBoardResponse FromBoard(SkillBoard board, int skillCount = 0)
+        public static SkillBoardResponse FromBoard(Domain.SkillBoard board, int skillCount = 0)
         {
             return new SkillBoardResponse
             {

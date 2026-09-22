@@ -1,5 +1,6 @@
-﻿using Infrastructure.Dtos.SkillConnection;
+﻿using Infrastructure.Dtos.SkillConnections;
 using Infrastructure.Dtos.SKills;
+using Domain;
 
 namespace Infrastructure.Dtos.SkillBoards
 {
@@ -21,7 +22,7 @@ namespace Infrastructure.Dtos.SkillBoards
         // method, since there's no single entity that represents "a board
         // with its skills and connections" - that shape only exists here.
         public static SkillBoardDetailResponse Compose(
-            SkillBoard board,
+            Domain.SkillBoard board,
             List<SkillResponse> skills,
             List<SkillConnectionResponse> connections)
         {

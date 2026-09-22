@@ -11,12 +11,12 @@ namespace Infrastructure.Dtos.SkillConnections
         public string? LineColor { get; set; }
         public string? LineStyle { get; set; }
 
-        public static SkillConnectionResponse FromConnection(SkillConnections c)
+        public static SkillConnectionResponse FromConnection(Domain.SkillConnections c)
         {
             return new SkillConnectionResponse
             {
                 Id = c.Id,
-                SkillBoardId = c.SkillBoradId, // note: entity property is still misspelled
+                SkillBoardId = c.SkillBoardId,
                 FromSkillId = c.FromSkillId,
                 ToSkillId = c.ToSkillId,
                 LineColor = c.LineColor,
