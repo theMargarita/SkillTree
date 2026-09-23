@@ -1,13 +1,31 @@
-﻿namespace Infrastructure.Extensions
+﻿using Domain;
+
+namespace Infrastructure.Extensions
 {
-    internal class SkillConnectionExtension
+    public static class SkillConnectionExtension
     {
-        //GetAllByTreeId — fetches all connections for a tree.Used when rendering the board so you can draw all the lines.Needs line colour and style too since those are visual properties.
+        //fetches all connections for a board - used when rendering the board
+        public static IQueryable<SkillConnections> GetAllByBoardId(this IQueryable<SkillConnections> query, Guid boardId) =>
+            query.Where(c => c.SkillBoardId == boardId);
 
-        //GetIncomingBySkillId — fetches all connections where ToSkillId matches a given skill.In other words, what skills must be completed before this one unlocks. Used heavily by SkillStatusService.
+        //fetches all connections where ToSkillId matches a given skill.
+        //i.e. what must be completed before this skill unlocks.
+        //Used by SkillStatusService.
+        public static IQueryable<SkillConnections> GetIncomingBySkillId(this IQueryable<SkillConnections> query, Guid skillId) =>
+            query.Where(c => c.ToSkillId == skillId);
 
-        //GetOutgoingBySkillId — fetches all connections where FromSkillId matches a given skill.In other words, what skills does this one unlock. Used when rechecking downstream status after a skill completes.
+        //fetches all connections where FromSkillId matches a given skill.
+        //i.e. what this skill unlocks.
+        //Used when a skill completes, to know which skills to recheck.
+        public static IQueryable<SkillConnections> GetOutgoingBySkillId(this IQueryable<SkillConnections> query, Guid skillId) =>
+            query.Where(c => c.FromSkillId == skillId);
 
-        //ConnectionExists — a simple true/false check asking whether a connection already exists between two specific skills.Used in your circular dependency check to avoid creating duplicate connections.
+        //true/false check for whether a connection already exists between
+        //two specific skills, in either direction. Used to block duplicate
+        //connections when creating a new one.
+        public static IQueryable<SkillConnections> WhereConnects(this IQueryable<SkillConnections> query, Guid fromSkillId, Guid toSkillId) =>
+            query.Where(c =>
+                (c.FromSkillId == fromSkillId && c.ToSkillId == toSkillId) ||
+                (c.FromSkillId == toSkillId && c.ToSkillId == fromSkillId));
     }
 }
