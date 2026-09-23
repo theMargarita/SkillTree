@@ -19,5 +19,23 @@ namespace Infrastructure.Extensions
 
         //GetById — again just for existence and ownership checks before writes.
         public static IQueryable<SubSkills> GetById(this IQueryable<SubSkills> query, Guid subskillId) => query.Where(s => s.Id == subskillId);
+
+        //returns (SkillId, CompletedCount) for every skill in the given list
+        public static IQueryable<SkillCompletionCount> GetCompletedCountsBySkillIds(this IQueryable<SubSkills> query, IEnumerable<Guid> skillIds) =>
+            query
+                .Where(s => skillIds.Contains(s.SkillsId) && s.IsComplete)
+                .GroupBy(s => s.SkillsId)
+                .Select(g => new SkillCompletionCount
+                {
+                    SkillId = g.Key,
+                    CompletedCount = g.Count()
+                });
+    }
+
+    //just a query result.
+    public class SkillCompletionCount
+    {
+        public Guid SkillId { get; set; }
+        public int CompletedCount { get; set; }
     }
 }
