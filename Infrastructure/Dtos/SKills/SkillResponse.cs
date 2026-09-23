@@ -18,9 +18,6 @@ namespace Infrastructure.Dtos.SKills
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
-        // How many of this skill's subskills are complete.
-        // Filled in by the service with a Count() query - NOT by loading
-        // every subskill - so the board load stays light.
         public int CompletedSubSkillCount { get; set; }
 
         public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0)
