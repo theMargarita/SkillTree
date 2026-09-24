@@ -110,7 +110,7 @@ namespace Services.Services
                 {
                     if (visited.Add(id))
                     {
-                        frontier.Enqueue(id);
+                        frontier.Enqueue(id); //line
                     }
                 }
             }
