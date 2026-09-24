@@ -45,11 +45,15 @@ namespace Services.Services
                 .WhereConnects(request.FromSkillId, request.ToSkillId)
                 .AnyAsync();
 
-            if (duplicate)
+            if (duplicate) 
             {
                 throw new InvalidOperationException("A connection between these skills already exxists");
             }
 
+            if (await CreatesCycle(request.FromSkillId, request.ToSkillId))
+            {
+                throw new InvalidOperationException("This connection would connection a cycle"); 
+            }
 
             var connection = new SkillConnections
             {
@@ -72,7 +76,8 @@ namespace Services.Services
             if (connection == null)
             {
                 _logger.LogWarning($"Could not find the connection id: {id}");
-                return false;
+                throw new KeyNotFoundException();
+                //return false;
             }
 
             _ctx.SkillConnections.Remove(connection);
@@ -81,5 +86,36 @@ namespace Services.Services
             return true;
         }
 
+        private async Task<bool> CreatesCycle(Guid fromId, Guid toId)
+        {
+            var visited = new HashSet<Guid> { toId };
+            var frontier = new Queue<Guid>();
+            frontier.Enqueue(toId);
+
+            while (frontier.Count > 0)
+            {
+                var current = frontier.Dequeue();
+
+                if (current == fromId)
+                {
+                    return true;
+                }
+
+                var next = await _ctx.SkillConnections
+                    .GetOutgoingBySkillId(current)
+                    .Select(c => c.ToSkillId)
+                    .ToListAsync();
+
+                foreach (var id in next)
+                {
+                    if (visited.Add(id))
+                    {
+                        frontier.Enqueue(id);
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
