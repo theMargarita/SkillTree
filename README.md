@@ -1,4 +1,4 @@
-Here’s the improved README.md file, incorporating the new content while maintaining the existing structure and information:
+Hereâ€™s the improved README.md file, incorporating the new content while maintaining the existing structure and information:
 
 # SkillTree
 
@@ -47,14 +47,3 @@ See `CONTRIBUTING.md` for contribution guidelines, coding standards, and commit 
 
 This repository enforces rules in `.editorconfig`. Please follow those rules when contributing.
 
-## License
-
-Specify a license in `LICENSE` or update this section.
-
-## Contact
-
-For questions or issues, open an issue on the repository or contact the maintainer.
-
-### Changes Made:
-- Added a brief description of the project at the beginning to provide context.
-- Ensured that the overall flow and coherence of the document are preserved while integrating the new content seamlessly.
