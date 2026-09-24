@@ -1,0 +1,43 @@
+﻿using Infrastructure.Dtos.SkillBoards;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Services.IServices;
+
+namespace SkillTree.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SkillBoardController : ControllerBase
+    {
+        private readonly ISkillBoardService _service;
+        private readonly Logger<SkillBoardController> _logger;
+
+        public SkillBoardController (ISkillBoardService service, Logger<SkillBoardController> logger)
+        {
+            _service = service;
+            _logger = logger;
+        }
+
+        [HttpGet("user/{userId:guid}")]
+        public async Task<ActionResult<List<SkillBoardResponse>>> GetAllForUser(Guid userId)
+        {
+            var boards = await _service.GetAllForUser(userId);
+            return Ok(boards);
+        }
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<SkillBoardDetailResponse>> GetBoardDetail(Guid id)
+        {
+            try
+            {
+                var detail = await _service.GetBoardDetail(id);
+                return Ok(detail);
+            }
+            catch (KeyNotFoundException)
+            {
+                _logger.LogWarning($"Could nor find board: {id}");
+                return NotFound();
+            }
+        }
+
+    }
+}
