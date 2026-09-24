@@ -10,7 +10,6 @@ namespace Services.Services
     public class SkillService : ISkillService
     {
         private readonly ILogger<SkillService> _logger;
-        //private readonly IServiceProvider _serviceProvider; //??
         private readonly SkillDbContext _ctx;
         public SkillService(SkillDbContext ctx, ILogger<SkillService> logger)
         {
@@ -22,12 +21,17 @@ namespace Services.Services
         {
             var create = new Skills
             {
+                SkillBoardId = request.SkillBoardId,
                 Name = request.Name,
                 Description = request.Description,
                 RequiredSubSkillCount = request.RequiredSubSkillCount,
                 Color = request.Color,
                 Icon = request.Icon,
-                CreatedAt = DateTimeOffset.UtcNow
+                PositionX = request.PositionX,
+                PositionY = request.PositionY,
+                Shape = request.Shape,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
             };
 
             _ctx.Skills.Add(create);
@@ -82,6 +86,7 @@ namespace Services.Services
             }
 
             skillId.Name = request.Name;
+            skillId.SkillBoardId = request.SkillBoardId; //notsure about this
             skillId.Description = request.Description;
             skillId.Color = request.Color;
             skillId.Icon = request.Icon;
