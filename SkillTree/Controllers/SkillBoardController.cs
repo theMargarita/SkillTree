@@ -2,6 +2,7 @@
 using Infrastructure.Dtos.SkillBoards;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Services.IServices;
 
 namespace SkillTree.Controllers
@@ -11,9 +12,9 @@ namespace SkillTree.Controllers
     public class SkillBoardController : ControllerBase
     {
         private readonly ISkillBoardService _service;
-        private readonly Logger<SkillBoardController> _logger;
+        private readonly ILogger<SkillBoardController> _logger;
 
-        public SkillBoardController(ISkillBoardService service, Logger<SkillBoardController> logger)
+        public SkillBoardController(ISkillBoardService service, ILogger<SkillBoardController> logger)
         {
             _service = service;
             _logger = logger;
