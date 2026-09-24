@@ -1,4 +1,5 @@
-﻿using Infrastructure.Dtos.SkillBoards;
+﻿using Infrastructure.Dtos.SkillBoard;
+using Infrastructure.Dtos.SkillBoards;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.IServices;
@@ -38,6 +39,20 @@ namespace SkillTree.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPost("user/{userId:guid}/create")]
+        public async Task<ActionResult<SkillBoardResponse>> Create(Guid userId, [FromBody] SkillBoardRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var created = await _service.Create(userId, request);
+            _logger.LogInformation($"Board created: {created.Id}");
+            return CreatedAtAction(nameof(GetBoardDetail), new {id = created.Id}, created);
+        }
+
 
     }
 }
