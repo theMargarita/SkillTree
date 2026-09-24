@@ -16,6 +16,8 @@ namespace SkillTree
             builder.Services.AddScoped<ISkillService, SkillService>();
             builder.Services.AddScoped<IUserService,  UserService>();
             builder.Services.AddScoped<ISubSkillService, SubSkillService>();
+            builder.Services.AddScoped<ISkillBoardService, SkillBoardService>();
+            builder.Services.AddScoped<ISkillConnectionService,  SkillConnectionService>();
 
             // Controllers
             builder.Services.AddControllers();
