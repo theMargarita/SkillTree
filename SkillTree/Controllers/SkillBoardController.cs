@@ -70,6 +70,17 @@ namespace SkillTree.Controllers
             }
         }
 
+        [HttpDelete("remove/{id:guid}")]
+        public async Task<IActionResult>Delete(Guid id)
+        {
+            var deleted = await _service.Delete(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
+            _logger.LogInformation($"Board deleted {id}");
+            return NoContent();
+        }
     }
 }
