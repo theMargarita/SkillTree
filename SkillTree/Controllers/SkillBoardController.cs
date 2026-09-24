@@ -13,7 +13,7 @@ namespace SkillTree.Controllers
         private readonly ISkillBoardService _service;
         private readonly Logger<SkillBoardController> _logger;
 
-        public SkillBoardController (ISkillBoardService service, Logger<SkillBoardController> logger)
+        public SkillBoardController(ISkillBoardService service, Logger<SkillBoardController> logger)
         {
             _service = service;
             _logger = logger;
@@ -50,7 +50,24 @@ namespace SkillTree.Controllers
 
             var created = await _service.Create(userId, request);
             _logger.LogInformation($"Board created: {created.Id}");
-            return CreatedAtAction(nameof(GetBoardDetail), new {id = created.Id}, created);
+            return CreatedAtAction(nameof(GetBoardDetail), new { id = created.Id }, created);
+        }
+
+        [HttpPatch("update/{id:guid}")]
+        public async Task<ActionResult<SkillBoardResponse>> Update(Guid id, [FromBody] SkillBoardRequest request)
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            try
+            {
+                var updated = await _service.Update(id, request);
+                return Ok(updated);
+            }
+            catch (KeyNotFoundException)
+            {
+                _logger.LogWarning($"Could not find board: {id}");
+                return NotFound();
+            }
         }
 
 
