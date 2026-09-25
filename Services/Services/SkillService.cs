@@ -19,6 +19,19 @@ namespace Services.Services
 
         public async Task<SkillResponse> Create(SkillRequest request)
         {
+            if (request.SkillBoardId == Guid.Empty)
+            {
+                _logger.LogWarning("Skill create called with empty SkillBoardId");
+                throw new ArgumentException("SkillBoardId must be provided", nameof(request.SkillBoardId));
+            }
+
+            var boardExists = await _ctx.SkillBoard.AnyAsync(b => b.Id == request.SkillBoardId);
+            if (!boardExists)
+            {
+                _logger.LogWarning($"Skill create called with non-existent SkillBoardId: {request.SkillBoardId}");
+                throw new KeyNotFoundException($"SkillBoard not found: {request.SkillBoardId}");
+            }
+
             var create = new Skills
             {
                 SkillBoardId = request.SkillBoardId,
@@ -36,6 +49,8 @@ namespace Services.Services
 
             _ctx.Skills.Add(create);
             await _ctx.SaveChangesAsync();
+
+            _logger.LogInformation($"Created Skill {create.Id} on Board {create.SkillBoardId}");
 
             return SkillResponse.FromSkill(create);
         }
