@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Infrastructure.Dtos.SKills;
 
 namespace Infrastructure.Dtos.SkillBoards
 {
@@ -10,12 +10,11 @@ namespace Infrastructure.Dtos.SkillBoards
         public string? BackgroundColor { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+        //public ICollection<SkillResponse> SkillResponse { get; set; } = new List<SkillResponse>();
 
-        // Optional: how many skills are on this board.
-        // Cheap to add if the query behind it is a Count(), not a full Include.
         public int SkillCount { get; set; }
 
-        public static SkillBoardResponse FromBoard(Domain.SkillBoard board, int skillCount = 0)
+        public static SkillBoardResponse FromBoard(Domain.SkillBoard board, int skillCount)
         {
             return new SkillBoardResponse
             {
@@ -26,6 +25,7 @@ namespace Infrastructure.Dtos.SkillBoards
                 CreatedAt = board.CreatedAt,
                 UpdatedAt = board.UpdatedAt,
                 SkillCount = skillCount,
+                //SkillResponse = new List<SkillResponse>()
             };
         }
     }
