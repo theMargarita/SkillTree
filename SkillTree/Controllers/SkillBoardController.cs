@@ -1,8 +1,6 @@
 ﻿using Infrastructure.Dtos.SkillBoard;
 using Infrastructure.Dtos.SkillBoards;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Services.IServices;
 
 namespace SkillTree.Controllers
