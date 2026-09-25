@@ -47,3 +47,6 @@ See `CONTRIBUTING.md` for contribution guidelines, coding standards, and commit 
 
 This repository enforces rules in `.editorconfig`. Please follow those rules when contributing.
 
+## License
+
+Specify a license in `LICENSE` or update this section.

@@ -35,7 +35,7 @@ namespace Services.Services
             await _ctx.AddAsync(addBoard);
             await _ctx.SaveChangesAsync();
             _logger.LogInformation("Board is now created");
-            return SkillBoardResponse.FromBoard(addBoard);
+            return SkillBoardResponse.FromBoard(addBoard, 0);
         }
 
         public async Task<bool> Delete(Guid id)
@@ -121,7 +121,7 @@ namespace Services.Services
 
             await _ctx.SaveChangesAsync();
             _logger.LogInformation($"Board now updated with id: {id}");
-            return SkillBoardResponse.FromBoard(board);
+            return SkillBoardResponse.FromBoard(board, 0);
         }
     }
 }

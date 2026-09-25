@@ -10,7 +10,6 @@ namespace Services.Services
     public class SkillService : ISkillService
     {
         private readonly ILogger<SkillService> _logger;
-        //private readonly IServiceProvider _serviceProvider; //??
         private readonly SkillDbContext _ctx;
         public SkillService(SkillDbContext ctx, ILogger<SkillService> logger)
         {
@@ -22,12 +21,17 @@ namespace Services.Services
         {
             var create = new Skills
             {
+                SkillBoardId = request.SkillBoardId,
                 Name = request.Name,
                 Description = request.Description,
                 RequiredSubSkillCount = request.RequiredSubSkillCount,
                 Color = request.Color,
                 Icon = request.Icon,
-                CreatedAt = DateTimeOffset.UtcNow
+                PositionX = request.PositionX,
+                PositionY = request.PositionY,
+                Shape = request.Shape,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
             };
 
             _ctx.Skills.Add(create);
@@ -48,7 +52,7 @@ namespace Services.Services
 
             _ctx.Skills.Remove(skillId);
             await _ctx.SaveChangesAsync();
-            Console.WriteLine("Tree now removed!");
+            _logger.LogInformation($"Skill now removed with ID: {id}");
             return true;
         }
 
@@ -61,11 +65,17 @@ namespace Services.Services
 
         public async Task<SkillResponse> GetSkillTreeById(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                _logger.LogWarning("GetSkillTreeById was called with Guid.Empty");
+                throw new ArgumentException("id cannot be empty", nameof(id));
+            }
+
             var skill = await _ctx.Skills.FindAsync(id);
             if (skill == null)
             {
-                _logger.LogError($"Could not find tree id {id} to update");
-                throw new KeyNotFoundException($"Could not find the skill id: {skill}");
+                _logger.LogError($"Could not find skill with id {id}");
+                throw new KeyNotFoundException($"Could not find the skill id: {id}");
             }
      
             return SkillResponse.FromSkill(skill);
