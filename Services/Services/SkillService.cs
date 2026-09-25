@@ -52,7 +52,7 @@ namespace Services.Services
 
             _ctx.Skills.Remove(skillId);
             await _ctx.SaveChangesAsync();
-            Console.WriteLine("Tree now removed!");
+            _logger.LogInformation($"Skill now removed with ID: {id}");
             return true;
         }
 
