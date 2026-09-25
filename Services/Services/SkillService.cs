@@ -65,11 +65,17 @@ namespace Services.Services
 
         public async Task<SkillResponse> GetSkillTreeById(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                _logger.LogWarning("GetSkillTreeById was called with Guid.Empty");
+                throw new ArgumentException("id cannot be empty", nameof(id));
+            }
+
             var skill = await _ctx.Skills.FindAsync(id);
             if (skill == null)
             {
-                _logger.LogError($"Could not find tree id {id} to update");
-                throw new KeyNotFoundException($"Could not find the skill id: {skill}");
+                _logger.LogError($"Could not find skill with id {id}");
+                throw new KeyNotFoundException($"Could not find the skill id: {id}");
             }
      
             return SkillResponse.FromSkill(skill);
@@ -86,7 +92,6 @@ namespace Services.Services
             }
 
             skillId.Name = request.Name;
-            skillId.SkillBoardId = request.SkillBoardId; //notsure about this
             skillId.Description = request.Description;
             skillId.Color = request.Color;
             skillId.Icon = request.Icon;
