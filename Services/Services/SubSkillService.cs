@@ -108,6 +108,13 @@ namespace Services.Services
                 return false;
             }
 
+            //for "showing evidence" for yourself that you have completed this subskill
+            var hasEvidence = await _ctx.ProgressEntries.AnyAsync(p => p.SubSkillId == subskillId);
+            if (!hasEvidence)
+            {
+                throw new InvalidOperationException("Add atleast one progress entry before marking this subskill complete!");
+            }
+
             subskill.IsComplete = true;
             subskill.CompletedAt = DateTimeOffset.UtcNow;
 
