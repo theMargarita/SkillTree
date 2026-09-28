@@ -1,4 +1,5 @@
 ﻿using Domain;
+using static Infrastructure.Dtos.ProgressEntry.StatusEnum;
 
 namespace Services.IServices
 {
@@ -9,10 +10,5 @@ namespace Services.IServices
             IEnumerable<SkillConnections> connections,
             IReadOnlyDictionary<Guid, int> completedSubSkillCounts);
     }
-    public enum SkillStatus
-    {
-        Locked,
-        Unlocked,
-        Completed
-    }
+    
 }

@@ -96,7 +96,7 @@ namespace Services.Services
             return new List<SubSkillResponse> { SubSkillResponse.FromSubSkill(subskill) };
         }
 
-        public async Task<bool> MarkAsComplete(Guid subskillId)
+        public async Task<SubSkillResponse> MarkAsComplete(Guid subskillId)
         {
             var subskill = await _ctx.SubSkills
                 .GetById(subskillId)
@@ -105,7 +105,14 @@ namespace Services.Services
             if (subskill == null)
             {
                 _logger.LogWarning($"Could not find the givien id: {subskillId}");
-                return false;
+                throw new KeyNotFoundException(nameof(subskillId));
+            }
+
+            //for "showing evidence" for yourself that you have completed this subskill
+            var hasEvidence = await _ctx.ProgressEntries.AnyAsync(p => p.SubSkillId == subskillId);
+            if (!hasEvidence)
+            {
+                throw new InvalidOperationException("Add atleast one progress entry before marking this subskill complete!");
             }
 
             subskill.IsComplete = true;
@@ -114,10 +121,10 @@ namespace Services.Services
             await _ctx.SaveChangesAsync();
 
             _logger.LogInformation("Sub skill now complete and saved, good job");
-            return true;
+            return SubSkillResponse.FromSubSkill(subskill);
         }
 
-        public async Task<bool> MarkAsIncomplete(Guid subskillId)
+        public async Task<SubSkillResponse> MarkAsIncomplete(Guid subskillId)
         {
             var subskill = await _ctx.SubSkills
                 .GetById(subskillId)
@@ -126,14 +133,15 @@ namespace Services.Services
             if (subskill == null)
             {
                 _logger.LogWarning($"Could not find the givien id: {subskillId}");
-                return false;
+                throw new KeyNotFoundException(nameof(subskillId));
             }
 
             subskill.IsComplete = false;
-            subskill.CompletedAt = new DateTimeOffset(DateTime.UtcNow);
+            subskill.CompletedAt = null; //uncompleted has no completion date
+
 
             await _ctx.SaveChangesAsync();
-            return true;
+            return SubSkillResponse.FromSubSkill(subskill);
         }
 
         public async Task<SubSkillResponse> Update(SubSkillRequest request, Guid subskillId)

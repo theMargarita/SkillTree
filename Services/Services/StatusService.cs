@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Services.IServices;
+using static Infrastructure.Dtos.ProgressEntry.StatusEnum;
 
 namespace Services.Services
 {

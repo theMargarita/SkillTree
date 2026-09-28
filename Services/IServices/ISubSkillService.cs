@@ -9,8 +9,8 @@ namespace Services.IServices
         Task<SubSkillResponse> Create(SubSkillRequest  request);
         Task<SubSkillResponse> Update(SubSkillRequest request, Guid subskillId);
         Task<bool> Delete(Guid subskillId); //fetch via GetById, remove it
-        Task<bool> MarkAsComplete(Guid subskillId);
-        Task<bool> MarkAsIncomplete(Guid subskillId); //not sure about this
+        Task<SubSkillResponse> MarkAsComplete(Guid subskillId);
+        Task<SubSkillResponse> MarkAsIncomplete(Guid subskillId); 
         Task<List<SubSkillResponse>> GetWithProgress(Guid skillId);
     }
 }
