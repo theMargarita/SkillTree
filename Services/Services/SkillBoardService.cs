@@ -112,7 +112,7 @@ namespace Services.Services
             var statuses = _statusService.ComputeStatuses(skills, connections, completionCounts);
 
             var skillResponses = skills
-                .Select(s => SkillResponse.FromSkill(
+                .Select(s => SkillResponse.FromSkillWithStatus(
                     s,
                     completionCounts.GetValueOrDefault(s.Id, 0),
                     statuses.GetValueOrDefault(s.Id, SkillStatus.Unlocked)))
