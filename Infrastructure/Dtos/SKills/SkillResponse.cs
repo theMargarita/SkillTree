@@ -22,7 +22,7 @@ namespace Infrastructure.Dtos.SKills
 
         public SkillStatus Status { get; set; } = SkillStatus.Unlocked;
 
-        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
+        public static SkillResponse FromSkillWithStatus(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
         {
             return new SkillResponse
             {
@@ -40,6 +40,26 @@ namespace Infrastructure.Dtos.SKills
                 UpdatedAt = skill.UpdatedAt,
                 CompletedSubSkillCount = completedSubSkillCount,
                 Status = status,
+            };
+        }
+        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0)
+        {
+            return new SkillResponse
+            {
+                Id = skill.Id,
+                SkillBoardId = skill.SkillBoardId,
+                Name = skill.Name,
+                Description = skill.Description,
+                PositionX = skill.PositionX,
+                Shape = skill.Shape,
+                PositionY = skill.PositionY,
+                RequiredSubSkillCount = skill.RequiredSubSkillCount,
+                Color = skill.Color,
+                Icon = skill.Icon,
+                CreatedAt = skill.CreatedAt,
+                UpdatedAt = skill.UpdatedAt,
+                CompletedSubSkillCount = completedSubSkillCount,
+                //Status = status,
             };
         }
     }
