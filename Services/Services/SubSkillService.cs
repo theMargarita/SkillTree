@@ -105,7 +105,7 @@ namespace Services.Services
             if (subskill == null)
             {
                 _logger.LogWarning($"Could not find the givien id: {subskillId}");
-                throw new KeyNotFoundException((nameof(subskillId)));
+                throw new KeyNotFoundException(nameof(subskillId));
             }
 
             //for "showing evidence" for yourself that you have completed this subskill
@@ -116,8 +116,7 @@ namespace Services.Services
             }
 
             subskill.IsComplete = true;
-            //subskill.CompletedAt = DateTimeOffset.UtcNow;
-            subskill.CompletedAt = null; //uncompleted has no completion date
+            subskill.CompletedAt = DateTimeOffset.UtcNow;
 
             await _ctx.SaveChangesAsync();
 
@@ -138,7 +137,8 @@ namespace Services.Services
             }
 
             subskill.IsComplete = false;
-            subskill.CompletedAt = new DateTimeOffset(DateTime.UtcNow);
+            subskill.CompletedAt = null; //uncompleted has no completion date
+
 
             await _ctx.SaveChangesAsync();
             return SubSkillResponse.FromSubSkill(subskill);
