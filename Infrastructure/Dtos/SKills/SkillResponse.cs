@@ -1,5 +1,6 @@
 ﻿using Domain;
 using static Domain.Skills;
+using static Infrastructure.Dtos.ProgressEntry.StatusEnum;
 
 namespace Infrastructure.Dtos.SKills
 {
@@ -17,10 +18,11 @@ namespace Infrastructure.Dtos.SKills
         public ShapeType Shape { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
-
         public int CompletedSubSkillCount { get; set; }
 
-        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0)
+        public SkillStatus Status { get; set; } = SkillStatus.Unlocked;
+
+        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
         {
             return new SkillResponse
             {
@@ -37,6 +39,7 @@ namespace Infrastructure.Dtos.SKills
                 CreatedAt = skill.CreatedAt,
                 UpdatedAt = skill.UpdatedAt,
                 CompletedSubSkillCount = completedSubSkillCount,
+                Status = status,
             };
         }
     }
