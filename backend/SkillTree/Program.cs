@@ -42,7 +42,7 @@ namespace SkillTree
             {
                 opt.AddPolicy("AllowAll", p =>
                 {
-                    p.WithOrigins("localhost")
+                    p.WithOrigins("http://localhost:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
@@ -65,6 +65,9 @@ namespace SkillTree
             }
 
             app.UseHttpsRedirection();
+
+            app.UseDefaultFiles(); // Serve index.html by default
+            app.UseStaticFiles(); // Serve static files from wwwroot
 
             app.UseAuthorization();
 
