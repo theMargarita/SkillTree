@@ -73,8 +73,8 @@ namespace Services.Services
 
         public async Task<List<SkillResponse>> GetAllSkillsAsync()
         {
-            var getSkills = _ctx.Skills;
-            return await getSkills.Select(s => SkillResponse.FromSkill(s, 0)).ToListAsync(); //added the zero for now just to remove the error 
+            var getSkills = await _ctx.Skills.ToListAsync();
+            return getSkills.Select(s => SkillResponse.FromSkill(s, 0)).ToList();
         }
 
 
