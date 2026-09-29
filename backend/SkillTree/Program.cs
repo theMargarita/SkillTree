@@ -51,9 +51,6 @@ namespace SkillTree
 
             var app = builder.Build();
 
-            //app.UseDefaultFiles(); // Serve index.html by default
-            //app.UseStaticFiles(); // Serve static files from wwwroot
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
