@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { UserResponse } from "./types/user";
+import type { UserResponse } from "../types/user";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
