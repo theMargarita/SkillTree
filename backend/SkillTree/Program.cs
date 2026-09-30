@@ -40,9 +40,9 @@ namespace SkillTree
 
             builder.Services.AddCors(opt =>
             {
-                opt.AddPolicy("AllowAll", p =>
+                opt.AddPolicy("AllowFrontend", p =>
                 {
-                    p.WithOrigins("localhost")
+                    p.WithOrigins("http://localhost:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
@@ -50,9 +50,6 @@ namespace SkillTree
 
 
             var app = builder.Build();
-
-            //app.UseDefaultFiles(); // Serve index.html by default
-            //app.UseStaticFiles(); // Serve static files from wwwroot
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -65,6 +62,11 @@ namespace SkillTree
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowFrontend");
+
+
+            app.UseDefaultFiles(); // Serve index.html by default
+            app.UseStaticFiles(); // Serve static files from wwwroot
 
             app.UseAuthorization();
 
