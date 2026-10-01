@@ -28,6 +28,6 @@ namespace Infrastructure.Dtos.SubSkill
         public bool IsComplete { get; set; } = false; 
 
         [JsonPropertyName("completedAt")]
-        public DateTimeOffset CompletedAt { get; set; }
+        public DateTimeOffset CompletedAt { get; set; } //honestly a bit unsure about this one
     }
 }

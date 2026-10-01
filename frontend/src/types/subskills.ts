@@ -1,3 +1,5 @@
+//responses
+
 export type ProgressType = "Photot" | "Text" | "Photo and Text";
 
 export interface SubSkillResponse {
@@ -20,4 +22,19 @@ export interface ProgressEntryResponse {
   imageUrl: string;
   conentText: string;
   createdAt: string;
+}
+
+//-----------------------------
+
+//requests
+export interface SubSkillRequest {
+  skillId: string;
+  name: string;
+  desctiption: string;
+  progressUrl: string;
+  progressText: string;
+  orderIndex: number;
+  color: string;
+  isComplete: boolean;
+  completedAt: string; //honestly a bit unsure about this one
 }
