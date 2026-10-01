@@ -1,4 +1,4 @@
-//mirror the dtos from backend to track it easier 
+//mirror the dtos from backend to track it easier
 
 export type SkillStatus = "Locked" | "Unlocked" | "Completed";
 
