@@ -1,0 +1,109 @@
+/* ---- tokens ---- */
+:root {
+  --board-bg: #15171a;
+  --board-text: #e8e6e1;
+  --board-border: #3a3d42;
+
+  --status-locked: #ff5a1f;
+  --status-unlocked: #2bd4c4;
+  --status-completed: #f4c542;
+
+  --font-display: "Oswald", "Arial Narrow", sans-serif; /* bold condensed */
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+/* ---- board frame ---- */
+.board {
+  position: relative;
+  background: var(--board-bg);
+  color: var(--board-text);
+  font-family: var(--font-body);
+  min-height: 600px;
+  overflow: auto;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--board-border);
+  /* angled cut on the header's leading edge */
+  -webkit-clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  background: #1b1e22;
+}
+
+.board-header h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.board-header .board-progress {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--board-text);
+  opacity: 0.8;
+}
+
+/* ---- canvas area ---- */
+.board-canvas {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+.board-connections {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---- skill node ---- */
+.skill-node {
+  position: absolute;
+  width: 160px;
+  padding: 0.75rem 0.9rem;
+  background: #1f2227;
+  border: 1px solid var(--board-border);
+  border-left: 4px solid var(--node-accent, var(--status-locked));
+  /* cut corner, top-right - consistent with the header's angled language */
+  -webkit-clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    0 100%
+  );
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.skill-node:hover {
+  transform: translate(-50%, -50%) scale(1.03);
+}
+
+.skill-node__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0 0 0.35rem 0;
+}
+
+.skill-node__stat {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: var(--node-accent, var(--status-locked));
+}
