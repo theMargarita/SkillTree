@@ -1,5 +1,5 @@
 // skill node, skill detail panel
-import type { SkillResponse, SkillStatus } from "../types/board";
+import type { SkillResponse, SkillStatus } from "../types/skills";
 
 const STATUS_COLOR: Record<SkillStatus, string> = {
   Locked: "var(--status-locked)",
