@@ -5,7 +5,7 @@ import BoardCanavas from "./api/Boardcanvas";
 import type { SkillResponse } from "./types/skills";
 import SkillDetailPanel from "./features/SkilldetailPanel";
 
-const test_id = "c4630669-91d9-42d4-8614-f52fe7b01fc2";
+const test_id = "8a0bf5b5-a768-4681-b32c-478fae3a47b4";
 function App() {
   const [selectSkill, setSelectSkill] = useState<SkillResponse | null>(null);
   return (
