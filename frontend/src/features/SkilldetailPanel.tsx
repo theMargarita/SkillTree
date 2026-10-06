@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { SubSkillResponse } from "../types/subskills";
+import "../css/skillDetail.css";
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+const API_URL = import.meta.env.VITE_API_BASE as string;
 
 interface SkillDetailPanelProps {
   skillId: string;
