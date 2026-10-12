@@ -24,27 +24,27 @@ namespace SkillTree.Controllers
             return Ok(all);
         }
 
-        [HttpGet("completed/{skillId:guid}")]
-        public async Task<ActionResult<List<SubSkillResponse>>> GetCompleted(Guid skillId)
-        {
-            var completed = await _service.GetCompleted(skillId);
-            return Ok(completed);
-        }
+        //[HttpGet("completed/{skillId:guid}")]
+        //public async Task<ActionResult<List<SubSkillResponse>>> GetCompleted(Guid skillId)
+        //{
+        //    var completed = await _service.GetCompleted(skillId);
+        //    return Ok(completed);
+        //}
 
-        [HttpGet("withprogress/{subskillId:guid}")]
-        public async Task<ActionResult<List<SubSkillResponse>>> GetWithProgress(Guid subskillId)
-        {
-            try
-            {
-                var result = await _service.GetWithProgress(subskillId);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException)
-            {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
-            }
-        }
+        //[HttpGet("withprogress/{subskillId:guid}")]
+        //public async Task<ActionResult<List<SubSkillResponse>>> GetWithProgress(Guid subskillId)
+        //{
+        //    try
+        //    {
+        //        var result = await _service.GetWithProgress(subskillId);
+        //        return Ok(result);
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
+        //        return NotFound();
+        //    }
+        //}
 
         [HttpPost("create")]
         public async Task<ActionResult<SubSkillResponse>> Create([FromBody] SubSkillRequest request)
@@ -100,7 +100,7 @@ namespace SkillTree.Controllers
         {
             try
             {
-                var updated = await _service.MarkAsComplete(subskillId);
+                var updated = await _service.MarkAsComplete_Or_Incomplete(subskillId);
                 return Ok(updated);
             }
             catch (KeyNotFoundException)
