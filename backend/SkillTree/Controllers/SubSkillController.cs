@@ -96,7 +96,7 @@ namespace SkillTree.Controllers
         }
 
         [HttpPatch("complete/{subskillId:guid}")]
-        public async Task<ActionResult<SubSkillResponse>> MarkAsComplete(Guid subskillId)
+        public async Task<ActionResult<SubSkillResponse>> MarkAsComplete_Or_Incomplete(Guid subskillId)
         {
             try
             {
@@ -112,21 +112,6 @@ namespace SkillTree.Controllers
             {
                 _logger.LogWarning(ex.Message);
                 return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPatch("incomplete/{subskillId:guid}")]
-        public async Task<ActionResult<SubSkillResponse>> MarkAsIncomplete(Guid subskillId)
-        {
-            try
-            {
-                var updated = await _service.MarkAsIncomplete(subskillId);
-                return Ok(updated);
-            }
-            catch (KeyNotFoundException)
-            {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
             }
         }
     }
