@@ -19,7 +19,7 @@
   color: var(--board-text);
   font-family: var(--font-body);
   min-height: 600px;
-  overflow: auto;
+  /* overflow: auto; */
 }
 
 .board-header {
@@ -70,7 +70,7 @@
 
 /* ---- skill node ---- */
 .skill-node {
-  position: absolute;
+  /* position: absolute; */
   width: 160px;
   padding: 0.75rem 0.9rem;
   background: #1f2227;
@@ -88,6 +88,7 @@
   transform: translate(-50%, -50%);
   cursor: pointer;
   transition: transform 0.12s ease;
+  margin: 5px auto;
 }
 
 .skill-node:hover {
