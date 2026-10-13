@@ -9,15 +9,17 @@ const API_URL = import.meta.env.VITE_API_BASE as string;
 interface BoardCanvasProps {
   boardId: string;
   onSkillClick?: (skill: SkillResponse) => void;
+  reloadKey?: number;
 }
 
-export default function BoardCanavas({
+export default function BoardCanvas({
   boardId,
   onSkillClick,
+  reloadKey = 0,
 }: BoardCanvasProps) {
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // only true for the first load
 
   useEffect(() => {
     fetch(`${API_URL}/api/SkillBoard/${boardId}`)
@@ -25,12 +27,16 @@ export default function BoardCanavas({
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json() as Promise<SkillBoardDetailResponse>;
       })
-      .then(setBoard)
+      .then((data) => {
+        setBoard(data);
+        setError(null);
+      })
       .catch((e: unknown) =>
         setError(e instanceof Error ? e.message : "Error unknown"),
       )
       .finally(() => setLoading(false));
-  }, [boardId]);
+  }, [boardId, reloadKey]);
+
   if (loading) return <p>Loading board...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!board) return null;
@@ -45,7 +51,7 @@ export default function BoardCanavas({
       <div className="board-header">
         <h1>{board.name}</h1>
         <span className="board-progress">
-          {completedCount / board.skills.length} COMPLETE
+          {completedCount}/{board.skills.length} COMPLETE
         </span>
       </div>
 
@@ -66,9 +72,9 @@ export default function BoardCanavas({
                 stroke={conn.lineColor ?? "#3a3d42"}
                 strokeWidth={2}
                 strokeDasharray={
-                  conn.lineStyle === "dashed" ? " 6 4" : undefined
+                  conn.lineStyle === "dashed" ? "6 4" : undefined
                 }
-              ></line>
+              />
             );
           })}
         </svg>
