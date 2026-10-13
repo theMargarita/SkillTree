@@ -29,13 +29,7 @@
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--board-border);
   /* angled cut on the header's leading edge */
-  -webkit-clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    16px 100%,
-    0 calc(100% - 16px)
-  );
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
   clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
   background: #1b1e22;
 }
@@ -77,13 +71,7 @@
   border: 1px solid var(--board-border);
   border-left: 4px solid var(--node-accent, var(--status-locked));
   /* cut corner, top-right - consistent with the header's angled language */
-  -webkit-clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    0 100%
-  );
+  -webkit-clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   transform: translate(-50%, -50%);
   cursor: pointer;
