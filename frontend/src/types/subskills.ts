@@ -18,9 +18,9 @@ export interface SubSkillResponse {
 
 export interface ProgressEntryResponse {
   id: string;
-  type: ProgressType;
-  imageUrl: string;
-  conentText: string;
+  type: ProgressType | null;
+  imageUrl: string | null;
+  contentText: string | null;
   createdAt: string;
 }
 

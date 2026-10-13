@@ -1,6 +1,7 @@
 //mirror the dtos from backend to track it easier
 
 import type { SkillResponse } from "./skills";
+
 export interface SkillConnectionResponse {
   id: string;
   skillBoardId: string;

@@ -1,5 +1,4 @@
-﻿using Domain;
-using Infrastructure.Dtos.SubSkill;
+﻿using Infrastructure.Dtos.SubSkill;
 using Microsoft.AspNetCore.Mvc;
 using Services.IServices;
 
@@ -18,7 +17,6 @@ namespace SkillTree.Controllers
             _logger = logger;
         }
 
-
         [HttpGet("byskill/{skillId:guid}")]
         public async Task<ActionResult<List<SubSkillResponse>>> GetAllBySkill(Guid skillId)
         {
@@ -26,27 +24,27 @@ namespace SkillTree.Controllers
             return Ok(all);
         }
 
-        [HttpGet("completed/{skillId:guid}")]
-        public async Task<ActionResult<List<SubSkillResponse>>> GetCompleted(Guid skillId)
-        {
-            var completed = await _service.GetCompleted(skillId);
-            return Ok(completed);
-        }
+        //[HttpGet("completed/{skillId:guid}")]
+        //public async Task<ActionResult<List<SubSkillResponse>>> GetCompleted(Guid skillId)
+        //{
+        //    var completed = await _service.GetCompleted(skillId);
+        //    return Ok(completed);
+        //}
 
-        [HttpGet("withprogress/{subskillId:guid}")]
-        public async Task<ActionResult<List<SubSkillResponse>>> GetWithProgress(Guid subskillId)
-        {
-            try
-            {
-                var result = await _service.GetWithProgress(subskillId);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException)
-            {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
-            }
-        }
+        //[HttpGet("withprogress/{subskillId:guid}")]
+        //public async Task<ActionResult<List<SubSkillResponse>>> GetWithProgress(Guid subskillId)
+        //{
+        //    try
+        //    {
+        //        var result = await _service.GetWithProgress(subskillId);
+        //        return Ok(result);
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
+        //        return NotFound();
+        //    }
+        //}
 
         [HttpPost("create")]
         public async Task<ActionResult<SubSkillResponse>> Create([FromBody] SubSkillRequest request)
@@ -64,7 +62,10 @@ namespace SkillTree.Controllers
         [HttpPatch("update/{subskillId:guid}")]
         public async Task<ActionResult<SubSkillResponse>> Update(Guid subskillId, [FromBody] SubSkillRequest request)
         {
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             try
             {
@@ -73,7 +74,7 @@ namespace SkillTree.Controllers
             }
             catch (KeyNotFoundException)
             {
-                _logger.LogWarning($"Could not find sun skill with id: {subskillId}");
+                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
                 return NotFound();
             }
         }
@@ -95,38 +96,23 @@ namespace SkillTree.Controllers
         }
 
         [HttpPatch("complete/{subskillId:guid}")]
-        public async Task<IActionResult>MarkAsComplete(Guid subskillId)
+        public async Task<ActionResult<SubSkillResponse>> MarkAsComplete_Or_Incomplete(Guid subskillId)
         {
-            //var success = await _service.MarkAsIncomplete(subskillId);
-            //return success ? NoContent() : NotFound();
             try
             {
-                var updated = await _service.MarkAsComplete(subskillId);
+                var updated = await _service.MarkAsComplete_Or_Incomplete(subskillId);
                 return Ok(updated);
             }
-            catch (KeyNotFoundException)
+            //catch (KeyNotFoundException)
+            //{
+            //    _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
+            //    return NotFound();
+            //}
+            catch (InvalidOperationException ex)
             {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
-
-        [HttpPatch("incomplete/{subskillId:guid}")]
-        public async Task<IActionResult> MarkAsInComplete(Guid subskillId)
-        {
-            //var success = await _service.MarkAsIncomplete(subskillId);
-            //return success ? NoContent() : NotFound();
-            try
-            {
-                var updated = await _service.MarkAsIncomplete(subskillId);
-                return Ok(updated);
-            }
-            catch (KeyNotFoundException)
-            {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
-            }
-        }
-
     }
 }
