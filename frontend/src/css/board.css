@@ -71,13 +71,7 @@
   border: 1px solid var(--board-border);
   border-left: 4px solid var(--node-accent, var(--status-locked));
   /* cut corner, top-right - consistent with the header's angled language */
-  -webkit-clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    0 100%
-  );
+  -webkit-clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   transform: translate(-50%, -50%);
   cursor: pointer;
