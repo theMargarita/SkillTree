@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import "../css/skillDetail.css";
 import type { SubSkillResponse } from "../types/subskills";
+import ProgressEntryForm from "./ProgressEntryFrom";
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -37,12 +39,18 @@ export default function SkillDetailPanel({
 
     try {
       const res = await fetch(
-        `${API_URL}/api/SubSkill/${action}/${subSkill.id}`,
+        `${API_URL}/api/SubSkill/complete/${subSkill.id}`,
         {
           method: "PATCH",
         },
       );
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+      if (!res.ok) {
+        // BadRequest responses return the message as plain text (ex.Message),
+        // not JSON - read it as text rather than trying res.json() on it.
+        const message = await res.text();
+        throw new Error(message || `Request failed: ${res.status}`);
+      }
 
       const updated = (await res.json()) as SubSkillResponse;
       // Replace just the one subskill that changed, rather than refetching the whole list.
@@ -77,15 +85,18 @@ export default function SkillDetailPanel({
               key={sub.id}
               className={`subskill-row ${sub.isComplete ? "is-complete" : ""}`}
             >
-              <div>
-                <p className="subskill-row__name">{sub.name}</p>
-                {sub.description && (
-                  <p className="subskill-row__desc">{sub.description}</p>
-                )}
+              <div className="subskill-row__top">
+                <div>
+                  <p className="subskill-row__name">{sub.name}</p>
+                  {sub.description && (
+                    <p className="subskill-row__desc">{sub.description}</p>
+                  )}
+                </div>
+                <button onClick={() => toggleComplete(sub)}>
+                  {sub.isComplete ? "Mark incomplete" : "Mark complete"}
+                </button>
               </div>
-              <button onClick={() => toggleComplete(sub)}>
-                {sub.isComplete ? "Mark incomplete" : "Mark complete"}
-              </button>
+              <ProgressEntryForm subSkillId={sub.id} />
             </li>
           ))}
         </ul>
