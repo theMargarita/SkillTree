@@ -103,11 +103,11 @@ namespace SkillTree.Controllers
                 var updated = await _service.MarkAsComplete_Or_Incomplete(subskillId);
                 return Ok(updated);
             }
-            catch (KeyNotFoundException)
-            {
-                _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
-                return NotFound();
-            }
+            //catch (KeyNotFoundException)
+            //{
+            //    _logger.LogWarning($"Could not find sub skill with id: {subskillId}");
+            //    return NotFound();
+            //}
             catch (InvalidOperationException ex)
             {
                 _logger.LogWarning(ex.Message);
