@@ -42,6 +42,29 @@ namespace Infrastructure.Data
                 e.SetTableName(e.GetTableName()!.ToLower());
             }
 
+            modelBuilder.Entity<SkillBoard>()
+               .HasMany(b => b.Skills)
+               .WithOne()
+               .HasForeignKey(s => s.SkillBoardId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SkillConnections>(e =>
+            {
+                e.HasOne<SkillBoard>().WithMany().HasForeignKey(c => c.SkillBoardId).OnDelete(DeleteBehavior.Cascade);
+                e.HasOne<Skills>().WithMany().HasForeignKey(c => c.FromSkillId).OnDelete(DeleteBehavior.NoAction);
+                e.HasOne<Skills>().WithMany().HasForeignKey(c => c.ToSkillId).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<SubSkills>()
+                .HasOne(s => s.Skills).WithMany(s => s.SubSkills)
+                .HasForeignKey(s => s.SkillsId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProgressEntries>()
+                .HasOne(p => p.SubSkills).WithMany(s => s.ProgressEntries)
+                .HasForeignKey(p => p.SubSkillId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -51,5 +74,4 @@ namespace Infrastructure.Data
 
         }
     }
-
 }
