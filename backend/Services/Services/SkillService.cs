@@ -57,19 +57,24 @@ namespace Services.Services
 
         public async Task<bool> Delete(Guid id)
         {
-            var skillId = await _ctx.Skills.FindAsync(id);
-
-            if (skillId == null)
+            var skill = await _ctx.Skills.FindAsync(id);
+            if (skill == null)
             {
-                _logger.LogError($"Could not find the given tree id {id}");
+                _logger.LogWarning($"Could not find skill id {id}");
                 return false;
             }
 
-            _ctx.Skills.Remove(skillId);
-            await _ctx.SaveChangesAsync();
-            _logger.LogInformation($"Skill now removed with ID: {id}");
+            var connections = await _ctx.SkillConnections
+                .Where(c => c.FromSkillId == id || c.ToSkillId == id)
+                .ToListAsync();
+
+            _ctx.SkillConnections.RemoveRange(connections);
+            _ctx.Skills.Remove(skill);
+            await _ctx.SaveChangesAsync(); 
+            _logger.LogInformation($"Skill removed: {id}");
             return true;
         }
+
 
         public async Task<List<SkillResponse>> GetAllSkillsAsync()
         {

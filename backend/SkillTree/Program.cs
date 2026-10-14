@@ -2,6 +2,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using Services.Services;
+using System.Text.Json.Serialization;
 
 
 namespace SkillTree
@@ -22,8 +23,10 @@ namespace SkillTree
             builder.Services.AddScoped<IProgressEntryService, ProgressEntryService>();
 
             // Controllers
-            builder.Services.AddControllers();
-            
+            //builder.Services.AddControllers();
+            //Enums 
+            builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 
             // Swagger / OpenAPI
             builder.Services.AddEndpointsApiExplorer();
@@ -70,8 +73,6 @@ namespace SkillTree
             app.UseStaticFiles(); // Serve static files from wwwroot
 
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

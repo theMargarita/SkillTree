@@ -21,6 +21,12 @@ namespace Services.Services
 
         public async Task<SubSkillResponse> Create(SubSkillRequest request)
         {
+            var skillExists = await _ctx.Skills.AnyAsync(s => s.Id == request.SkillId);
+            if (!skillExists)
+            {
+                throw new KeyNotFoundException($"Skill not found: {request.SkillId}");
+            }
+
             var sub = new SubSkills
             {
                 SkillsId = request.SkillId,
@@ -30,23 +36,18 @@ namespace Services.Services
                 Color = request.Color,
                 OrderIndex = request.OrderIndex,
                 ProgressURL = request.ProgressURL,
-                IsComplete = request.IsComplete,
-                CompletedAt = request.IsComplete ? DateTimeOffset.UtcNow : null,
+                IsComplete = false,   // can't be complete without evidence
+                CompletedAt = null,
+                // IsComplete = request.IsComplete,
+                // CompletedAt = request.IsComplete ? DateTimeOffset.UtcNow : null,
             };
 
             _ctx.Add(sub);
-            try
-            {
-                await _ctx.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex.InnerException?.Message ?? ex.Message, ex);
-                throw;
-            }
-            _logger.LogInformation($"Sub skills is now created with ID: {sub.Id}");
+            await _ctx.SaveChangesAsync();
+            _logger.LogInformation($"Sub skill created with ID: {sub.Id}");
             return SubSkillResponse.FromSubSkill(sub);
         }
+
 
         public async Task<bool> Delete(Guid subskillId)
         {
@@ -96,37 +97,32 @@ namespace Services.Services
             return new List<SubSkillResponse> { SubSkillResponse.FromSubSkill(subskill) };
         }
 
+
         public async Task<SubSkillResponse> MarkAsComplete_Or_Incomplete(Guid subskillId)
         {
-            var subskill = await _ctx.SubSkills
-                .GetById(subskillId)
-                .FirstOrDefaultAsync();
-
+            var subskill = await _ctx.SubSkills.GetById(subskillId).FirstOrDefaultAsync();
             if (subskill == null)
             {
-                _logger.LogWarning($"Could not find the givien id: {subskillId}");
+                _logger.LogWarning($"Could not find sub skill id: {subskillId}");
                 throw new KeyNotFoundException(nameof(subskillId));
             }
 
-            //for "showing evidence" for yourself that you have completed this subskill
-            var hasEvidence = await _ctx.ProgressEntries.AnyAsync(p => p.SubSkillId == subskillId);
-            if (!hasEvidence)
+            if (subskill.IsComplete)
             {
-                throw new InvalidOperationException("Add atleast one progress entry before marking this subskill complete!");
+                subskill.IsComplete = false;
+                subskill.CompletedAt = null;
             }
-
-            if (subskill.IsComplete == true)
+            else
             {
+                var hasEvidence = await _ctx.ProgressEntries.AnyAsync(p => p.SubSkillId == subskillId);
+                if (!hasEvidence)
+                {
+                    throw new InvalidOperationException("Add at least one progress entry before marking this subskill complete!");
+                }
+
                 subskill.IsComplete = true;
                 subskill.CompletedAt = DateTimeOffset.UtcNow;
-
-                await _ctx.SaveChangesAsync();
-                _logger.LogInformation("Sub skill now complete and saved, good job");
-                return SubSkillResponse.FromSubSkill(subskill);
             }
-
-            subskill.IsComplete = false;
-            subskill.CompletedAt = null; //uncompleted has no completion date
 
             await _ctx.SaveChangesAsync();
             return SubSkillResponse.FromSubSkill(subskill);
@@ -134,15 +130,13 @@ namespace Services.Services
 
         public async Task<SubSkillResponse> Update(SubSkillRequest request, Guid subskillId)
         {
-            var subskill = await _ctx.SubSkills
-                .GetById(subskillId)
-                .FirstOrDefaultAsync();
-
+            var subskill = await _ctx.SubSkills.GetById(subskillId).FirstOrDefaultAsync();
             if (subskill == null)
             {
                 throw new KeyNotFoundException(nameof(subskillId));
             }
 
+            subskill.Name = request.Name; 
             subskill.Description = request.Description;
             subskill.ProgressText = request.ProgressText;
             subskill.Color = request.Color;
