@@ -40,15 +40,12 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("SubSkillId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("SubSkillsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubSkillsId");
+                    b.HasIndex("SubSkillId");
 
                     b.ToTable("progressentries");
                 });
@@ -72,9 +69,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SkillsId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -109,6 +103,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FromSkillId");
+
+                    b.HasIndex("SkillBoardId");
+
+                    b.HasIndex("ToSkillId");
 
                     b.ToTable("skillconnections");
                 });
@@ -233,11 +233,32 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.SubSkills", "SubSkills")
                         .WithMany("ProgressEntries")
-                        .HasForeignKey("SubSkillsId")
+                        .HasForeignKey("SubSkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("SubSkills");
+                });
+
+            modelBuilder.Entity("Domain.SkillConnections", b =>
+                {
+                    b.HasOne("Domain.Skills", null)
+                        .WithMany()
+                        .HasForeignKey("FromSkillId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.SkillBoard", null)
+                        .WithMany()
+                        .HasForeignKey("SkillBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Skills", null)
+                        .WithMany()
+                        .HasForeignKey("ToSkillId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Skills", b =>
