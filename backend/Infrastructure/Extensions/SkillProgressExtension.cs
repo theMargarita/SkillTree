@@ -13,6 +13,7 @@ namespace Infrastructure.Extensions
 
         // fetches only the most recent entry - for a quick preview without
         // loading the whole history (e.g. a thumbnail on the skill node).
+        //perhaps not the msot wanted but saves  it for now
         public static IQueryable<ProgressEntries> GetLatestBySubSkillId(this IQueryable<ProgressEntries> query, Guid subSkillId) =>
             query
                 .Where(p => p.SubSkillId == subSkillId)
