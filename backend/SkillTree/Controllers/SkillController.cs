@@ -1,12 +1,11 @@
 ﻿using Infrastructure.Dtos.SKills;
 using Microsoft.AspNetCore.Mvc;
 using Services.IServices;
-using Services.Services;
 
 namespace SkillTree.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")] 
     public class SkillController : ControllerBase
     {
         private readonly ILogger<SkillController> _logger;
@@ -21,72 +20,60 @@ namespace SkillTree.Controllers
         [HttpGet("getAll")]
         public async Task<ActionResult<List<SkillResponse>>> GetAll()
         {
-            var all = await _service.GetAllSkillsAsync();
-            return Ok(all);
+            return Ok(await _service.GetAllSkillsAsync());
         }
 
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<SkillResponse>> GetById(Guid id)
         {
-            var skillId = await _service.GetSkillTreeById(id);
-            if (skillId == null)
+            try
             {
-                _logger.LogWarning($"Warning: Could not fetch the given id, {id}");
-                return NotFound();
+                return Ok(await _service.GetSkillTreeById(id));
             }
-            return Ok(skillId);
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost("create")]
         public async Task<ActionResult<SkillResponse>> Create([FromBody] SkillRequest request)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
             {
-                return BadRequest("Something went wrong with the creation of your skill"); // returns which fields failed and why, as JSON
+                var created = await _service.Create(request);
+                _logger.LogInformation($"Information: Created {created}");
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
             }
-
-            var created = await _service.Create(request);
-            if (created == null)
-            {
-
-                _logger.LogWarning($"Warning: Could not create the new skill: {request.Name}");
-
-                return BadRequest("Could not created a skill");
-            }
-
-            _logger.LogInformation($"Information: Created {created}");
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            catch (ArgumentException ex) { return BadRequest(ex.Message); }
+            catch (KeyNotFoundException ex) { return NotFound(ex.Message); }
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveSkill(Guid id)
         {
-            var delete = await _service.Delete(id);
-
-            if (!delete)
-            {
-                return NotFound();
-            }
-
-            Console.WriteLine("It has now been deleted");
-            _logger.LogInformation("Your skill has now been removed");
-            //return Ok(delete);
+            var deleted = await _service.Delete(id);
+            if (!deleted) return NotFound();
             return NoContent();
         }
 
-        [HttpPatch("update")]
-        public async Task<ActionResult<SkillResponse>> Update(Guid id, SkillRequest request)
+        [HttpPatch("update/{id:guid}")]
+        public async Task<ActionResult<SkillResponse>> Update(Guid id, [FromBody] SkillRequest request)
         {
-            var skillId = await _service.Update(id, request);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if(skillId == null)
+            try
             {
-                _logger.LogWarning($"Could not find the skill id: {skillId}");
-                return NotFound("Id not found");
+                return Ok(await _service.Update(id, request));
             }
-
-            _logger.LogInformation("Skill now updated");
-            return Ok(skillId);
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
     }
 }

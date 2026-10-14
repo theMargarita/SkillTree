@@ -47,14 +47,17 @@ namespace SkillTree.Controllers
         [HttpDelete("remove/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var deleted = await _service.Delete(id);
-            if (!deleted)
+            try
+            {
+                var deleted = await _service.Delete(id);
+                _logger.LogInformation($"Connection deleted: {id}");
+                return NoContent();
+                
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            _logger.LogInformation($"Connection deleted: {id}");
-            return NoContent();
         }
     }
 }
