@@ -6,7 +6,7 @@ namespace Infrastructure.Dtos.SKills
 {
     public record SkillResponse
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid SkillBoardId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -19,10 +19,9 @@ namespace Infrastructure.Dtos.SKills
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public int CompletedSubSkillCount { get; set; }
+        public SkillStatus Status { get; set; }
 
-        public SkillStatus Status { get; set; } = SkillStatus.Unlocked;
-
-        public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
+  public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
         {
             return new SkillResponse
             {
@@ -31,11 +30,11 @@ namespace Infrastructure.Dtos.SKills
                 Name = skill.Name,
                 Description = skill.Description,
                 PositionX = skill.PositionX,
-                Shape = skill.Shape,
                 PositionY = skill.PositionY,
                 RequiredSubSkillCount = skill.RequiredSubSkillCount,
                 Color = skill.Color,
                 Icon = skill.Icon,
+                Shape = skill.Shape,
                 CreatedAt = skill.CreatedAt,
                 UpdatedAt = skill.UpdatedAt,
                 CompletedSubSkillCount = completedSubSkillCount,

@@ -19,13 +19,16 @@ namespace Infrastructure.Dtos.SubSkill
         public string? ProgressText { get; set; }
         [JsonPropertyName("progressEntry")]
 
-        public List<ProgressEntryResponse> ProgressEntries { get; set; } = new(); //remeber that this is only in repsonse and not in request
+        //remember that this is only in repsonse and not in request
+        //might not need this one
+        public List<ProgressEntryResponse> ProgressEntries { get; set; } = new(); 
         [JsonPropertyName("orderIndex")]
         public int OrderIndex { get; set; }
         [JsonPropertyName("color")]
         public string? Color { get; set; }
         [JsonPropertyName("isComplete")]
-        public bool IsComplete { get; set; } = false; [JsonPropertyName("createdAt")]
+        public bool IsComplete { get; set; } = false; 
+        [JsonPropertyName("createdAt")]
         public DateTimeOffset? CompletedAt { get; set; }
 
         public static SubSkillResponse FromSubSkill(SubSkills sb)
@@ -37,7 +40,8 @@ namespace Infrastructure.Dtos.SubSkill
                 Name = sb.Name,
                 Description = sb.Description,
                 ProgressURL = sb.ProgressURL,
-                ProgressEntries = sb.ProgressEntries.Select(ProgressEntryResponse.FromEntry).ToList(),
+                //have for now
+                ProgressEntries = sb.ProgressEntries.Select(ProgressEntryResponse.FromEntry).ToList(), 
                 ProgressText = sb.ProgressText,
                 OrderIndex = sb.OrderIndex,
                 Color = sb.Color,

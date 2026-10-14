@@ -3,25 +3,30 @@ import "../css/skillDetail.css";
 import type { SubSkillResponse } from "../types/subskills";
 import ProgressEntryForm from "./ProgressEntryFrom";
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+const API_URL = import.meta.env.VITE_API_BASE as string;
 
 interface SkillDetailPanelProps {
   skillId: string;
   skillName: string;
   onClose: () => void;
+  onChanged?: () => void;
 }
 
 export default function SkillDetailPanel({
   skillId,
   skillName,
   onClose,
+  onChanged,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null); // toggle errors don't hide the list
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
+    setLoadError(null);
+    setActionError(null);
     fetch(`${API_URL}/api/SubSkill/byskill/${skillId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -29,36 +34,31 @@ export default function SkillDetailPanel({
       })
       .then(setSubSkills)
       .catch((err: unknown) =>
-        setError(err instanceof Error ? err.message : "Unknown error"),
+        setLoadError(err instanceof Error ? err.message : "Unknown error"),
       )
       .finally(() => setLoading(false));
   }, [skillId]);
 
   async function toggleComplete(subSkill: SubSkillResponse) {
-    const action = subSkill.isComplete ? "incomplete" : "complete";
-
+    setActionError(null);
     try {
-      const res = await fetch(
-        `${API_URL}/api/SubSkill/complete/${subSkill.id}`,
-        {
-          method: "PATCH",
-        },
-      );
+      const res = await fetch(`${API_URL}/api/SubSkill/toggle/${subSkill.id}`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) {
-        // BadRequest responses return the message as plain text (ex.Message),
-        // not JSON - read it as text rather than trying res.json() on it.
+        // BadRequest returns plain text (ex.Message), not JSON
         const message = await res.text();
         throw new Error(message || `Request failed: ${res.status}`);
       }
 
       const updated = (await res.json()) as SubSkillResponse;
-      // Replace just the one subskill that changed, rather than refetching the whole list.
       setSubSkills((prev) =>
         prev.map((s) => (s.id === updated.id ? updated : s)),
       );
+      onChanged?.(); // refetch the board so counts and lock states update
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setActionError(err instanceof Error ? err.message : "Unknown error");
     }
   }
 
@@ -76,9 +76,10 @@ export default function SkillDetailPanel({
       </div>
 
       {loading && <p>Loading subskills...</p>}
-      {error && <p>Error: {error}</p>}
+      {loadError && <p>Error: {loadError}</p>}
+      {actionError && <p className="skill-panel__error">{actionError}</p>}
 
-      {!loading && !error && (
+      {!loading && !loadError && (
         <ul className="skill-panel__list">
           {subSkills.map((sub) => (
             <li
@@ -99,6 +100,7 @@ export default function SkillDetailPanel({
               <ProgressEntryForm subSkillId={sub.id} />
             </li>
           ))}
+          {subSkills.length === 0 && <li>No subskills yet.</li>}
         </ul>
       )}
     </aside>

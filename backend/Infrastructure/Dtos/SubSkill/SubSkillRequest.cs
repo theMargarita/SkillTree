@@ -24,10 +24,10 @@ namespace Infrastructure.Dtos.SubSkill
         [JsonPropertyName("color")]
         public string? Color { get; set; }
 
-        [JsonPropertyName("isComplete")]
-        public bool IsComplete { get; set; } = false; 
+        // [JsonPropertyName("isComplete")]
+        // public bool IsComplete { get; set; } = false; 
 
-        [JsonPropertyName("completedAt")]
-        public DateTimeOffset CompletedAt { get; set; } //honestly a bit unsure about this one
+        // [JsonPropertyName("completedAt")]
+        // public DateTimeOffset CompletedAt { get; set; } //honestly a bit unsure about this one
     }
 }

@@ -24,6 +24,8 @@ namespace SkillTree.Controllers
             var boards = await _service.GetAllForUser(userId);
             return Ok(boards);
         }
+
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<SkillBoardDetailResponse>> GetBoardDetail(Guid id)
         {
@@ -38,6 +40,7 @@ namespace SkillTree.Controllers
                 return NotFound();
             }
         }
+
 
         [HttpPost("user/{userId:guid}/create")]
         public async Task<ActionResult<SkillBoardResponse>> Create(Guid userId, [FromBody] SkillBoardRequest request)

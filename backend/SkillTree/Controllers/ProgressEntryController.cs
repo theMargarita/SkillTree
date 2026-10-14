@@ -5,7 +5,7 @@ using Services.IServices;
 
 namespace SkillTree.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     [ApiController]
     public class ProgressEntryController : ControllerBase
     {
@@ -18,15 +18,12 @@ namespace SkillTree.Controllers
             _logger = logger;
         }
 
-        // GET api/progressentries/byskill/{subSkillId}
-        [HttpGet("byskill/{subSkillId:guid}")]
+        [HttpGet("bysubskill/{subSkillId:guid}")]
         public async Task<ActionResult<List<ProgressEntryResponse>>> GetAllBySubSkill(Guid subSkillId)
         {
-            var entries = await _service.GetAllBySubSkill(subSkillId);
-            return Ok(entries);
+            return Ok(await _service.GetAllBySubSkill(subSkillId));
         }
 
-        // POST api/progressentries/create
         [HttpPost("create")]
         public async Task<ActionResult<ProgressEntryResponse>> Create([FromBody] ProgressEntryRequest request)
         {

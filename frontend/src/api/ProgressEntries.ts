@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ProgressEntryResponse } from "../types/subskills";
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+const API_URL = import.meta.env.VITE_API_BASE as string; // one env var everywhere
 
 async function readErrorMessage(
   res: Response,
@@ -18,7 +18,8 @@ export function useProgressEntries(subSkillId: string) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_URL}/api/ProgressEntries/byskill/${subSkillId}`)
+    setError(null);
+    fetch(`${API_URL}/api/ProgressEntry/bysubskill/${subSkillId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json() as Promise<ProgressEntryResponse[]>;
@@ -31,14 +32,10 @@ export function useProgressEntries(subSkillId: string) {
   }, [subSkillId]);
 
   async function addEntry(contentText: string) {
-    const res = await fetch(`${API_URL}/api/ProgressEntries/create`, {
+    const res = await fetch(`${API_URL}/api/ProgressEntry/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subSkillId,
-        type: "Text",
-        contentText,
-      }),
+      body: JSON.stringify({ subSkillId, type: "Text", contentText }),
     });
 
     if (!res.ok) {

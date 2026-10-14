@@ -1,19 +1,18 @@
-//responses
+// responses
 
-export type ProgressType = "Photot" | "Text" | "Photo and Text";
+export type ProgressType = "Photo" | "Text" | "PhotoAndText";
 
 export interface SubSkillResponse {
   id: string;
-  skillsId: string;
+  skillId: string;
   name: string;
   description: string;
-  progressrlL: string;
-  progressText: string;
-  progressEntry: ProgressEntryResponse[]; //new list to progressentry
+  progressURL: string | null;
+  progressText: string | null;
   orderIndex: number;
-  color: string;
+  color: string | null;
   isComplete: boolean;
-  completedAt: string;
+  completedAt: string | null;
 }
 
 export interface ProgressEntryResponse {
@@ -26,15 +25,13 @@ export interface ProgressEntryResponse {
 
 //-----------------------------
 
-//requests
+// requests
 export interface SubSkillRequest {
   skillId: string;
   name: string;
-  desctiption: string;
-  progressUrl: string;
-  progressText: string;
+  description: string;
+  progressURL: string | null;
+  progressText: string | null;
   orderIndex: number;
-  color: string;
-  isComplete: boolean;
-  completedAt: string; //honestly a bit unsure about this one
+  color: string | null;
 }
