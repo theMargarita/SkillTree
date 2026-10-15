@@ -11,8 +11,24 @@ export default function ProgressEntryForm({
 }: ProgressEntryFormProps) {
   const { entries, loading, error, addEntry } = useProgressEntries(subSkillId);
   const [text, setText] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  //this will do for now
+  const handleImageUploader = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Chose anther format");
+      return;
+    }
+
+    const imageUrl = URL.createObjectURL(file);
+    setImage(imageUrl);
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,6 +72,25 @@ export default function ProgressEntryForm({
           placeholder="Add a note about your progress..."
           rows={2}
         />
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={handleImageUploader}
+        />
+
+        {image && (
+          <div>
+            <img
+              src={image}
+              alt="Förhandsgranskning"
+              style={{
+                maxWidth: "330px",
+                maxHeight: "400px",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+        )}
         {submitError && (
           <p className="progress-entries__error">{submitError}</p>
         )}
