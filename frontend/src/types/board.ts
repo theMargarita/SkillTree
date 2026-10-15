@@ -21,3 +21,19 @@ export interface SkillBoardDetailResponse {
   skills: SkillResponse[];
   connections: SkillConnectionResponse[];
 }
+
+export interface SkillBoardResponse {
+  id: string;
+  name: string;
+  description: string;
+  backgroundColor: string | null;
+  createdAt: string;
+  updatedAt: string;
+  skillCount: number;
+}
+
+export interface SkillBoardRequest {
+  name: string;
+  description: string;
+  backgroundColor: string | null;
+}
