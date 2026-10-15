@@ -107,3 +107,16 @@
   color: var(--node-accent, var(--status-locked));
   margin-left: 6cap;
 }
+
+.back-link {
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-family: var(--font-display);
+  color: var(--board-text);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.back-link:hover {
+  opacity: 1;
+}

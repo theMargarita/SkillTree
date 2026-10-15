@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import SkillNode from "./SkillNode";
 import "./board.css";
 import type { SkillResponse } from "../../types/skills";
 import type { SkillBoardDetailResponse } from "../../types/board";
+import SkillNode from "./skillDetail/SkillNode";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 

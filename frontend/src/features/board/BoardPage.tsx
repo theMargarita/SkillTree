@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { SkillResponse } from "../../types/skills";
 import BoardCanvas from "./BoardCanvas";
-import SkillDetailPanel from "./SkillDetailPanel";
+import SkillDetailPanel from "./skillDetail/SkillDetailPanel";
 
 interface BoardPageProps {
   boardId: string;

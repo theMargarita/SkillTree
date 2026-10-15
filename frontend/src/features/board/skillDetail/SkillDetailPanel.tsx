@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./skill-detail.css";
-import type { SubSkillResponse } from "../../types/subskills";
-import ProgressEntryForm from "../progress/ProgressEntryForm";
+import type { SubSkillResponse } from "../../../types/subskills";
+import ProgressEntryForm from "../../progress/ProgressEntryForm";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
