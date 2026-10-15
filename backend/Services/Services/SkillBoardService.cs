@@ -31,7 +31,7 @@ namespace Services.Services
             {
                 UserId = userId,
                 Name = request.Name,
-                Description = request.Description,
+                //Description = request.Description,
                 BackgroundColor = request.BackgroundColor,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow,
@@ -62,6 +62,7 @@ namespace Services.Services
         {
             var boards = await _ctx.SkillBoard
                 .GetAllUserSkillTrees(userId)
+                .OrderByDescending(b => b.UpdatedAt)
                 .ToListAsync();
 
             if (boards.Count == 0)
@@ -134,7 +135,7 @@ namespace Services.Services
             }
 
             board.Name = request.Name;
-            board.Description = request.Description;
+            //board.Description = request.Description;
             board.BackgroundColor = request.BackgroundColor;
             board.UpdatedAt = DateTimeOffset.UtcNow;
 
