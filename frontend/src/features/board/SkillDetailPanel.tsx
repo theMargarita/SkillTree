@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import "../css/skillDetail.css";
-import type { SubSkillResponse } from "../types/subskills";
-import ProgressEntryForm from "./ProgressEntryFrom";
+import "./skill-detail.css";
+import type { SubSkillResponse } from "../../types/subskills";
+import ProgressEntryForm from "../progress/ProgressEntryForm";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -20,13 +20,10 @@ export default function SkillDetailPanel({
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null); // toggle errors don't hide the list
+  const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    setLoadError(null);
-    setActionError(null);
     fetch(`${API_URL}/api/SubSkill/byskill/${skillId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -47,16 +44,15 @@ export default function SkillDetailPanel({
       });
 
       if (!res.ok) {
-        // BadRequest returns plain text (ex.Message), not JSON
         const message = await res.text();
         throw new Error(message || `Request failed: ${res.status}`);
       }
 
       const updated = (await res.json()) as SubSkillResponse;
-      setSubSkills((prev) =>
-        prev.map((s) => (s.id === updated.id ? updated : s)),
+      setSubSkills((previous) =>
+        previous.map((skill) => (skill.id === updated.id ? updated : skill)),
       );
-      onChanged?.(); // refetch the board so counts and lock states update
+      onChanged?.();
     } catch (err) {
       setActionError(err instanceof Error ? err.message : "Unknown error");
     }
@@ -81,23 +77,23 @@ export default function SkillDetailPanel({
 
       {!loading && !loadError && (
         <ul className="skill-panel__list">
-          {subSkills.map((sub) => (
+          {subSkills.map((subSkill) => (
             <li
-              key={sub.id}
-              className={`subskill-row ${sub.isComplete ? "is-complete" : ""}`}
+              key={subSkill.id}
+              className={`subskill-row ${subSkill.isComplete ? "is-complete" : ""}`}
             >
               <div className="subskill-row__top">
                 <div>
-                  <p className="subskill-row__name">{sub.name}</p>
-                  {sub.description && (
-                    <p className="subskill-row__desc">{sub.description}</p>
+                  <p className="subskill-row__name">{subSkill.name}</p>
+                  {subSkill.description && (
+                    <p className="subskill-row__desc">{subSkill.description}</p>
                   )}
                 </div>
-                <button onClick={() => toggleComplete(sub)}>
-                  {sub.isComplete ? "Mark incomplete" : "Mark complete"}
+                <button onClick={() => toggleComplete(subSkill)}>
+                  {subSkill.isComplete ? "Mark incomplete" : "Mark complete"}
                 </button>
               </div>
-              <ProgressEntryForm subSkillId={sub.id} />
+              <ProgressEntryForm subSkillId={subSkill.id} />
             </li>
           ))}
           {subSkills.length === 0 && <li>No subskills yet.</li>}

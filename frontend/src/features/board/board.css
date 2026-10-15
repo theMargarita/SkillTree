@@ -8,11 +8,10 @@
   --status-unlocked: #2bd4c4;
   --status-completed: #f4c542;
 
-  --font-display: "Oswald", "Arial Narrow", sans-serif; /* bold condensed */
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
-/* ---- board frame ---- */
 .board {
   position: relative;
   background: var(--board-bg);
@@ -53,7 +52,6 @@
   opacity: 0.8;
 }
 
-/* ---- canvas area ---- */
 .board-canvas {
   position: relative;
   width: 100%;
@@ -63,15 +61,12 @@
 .board-connections {
   position: absolute;
   inset: 0;
-  width: 100%; /* an absolutely positioned <svg> defaults to 300x150 without these */
+  width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
-/* ---- skill node ---- */
 .skill-node {
-  /* position: absolute;  */
-  /* restored: left/top from the inline style now take effect */
   width: 160px;
   padding: 0.75rem 0.9rem;
   background: #1f2227;
@@ -85,11 +80,9 @@
     0 100%
   );
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-  /* centre the node on its (x, y) so it lines up with the connection lines */
   transform: translate(-50%, -50%);
   cursor: pointer;
   transition: transform 0.12s ease;
-  /* margin removed: it fought with absolute positioning */
 }
 
 .skill-node:hover {

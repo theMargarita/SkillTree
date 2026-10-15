@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { ProgressEntryResponse } from "../types/subskills";
+import type { ProgressEntryResponse } from "../../types/subskills";
 
-const API_URL = import.meta.env.VITE_API_BASE as string; // one env var everywhere
+const API_URL = import.meta.env.VITE_API_BASE as string;
 
 async function readErrorMessage(
   res: Response,
@@ -17,8 +17,6 @@ export function useProgressEntries(subSkillId: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
     fetch(`${API_URL}/api/ProgressEntry/bysubskill/${subSkillId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -45,7 +43,7 @@ export function useProgressEntries(subSkillId: string) {
     }
 
     const created = (await res.json()) as ProgressEntryResponse;
-    setEntries((prev) => [...prev, created]); // list is oldest-first, so append
+    setEntries((previous) => [...previous, created]);
     return created;
   }
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import type { UserResponse } from "../types/user";
+import type { UserResponse } from "../../types/user";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
-export default function UsersList() {
+export default function UserList() {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -11,15 +11,13 @@ export default function UsersList() {
   useEffect(() => {
     fetch(`${API_URL}/api/User/getall`)
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Request failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json() as Promise<UserResponse[]>;
       })
-      .then((data) => setUsers(data))
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      })
+      .then(setUsers)
+      .catch((err: unknown) =>
+        setError(err instanceof Error ? err.message : "Unknown error"),
+      )
       .finally(() => setLoading(false));
   }, []);
 
