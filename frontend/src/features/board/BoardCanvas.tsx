@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import SkillNode from "../features/skillNode";
-import "../css/board.css";
-import type { SkillResponse } from "../types/skills";
-import type { SkillBoardDetailResponse } from "../types/board";
+import "./board.css";
+import type { SkillResponse } from "../../types/skills";
+import type { SkillBoardDetailResponse } from "../../types/board";
+import SkillNode from "./skillDetail/SkillNode";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -19,7 +19,7 @@ export default function BoardCanvas({
 }: BoardCanvasProps) {
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // only true for the first load
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${API_URL}/api/SkillBoard/${boardId}`)
@@ -31,8 +31,8 @@ export default function BoardCanvas({
         setBoard(data);
         setError(null);
       })
-      .catch((e: unknown) =>
-        setError(e instanceof Error ? e.message : "Error unknown"),
+      .catch((err: unknown) =>
+        setError(err instanceof Error ? err.message : "Unknown error"),
       )
       .finally(() => setLoading(false));
   }, [boardId, reloadKey]);
@@ -42,9 +42,9 @@ export default function BoardCanvas({
   if (!board) return null;
 
   const completedCount = board.skills.filter(
-    (s) => s.status === "Completed",
+    (skill) => skill.status === "Completed",
   ).length;
-  const skillById = new Map(board.skills.map((s) => [s.id, s]));
+  const skillById = new Map(board.skills.map((skill) => [skill.id, skill]));
 
   return (
     <div className="board">
@@ -57,22 +57,22 @@ export default function BoardCanvas({
 
       <div className="board-canvas">
         <svg className="board-connections">
-          {board.connections.map((conn) => {
-            const from = skillById.get(conn.fromSkillId);
-            const to = skillById.get(conn.toSkillId);
+          {board.connections.map((connection) => {
+            const from = skillById.get(connection.fromSkillId);
+            const to = skillById.get(connection.toSkillId);
             if (!from || !to) return null;
 
             return (
               <line
-                key={conn.id}
+                key={connection.id}
                 x1={from.positionX}
                 y1={from.positionY}
                 x2={to.positionX}
                 y2={to.positionY}
-                stroke={conn.lineColor ?? "#3a3d42"}
+                stroke={connection.lineColor ?? "#3a3d42"}
                 strokeWidth={2}
                 strokeDasharray={
-                  conn.lineStyle === "dashed" ? "6 4" : undefined
+                  connection.lineStyle === "dashed" ? "6 4" : undefined
                 }
               />
             );

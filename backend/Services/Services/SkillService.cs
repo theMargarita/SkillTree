@@ -119,7 +119,7 @@ namespace Services.Services
             skillId.PositionY = request.PositionY;
             skillId.Shape = request.Shape;
             skillId.UpdatedAt = DateTimeOffset.UtcNow;
-            skillId.RequiredSubSkillCount = request.RequiredSubSkillCount; //shall remove this 
+            skillId.RequiredSubSkillCount = request.RequiredSubSkillCount; //shall remove this eventually 
 
             _ctx.Skills.Update(skillId);
             await _ctx.SaveChangesAsync();

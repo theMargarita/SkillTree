@@ -8,11 +8,10 @@
   --status-unlocked: #2bd4c4;
   --status-completed: #f4c542;
 
-  --font-display: "Oswald", "Arial Narrow", sans-serif; /* bold condensed */
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
-/* ---- board frame ---- */
 .board {
   position: relative;
   background: var(--board-bg);
@@ -53,7 +52,6 @@
   opacity: 0.8;
 }
 
-/* ---- canvas area ---- */
 .board-canvas {
   position: relative;
   width: 100%;
@@ -63,33 +61,31 @@
 .board-connections {
   position: absolute;
   inset: 0;
-  width: 100%; /* an absolutely positioned <svg> defaults to 300x150 without these */
+  width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
-/* ---- skill node ---- */
 .skill-node {
-  /* position: absolute;  */
-  /* restored: left/top from the inline style now take effect */
   width: 160px;
   padding: 0.75rem 0.9rem;
+  margin-left: 100px;
+  margin: 8pc;
   background: #1f2227;
   border: 1px solid var(--board-border);
-  border-left: 4px solid var(--node-accent, var(--status-locked));
-  -webkit-clip-path: polygon(
+  border: 4px solid var(--node-accent, var(--status-locked));
+  /* -webkit-clip-path: polygon(
     0 0,
     calc(100% - 14px) 0,
     100% 14px,
     100% 100%,
     0 100%
-  );
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-  /* centre the node on its (x, y) so it lines up with the connection lines */
+  ); */
+  /* clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); */
+  border-radius: 10cap;
   transform: translate(-50%, -50%);
   cursor: pointer;
   transition: transform 0.12s ease;
-  /* margin removed: it fought with absolute positioning */
 }
 
 .skill-node:hover {
@@ -100,7 +96,8 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.95rem;
-  margin: 0 0 0.35rem 0;
+  margin: 0 0 0rem 0;
+  margin-left: 2cap;
 }
 
 .skill-node__stat {
@@ -108,4 +105,18 @@
   font-size: 0.8rem;
   letter-spacing: 0.03em;
   color: var(--node-accent, var(--status-locked));
+  margin-left: 6cap;
+}
+
+.back-link {
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-family: var(--font-display);
+  color: var(--board-text);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.back-link:hover {
+  opacity: 1;
 }

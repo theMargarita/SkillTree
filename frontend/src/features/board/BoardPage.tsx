@@ -1,13 +1,13 @@
 import { useState } from "react";
-import type { SkillResponse } from "../types/skills";
-import BoardCanvas from "../api/Boardcanvas";
-import SkillDetailPanel from "./SkilldetailPanel";
+import type { SkillResponse } from "../../types/skills";
+import BoardCanvas from "./BoardCanvas";
+import SkillDetailPanel from "./skillDetail/SkillDetailPanel";
 
 interface BoardPageProps {
   boardId: string;
 }
 
-export default function ({ boardId }: BoardPageProps) {
+export default function BoardPage({ boardId }: BoardPageProps) {
   const [selected, setSelected] = useState<SkillResponse | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -22,9 +22,9 @@ export default function ({ boardId }: BoardPageProps) {
         <SkillDetailPanel
           key={selected.id}
           skillId={selected.id}
-          skillName={selected.id}
+          skillName={selected.name}
           onClose={() => setSelected(null)}
-          onChanged={() => setReloadKey((k) => k + 1)}
+          onChanged={() => setReloadKey((key) => key + 1)}
         />
       )}
     </>

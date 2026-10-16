@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
-import type { SkillResponse, SkillStatus } from "../types/skills";
+import type { SkillResponse, SkillStatus } from "../../types/skills";
 
-// token names now match board.css
 const STATUS_COLOR: Record<SkillStatus, string> = {
   Locked: "var(--status-locked)",
   Unlocked: "var(--status-unlocked)",
@@ -17,7 +16,7 @@ export default function SkillNode({ skill, onClick }: SkillNodeProps) {
   const style = {
     left: `${skill.positionX}px`,
     top: `${skill.positionY}px`,
-    "--node-accent": STATUS_COLOR[skill.status], // was --mode-accent
+    "--node-accent": STATUS_COLOR[skill.status],
   } as CSSProperties;
 
   return (
