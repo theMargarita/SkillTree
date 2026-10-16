@@ -52,7 +52,7 @@ namespace SkillTree.Controllers
             catch (KeyNotFoundException ex) { return NotFound(ex.Message); }
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("remove/{id:guid}")]
         public async Task<IActionResult> RemoveSkill(Guid id)
         {
             var deleted = await _service.Delete(id);
