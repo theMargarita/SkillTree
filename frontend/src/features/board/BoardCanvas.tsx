@@ -10,12 +10,14 @@ interface BoardCanvasProps {
   boardId: string;
   onSkillClick?: (skill: SkillResponse) => void;
   reloadKey?: number;
+  onAddSkill?: () => void;
 }
 
 export default function BoardCanvas({
   boardId,
   onSkillClick,
   reloadKey = 0,
+  onAddSkill,
 }: BoardCanvasProps) {
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +80,16 @@ export default function BoardCanvas({
             );
           })}
         </svg>
+        {board.skills.length === 0 && (
+          <div className="board-empty">
+            <p>No skills on this board yet.</p>
+            {onAddSkill && (
+              <button type="button" onClick={onAddSkill}>
+                Add your first skill
+              </button>
+            )}
+          </div>
+        )}
         {board.skills.map((skill) => (
           <SkillNode key={skill.id} skill={skill} onClick={onSkillClick} />
         ))}
