@@ -32,7 +32,7 @@ export const jsonInit = (method: string, body: unknown): RequestInit => ({
 
 //create bord with userid
 export function createBoard(userId: string, data: SkillBoardRequest) {
-  return request<SkillBoardResponse[]>(
+  return request<SkillBoardResponse>(
     `/api/SkillBoard/user/${userId}`,
     jsonInit("POST", data),
   );
