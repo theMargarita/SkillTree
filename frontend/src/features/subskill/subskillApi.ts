@@ -3,7 +3,7 @@ import { jsonInit, request } from "../board/boardsApi";
 
 export function createSubSkill(data: SubSkillRequest) {
   return request<SubSkillResponse>(
-    `api/SubSkill/create`,
+    `/api/SubSkill/create`,
     jsonInit("POST", data),
   );
 }
