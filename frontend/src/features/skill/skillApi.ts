@@ -1,8 +1,9 @@
+// src/api/skill/skillApi.ts
+import { jsonInit, request } from "../../api/Http";
 import type { SkillRequest, SkillResponse } from "../../types/skills";
-import { jsonInit, request } from "../board/boardsApi";
 
 export function createSkill(data: SkillRequest) {
-  return request<SkillResponse[]>(`/api/Skill/create`, jsonInit("POST", data));
+  return request<SkillResponse>(`/api/Skill/create`, jsonInit("POST", data));
 }
 
 export function getAllSkills() {
@@ -16,6 +17,6 @@ export function removeSkill(id: string) {
 export function updateSkill(id: string, data: SkillRequest) {
   return request<SkillResponse>(
     `/api/Skill/update/${id}`,
-    jsonInit("PATHC", data),
+    jsonInit("PATCH", data),
   );
 }
