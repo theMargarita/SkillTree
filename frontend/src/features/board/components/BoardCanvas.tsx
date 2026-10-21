@@ -1,16 +1,15 @@
-// src/pages/BoardCanvas.tsx - adds the "+ Add skill" button to the header
 import { useEffect, useState } from "react";
 import "../styles/board.css";
 import type { SkillResponse } from "../../../shared/types/skills";
 import type { SkillBoardDetailResponse } from "../../../shared/types/board";
 import SkillNode from "../../skill-detail/components/SkillNode";
-
-const API_URL = import.meta.env.VITE_API_BASE as string;
+import { API_URL } from "../../../shared/config";
 
 interface BoardCanvasProps {
   boardId: string;
   onSkillClick?: (skill: SkillResponse) => void;
   reloadKey?: number;
+  //receives how many skills the board has right now
   onAddSkill?: (existingCount: number) => void;
 }
 

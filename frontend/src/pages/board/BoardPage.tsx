@@ -20,7 +20,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
         reloadKey={reloadKey}
         onSkillClick={setSelected}
         onAddSkill={(existingCount) => {
-          setSelected(null);
+          setSelected(null); //the side panel sit behind the modal
           setAddingAt(existingCount);
         }}
       />
@@ -42,7 +42,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
           onClose={() => setAddingAt(null)}
           onCreated={() => {
             setAddingAt(null);
-            setReloadKey((k) => k + 1);
+            setReloadKey((k) => k + 1); //refetch so teh new skill appears
           }}
         />
       )}

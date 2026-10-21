@@ -1,7 +1,7 @@
-// src/features/CreateBoardModal.tsx
 import { useEffect, useState } from "react";
 import type { SkillBoardResponse } from "../../../shared/types/board";
 import { createBoard } from "../api/boardsApi";
+import "../../../shared/styles/modal.css";
 
 // null = no colour
 const SWATCHES: (string | null)[] = [
