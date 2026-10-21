@@ -1,8 +1,9 @@
+// src/pages/BoardCanvas.tsx - adds the "+ Add skill" button to the header
 import { useEffect, useState } from "react";
-import "./board.css";
-import type { SkillResponse } from "../../types/skills";
-import type { SkillBoardDetailResponse } from "../../types/board";
-import SkillNode from "./skillDetail/SkillNode";
+import "../styles/board.css";
+import type { SkillResponse } from "../../../shared/types/skills";
+import type { SkillBoardDetailResponse } from "../../../shared/types/board";
+import SkillNode from "../../skill-detail/components/SkillNode";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -10,7 +11,7 @@ interface BoardCanvasProps {
   boardId: string;
   onSkillClick?: (skill: SkillResponse) => void;
   reloadKey?: number;
-  onAddSkill?: () => void;
+  onAddSkill?: (existingCount: number) => void;
 }
 
 export default function BoardCanvas({
@@ -21,11 +22,12 @@ export default function BoardCanvas({
 }: BoardCanvasProps) {
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // only true for the first load
 
   useEffect(() => {
     fetch(`${API_URL}/api/SkillBoard/${boardId}`)
       .then((res) => {
+        if (res.status === 404) throw new Error("Board not found");
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json() as Promise<SkillBoardDetailResponse>;
       })
@@ -33,8 +35,8 @@ export default function BoardCanvas({
         setBoard(data);
         setError(null);
       })
-      .catch((err: unknown) =>
-        setError(err instanceof Error ? err.message : "Unknown error"),
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : "Error unknown"),
       )
       .finally(() => setLoading(false));
   }, [boardId, reloadKey]);
@@ -44,52 +46,62 @@ export default function BoardCanvas({
   if (!board) return null;
 
   const completedCount = board.skills.filter(
-    (skill) => skill.status === "Completed",
+    (s) => s.status === "Completed",
   ).length;
-  const skillById = new Map(board.skills.map((skill) => [skill.id, skill]));
+  const skillById = new Map(board.skills.map((s) => [s.id, s]));
+  const skillCount = board.skills.length;
 
   return (
     <div className="board">
       <div className="board-header">
         <h1>{board.name}</h1>
-        <span className="board-progress">
-          {completedCount}/{board.skills.length} COMPLETE
-        </span>
+        <div className="board-header__actions">
+          {onAddSkill && (
+            <button type="button" onClick={() => onAddSkill(skillCount)}>
+              + Add skill
+            </button>
+          )}
+          <span className="board-progress">
+            {completedCount}/{skillCount} COMPLETE
+          </span>
+        </div>
       </div>
 
       <div className="board-canvas">
         <svg className="board-connections">
-          {board.connections.map((connection) => {
-            const from = skillById.get(connection.fromSkillId);
-            const to = skillById.get(connection.toSkillId);
+          {board.connections.map((conn) => {
+            const from = skillById.get(conn.fromSkillId);
+            const to = skillById.get(conn.toSkillId);
             if (!from || !to) return null;
 
             return (
               <line
-                key={connection.id}
+                key={conn.id}
                 x1={from.positionX}
                 y1={from.positionY}
                 x2={to.positionX}
                 y2={to.positionY}
-                stroke={connection.lineColor ?? "#3a3d42"}
+                stroke={conn.lineColor ?? "#3a3d42"}
                 strokeWidth={2}
                 strokeDasharray={
-                  connection.lineStyle === "dashed" ? "6 4" : undefined
+                  conn.lineStyle === "dashed" ? "6 4" : undefined
                 }
               />
             );
           })}
         </svg>
-        {board.skills.length === 0 && (
+
+        {skillCount === 0 && (
           <div className="board-empty">
             <p>No skills on this board yet.</p>
             {onAddSkill && (
-              <button type="button" onClick={onAddSkill}>
+              <button type="button" onClick={() => onAddSkill(skillCount)}>
                 Add your first skill
               </button>
             )}
           </div>
         )}
+
         {board.skills.map((skill) => (
           <SkillNode key={skill.id} skill={skill} onClick={onSkillClick} />
         ))}

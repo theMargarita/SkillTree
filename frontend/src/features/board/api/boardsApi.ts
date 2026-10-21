@@ -1,6 +1,6 @@
 // src/api/board/boardsApi.ts - now imports the helpers instead of defining them
-import { jsonInit, request } from "../../api/Http";
-import type { SkillBoardRequest, SkillBoardResponse } from "../../types/board";
+import { jsonInit, request } from "../../../shared/api/Http";
+import type { SkillBoardRequest, SkillBoardResponse } from "../../../shared/types/board";
 
 export function getBoardsForUser(userId: string) {
   return request<SkillBoardResponse[]>(`/api/SkillBoard/user/${userId}`);

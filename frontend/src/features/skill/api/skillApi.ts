@@ -1,6 +1,6 @@
 // src/api/skill/skillApi.ts
-import { jsonInit, request } from "../../api/Http";
-import type { SkillRequest, SkillResponse } from "../../types/skills";
+import { jsonInit, request } from "../../../shared/api/Http";
+import type { SkillRequest, SkillResponse } from "../../../shared/types/skills";
 
 export function createSkill(data: SkillRequest) {
   return request<SkillResponse>(`/api/Skill/create`, jsonInit("POST", data));

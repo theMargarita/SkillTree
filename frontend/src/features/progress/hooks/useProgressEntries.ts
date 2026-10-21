@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ProgressEntryResponse } from "../../types/subskills";
+import type { ProgressEntryResponse } from "../../../shared/types/subskills";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 

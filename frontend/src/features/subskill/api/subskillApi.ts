@@ -1,5 +1,5 @@
-import { jsonInit, request } from "../../api/Http";
-import type { SubSkillResponse, SubSkillRequest } from "../../types/subskills";
+import { jsonInit, request } from "../../../shared/api/Http";
+import type { SubSkillResponse, SubSkillRequest } from "../../../shared/types/subskills";
 
 export function createSubSkill(data: SubSkillRequest) {
   return request<SubSkillResponse>(
