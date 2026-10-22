@@ -4,6 +4,7 @@ import ColorSwatches from "../../../shared/components/ColorSwatches";
 import { createSkill, removeSkill } from "../api/skillApi";
 import { createSubSkill } from "../../subskill/api/subskillApi";
 import type { SubSkillRow } from "../../../shared/types/subskills";
+import "../../../shared/styles/modal.css";
 
 const SHAPES: SkillShape[] = ["Circle", "Square", "Hexagon", "Diamond"];
 const MAX_SUBSKILLS = 20;
@@ -73,6 +74,7 @@ export default function AddSkillModal({
         skillBoardId: boardId,
         name: name.trim(),
         description: description.trim(),
+        imageUrl: null, // for now
         positionX: x,
         positionY: y,
         requiredSubSkillCount: filled.length, // stopgap: "all subskills required"
@@ -103,7 +105,7 @@ export default function AddSkillModal({
         // roll back: removing the skill also removes any subskills already created (cascade)
         try {
           await removeSkill(createdSkillId);
-          setError(`${message}. Nothing was saved, you can try again.`);
+          setError(`${message}. Nothing was saved, try again.`);
         } catch {
           setError(
             `${message}. The skill may have been saved without all its subskills - check the board and delete it if needed.`,

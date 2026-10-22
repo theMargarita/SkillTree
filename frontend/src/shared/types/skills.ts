@@ -8,6 +8,7 @@ export interface SkillResponse {
   skillBoardId: string;
   name: string;
   description: string;
+  imageUrl: string;
   positionX: number;
   positionY: number;
   requiredSubSkillCount: number;
@@ -25,6 +26,7 @@ export interface SkillRequest {
   skillBoardId: string;
   name: string;
   description: string;
+  imageUrl: string | null;
   positionX: number;
   positionY: number;
   requiredSubSkillCount: number;
