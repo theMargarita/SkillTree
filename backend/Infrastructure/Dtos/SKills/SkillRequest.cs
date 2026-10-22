@@ -10,6 +10,7 @@ namespace Infrastructure.Dtos.SKills
         [Required, MaxLength(100)]
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
 
         [Range(1, 100)]
         public int RequiredSubSkillCount { get; set; } = 1;

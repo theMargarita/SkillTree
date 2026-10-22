@@ -6,6 +6,7 @@
         public Guid SkillBoardId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
         public decimal PositionX { get; set; }
         public decimal PositionY { get; set; }
         //would be cool to create a 3d skill tree - perhapns in the future
