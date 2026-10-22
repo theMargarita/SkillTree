@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { SkillResponse, SkillStatus } from "../../types/skills";
+import type { SkillResponse, SkillStatus } from "../../../shared/types/skills";
 
 const STATUS_COLOR: Record<SkillStatus, string> = {
   Locked: "var(--status-locked)",

@@ -113,6 +113,7 @@ namespace Services.Services
 
             skillId.Name = request.Name;
             skillId.Description = request.Description;
+            skillId.ImageUrl = request.ImageUrl;
             skillId.Color = request.Color;
             skillId.Icon = request.Icon;
             skillId.PositionX = request.PositionX;

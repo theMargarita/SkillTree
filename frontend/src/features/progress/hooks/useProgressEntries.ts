@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ProgressEntryResponse } from "../../types/subskills";
+import type { ProgressEntryResponse } from "../../../shared/types/subskills";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -29,11 +29,14 @@ export function useProgressEntries(subSkillId: string) {
       .finally(() => setLoading(false));
   }, [subSkillId]);
 
-  async function addEntry(contentText: string) {
+  async function addEntry(contentText: string, imageUrl: string | null) {
+    const hasText = contentText.trim().length > 0;
+    const type =
+      imageUrl && hasText ? "PhotoAndText" : imageUrl ? "Photo" : "Text";
     const res = await fetch(`${API_URL}/api/ProgressEntry/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subSkillId, type: "Text", contentText }),
+      body: JSON.stringify({ subSkillId, type, imageUrl, contentText: hasText ? contentText.trim() : null }),
     });
 
     if (!res.ok) {

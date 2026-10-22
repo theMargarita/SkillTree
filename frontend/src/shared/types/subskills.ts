@@ -35,3 +35,9 @@ export interface SubSkillRequest {
   orderIndex: number;
   color: string | null;
 }
+
+export interface SubSkillRow {
+  id: number;
+  name: string;
+  description: string;
+}

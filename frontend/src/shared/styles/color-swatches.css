@@ -1,0 +1,34 @@
+.swatches {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.swatch.is-selected {
+  border-color: currentColor;
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.swatch--none {
+  position: relative;
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+.swatch--none::after {
+  position: absolute;
+  inset: 50% 0 auto;
+  content: "";
+  border-top: 2px solid currentColor;
+  transform: rotate(-45deg);
+}

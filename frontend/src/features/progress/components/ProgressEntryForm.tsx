@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "./progress-entry.css";
-import { useProgressEntries } from "./useProgressEntries";
+import "../styles/progress-entry.css";
+import { useProgressEntries } from "../hooks/useProgressEntries";
 
 interface ProgressEntryFormProps {
   subSkillId: string;

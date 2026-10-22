@@ -5,12 +5,12 @@ namespace Infrastructure.Dtos.SubSkill
 {
     public class SubSkillRequest
     {
-        [JsonPropertyName("skillsId")]
+        [JsonPropertyName("skillId")]
         public Guid SkillId { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
-        [JsonPropertyName("decsription")]
+        [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         [JsonPropertyName("progressUrl")]
         public string? ProgressURL { get; set; }
