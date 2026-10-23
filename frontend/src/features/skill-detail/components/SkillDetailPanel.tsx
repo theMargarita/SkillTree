@@ -10,6 +10,7 @@ interface SkillDetailPanelProps {
   skillName: string;
   onClose: () => void;
   onChanged?: () => void;
+  onRemovingRequested: () => void;
 }
 
 export default function SkillDetailPanel({
@@ -17,6 +18,7 @@ export default function SkillDetailPanel({
   skillName,
   onClose,
   onChanged,
+  onRemovingRequested,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -63,11 +65,18 @@ export default function SkillDetailPanel({
       <div className="skill-panel__header">
         <h2>{skillName}</h2>
         <button
+          type="button"
+          className="skill-panel__remove"
+          onClick={onRemovingRequested}
+        >
+          Remove Skill
+        </button>
+        <button
           className="skill-panel__close"
           onClick={onClose}
           aria-label="Close"
         >
-          ×
+          X
         </button>
       </div>
 
