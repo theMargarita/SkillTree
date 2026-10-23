@@ -3,6 +3,7 @@ import type { SkillResponse } from "../../shared/types/skills";
 import BoardCanvas from "../../features/board/components/BoardCanvas";
 import SkillDetailPanel from "../../features/skill-detail/components/SkillDetailPanel";
 import AddSkillModal from "../../features/skill/components/AddSkillModal";
+import RemoveSkillModal from "../../features/skill/components/RemoveSkillModal";
 
 interface BoardPageProps {
   boardId: string;
@@ -12,6 +13,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
   const [selected, setSelected] = useState<SkillResponse | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [addingAt, setAddingAt] = useState<number | null>(null);
+  const [removing, setRemoving] = useState<SkillResponse | null>(null);
 
   return (
     <>
@@ -32,6 +34,10 @@ export default function BoardPage({ boardId }: BoardPageProps) {
           skillName={selected.name}
           onClose={() => setSelected(null)}
           onChanged={() => setReloadKey((k) => k + 1)}
+          onRemovingRequested={() => {
+            setRemoving(selected);
+            setSelected(null);
+          }}
         />
       )}
 
@@ -43,6 +49,18 @@ export default function BoardPage({ boardId }: BoardPageProps) {
           onCreated={() => {
             setAddingAt(null);
             setReloadKey((k) => k + 1); //refetch so teh new skill appears
+          }}
+        />
+      )}
+
+      {removing && (
+        <RemoveSkillModal
+          skillId={removing.id}
+          skillName={removing.name}
+          onClose={() => setRemoving(null)}
+          onRemoved={() => {
+            setRemoving(null);
+            setReloadKey((key) => key + 1);
           }}
         />
       )}
