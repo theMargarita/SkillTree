@@ -47,6 +47,7 @@ export default function AddSkillModal({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape" && !submitting) onClose();
+      if (e.key === "Enter" && submitting) onCreated();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -59,7 +60,7 @@ export default function AddSkillModal({
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     if (!canSubmit) return;
 
@@ -74,7 +75,7 @@ export default function AddSkillModal({
         skillBoardId: boardId,
         name: name.trim(),
         description: description.trim(),
-        imageUrl: null, // for now
+        imageUrl: null,
         positionX: x,
         positionY: y,
         requiredSubSkillCount: filled.length, // stopgap: "all subskills required"
@@ -85,6 +86,7 @@ export default function AddSkillModal({
       createdSkillId = skill.id;
 
       // one at a time, so OrderIndex follows the list order
+      //with eventually add image url prop into backend as well
       for (let i = 0; i < filled.length; i++) {
         await createSubSkill({
           skillId: skill.id,
@@ -92,6 +94,7 @@ export default function AddSkillModal({
           description: filled[i].description.trim(),
           progressURL: null,
           progressText: null,
+          // imageUrl: null,
           orderIndex: i,
           color: null,
         });
