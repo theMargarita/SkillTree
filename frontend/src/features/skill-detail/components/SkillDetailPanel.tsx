@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/skill-detail.css";
 import type { SubSkillResponse } from "../../../shared/types/subskills";
 import ProgressEntryForm from "../../progress/components/ProgressEntryForm";
+import AddSubSkillModal from "../../subskill/component/AddSubSkillModal";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -21,6 +22,7 @@ export default function SkillDetailPanel({
   onRemovingRequested,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
+  const [addingSubSkill, setAddingSubskill] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,11 @@ export default function SkillDetailPanel({
         >
           Remove Skill
         </button>
+         <button type="button" onClick={() => setAddingSubskill(true)}>
+            Add subskill
+          </button>
         <button
+          type="button"
           className="skill-panel__close"
           onClick={onClose}
           aria-label="Close"
@@ -85,28 +91,50 @@ export default function SkillDetailPanel({
       {actionError && <p className="skill-panel__error">{actionError}</p>}
 
       {!loading && !loadError && (
-        <ul className="skill-panel__list">
-          {subSkills.map((subSkill) => (
-            <li
-              key={subSkill.id}
-              className={`subskill-row ${subSkill.isComplete ? "is-complete" : ""}`}
-            >
-              <div className="subskill-row__top">
-                <div>
-                  <p className="subskill-row__name">{subSkill.name}</p>
-                  {subSkill.description && (
-                    <p className="subskill-row__desc">{subSkill.description}</p>
-                  )}
+        // a fragment: JSX must return ONE parent, and the list and the button are siblings
+        <>
+          <ul className="skill-panel__list">
+            {subSkills.map((subSkill) => (
+              <li
+                key={subSkill.id}
+                className={`subskill-row ${subSkill.isComplete ? "is-complete" : ""}`}
+              >
+                <div className="subskill-row__top">
+                  <div>
+                    <p className="subskill-row__name">{subSkill.name}</p>
+                    {subSkill.description && (
+                      <p className="subskill-row__desc">
+                        {subSkill.description}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleComplete(subSkill)}
+                  >
+                    {subSkill.isComplete ? "Mark incomplete" : "Mark complete"}
+                  </button>
                 </div>
-                <button onClick={() => toggleComplete(subSkill)}>
-                  {subSkill.isComplete ? "Mark incomplete" : "Mark complete"}
-                </button>
-              </div>
-              <ProgressEntryForm subSkillId={subSkill.id} />
-            </li>
-          ))}
-          {subSkills.length === 0 && <li>No subskills yet.</li>}
-        </ul>
+                <ProgressEntryForm subSkillId={subSkill.id} />
+              </li>
+            ))}
+            {subSkills.length === 0 && <li>No subskills yet.</li>}
+          </ul>
+
+         
+        </>
+      )}
+
+      {addingSubSkill && (
+        <AddSubSkillModal
+          skillId={skillId}
+          onClose={() => setAddingSubskill(false)}
+          onCreated={(created) => {
+            setSubSkills((prev) => [...prev, created]); // server puts it last, so appending matches
+            setAddingSubskill(false);
+            onChanged?.(); // refetch the board: the node's counter and status change
+          }}
+        />
       )}
     </aside>
   );
