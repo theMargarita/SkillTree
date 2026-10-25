@@ -23,12 +23,15 @@ export default function RemoveSkillModal({
       if (event.key === "Escape" && !submitting) {
         onClose();
       }
+      //does not fully work - okey for now
+      if (event.key === "Delete" && submitting) onRemoved();
+      if (event.key === "Enter" && submitting) onRemoved();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose, submitting]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
@@ -62,15 +65,17 @@ export default function RemoveSkillModal({
 
         {error && <p className="modal__error">{error}</p>}
 
-        <div className="modal__actions">
-          <button type="button" onClick={onClose} disabled={submitting}>
-            Cancel
-          </button>
+        <form onSubmit={handleSubmit} className="modal__form">
+          <div className="modal__actions">
+            <button type="button" onClick={onClose} disabled={submitting}>
+              Cancel
+            </button>
 
-          <button type="button" onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Removing..." : "Remove skill"}
-          </button>
-        </div>
+            <button type="submit" disabled={submitting}>
+              {submitting ? "Removing..." : "Remove skill"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

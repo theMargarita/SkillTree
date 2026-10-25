@@ -29,7 +29,7 @@ export interface SkillRequest {
   imageUrl: string | null;
   positionX: number;
   positionY: number;
-  subSkillCount: number;
+  // subSkillCount: number;
   color: string | null;
   icon: string | null;
   shape: SkillShape;

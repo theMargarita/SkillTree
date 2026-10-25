@@ -215,7 +215,7 @@ export default function AddSkillModal({
               onClick={() => setRows((prev) => [...prev, newRow()])}
               disabled={rows.length >= MAX_SUBSKILLS}
             >
-              + Add subskill
+              Add subskill
             </button>
           </div>
 
