@@ -103,12 +103,6 @@ namespace Services.Services
 
             var skillIds = skills.Select(s => s.Id).ToList();
 
-            // one grouped query for every skill's completed-subskill count -
-            // this is the N+1 avoidance from SubSkillExtension.GetCompletedCountsBySkillIds
-            var completionCounts = await _ctx.SubSkills
-                .GetCompletedCountsBySkillIds(skillIds)
-                .ToDictionaryAsync(c => c.SkillId, c => c.CompletedCount);
-
             // Pure in-memory computation - no extra queries, uses what's already loaded.
             var counts = await _ctx.SubSkills
     .GetCountsBySkillIds(skillIds)
