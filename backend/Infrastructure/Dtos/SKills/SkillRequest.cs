@@ -13,7 +13,7 @@ namespace Infrastructure.Dtos.SKills
         public string? ImageUrl { get; set; }
 
         [Range(1, 100)]
-        public int RequiredSubSkillCount { get; set; } = 1;
+        // public int RequiredSubSkillCount { get; set; } = 1;
 
         public string? Color { get; set; }
         public string? Icon { get; set; }
