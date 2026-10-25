@@ -23,7 +23,9 @@ export default function SkillNode({ skill, onClick }: SkillNodeProps) {
     <div className="skill-node" style={style} onClick={() => onClick?.(skill)}>
       <p className="skill-node__name">{skill.name}</p>
       <span className="skill-node__stat">
-        {skill.completedSubSkillCount}/{skill.requiredSubSkillCount}
+        {skill.subSkillCount === 0
+          ? "No subskills"
+          : `${skill.completedSubSkillCount}/${skill.subSkillCount}`}
       </span>
     </div>
   );
