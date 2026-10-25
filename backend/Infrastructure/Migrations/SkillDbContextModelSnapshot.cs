@@ -145,9 +145,6 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("PositionY")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("RequiredSubSkillCount")
-                        .HasColumnType("int");
-
                     b.Property<int>("Shape")
                         .HasColumnType("int");
 
