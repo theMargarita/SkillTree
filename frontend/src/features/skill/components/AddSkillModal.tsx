@@ -78,7 +78,6 @@ export default function AddSkillModal({
         imageUrl: null,
         positionX: x,
         positionY: y,
-        requiredSubSkillCount: filled.length, // stopgap: "all subskills required"
         color,
         icon: null,
         shape,

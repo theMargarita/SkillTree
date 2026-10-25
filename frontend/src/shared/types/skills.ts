@@ -11,7 +11,6 @@ export interface SkillResponse {
   imageUrl: string;
   positionX: number;
   positionY: number;
-  requiredSubSkillCount: number;
   color: string | null;
   icon: string | null;
   shape: SkillShape;
@@ -29,7 +28,6 @@ export interface SkillRequest {
   imageUrl: string | null;
   positionX: number;
   positionY: number;
-  requiredSubSkillCount: number;
   color: string | null;
   icon: string | null;
   shape: SkillShape;
