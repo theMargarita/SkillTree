@@ -110,14 +110,22 @@ namespace Services.Services
                 .ToDictionaryAsync(c => c.SkillId, c => c.CompletedCount);
 
             // Pure in-memory computation - no extra queries, uses what's already loaded.
-            var statuses = _statusService.ComputeStatuses(skills, connections, completionCounts);
+            var counts = await _ctx.SubSkills
+    .GetCountsBySkillIds(skillIds)
+    .ToDictionaryAsync(c => c.SkillId);
 
-            var skillResponses = skills
-                .Select(s => SkillResponse.FromSkill(
+            // pure in-memory computation, no extra queries
+            var statuses = _statusService.ComputeStatuses(skills, connections, counts);
+
+            var skillResponses = skills.Select(s =>
+            {
+                counts.TryGetValue(s.Id, out var c); // c is null for a skill with no subskills
+                return SkillResponse.FromSkill(
                     s,
-                    completionCounts.GetValueOrDefault(s.Id, 0),
-                    statuses.GetValueOrDefault(s.Id, SkillStatus.Unlocked)))
-                .ToList();
+                    c?.CompletedCount ?? 0,
+                    c?.TotalCount ?? 0,
+                    statuses.GetValueOrDefault(s.Id, SkillStatus.Unlocked));
+            }).ToList();
 
             var connectionResponses = connections
                 .Select(SkillConnectionResponse.FromConnection)

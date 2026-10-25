@@ -3,12 +3,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Extensions
 {
+
+    public class SkillSubSkillCounts
+    {
+        public Guid SkillId { get; set; }
+        public int TotalCount { get; set; }      
+        public int CompletedCount { get; set; }  
+    }
     public static class SubSkillExtension
     {
+
         //fetches all subskills belonging to a parent skill, ordered by sequence index
         public static IQueryable<SubSkills> GetAllBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query
             .Where(x => x.SkillsId == skillId)
             .OrderBy(s => s.OrderIndex);
+
+        public static IQueryable<SkillSubSkillCounts> GetCountsBySkillIds(
+    this IQueryable<SubSkills> query, IEnumerable<Guid> skillIds) =>
+    query.Where(s => skillIds.Contains(s.SkillsId))
+         .GroupBy(s => s.SkillsId)
+         .Select(g => new SkillSubSkillCounts
+         {
+             SkillId = g.Key,
+             TotalCount = g.Count(),
+             CompletedCount = g.Count(x => x.IsComplete),
+         });
 
         //fetches only completed subskills for a parent skill
         public static IQueryable<SubSkills> GetCompletedBySkillId(this IQueryable<SubSkills> query, Guid skillId) => query.Where(x => x.SkillsId == skillId && x.IsComplete);
