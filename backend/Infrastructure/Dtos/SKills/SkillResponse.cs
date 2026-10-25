@@ -44,7 +44,7 @@ namespace Infrastructure.Dtos.SKills
                 CreatedAt = skill.CreatedAt,
                 UpdatedAt = skill.UpdatedAt,
                 CompletedSubSkillCount = completedSubSkillCount,
-                SubSkillCount = skill.SubSkills.Count,  
+                SubSkillCount = subSkillCount,  
                 Status = status,
             };
         }

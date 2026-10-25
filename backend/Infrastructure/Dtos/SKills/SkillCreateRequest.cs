@@ -7,7 +7,6 @@ namespace Infrastructure.Dtos.SKills
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
-        public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
 
