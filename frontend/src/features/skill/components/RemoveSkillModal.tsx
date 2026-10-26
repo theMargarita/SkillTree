@@ -31,7 +31,7 @@ export default function RemoveSkillModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose, submitting]);
 
-  async function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLElement>) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
