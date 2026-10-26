@@ -13,7 +13,6 @@ namespace Infrastructure.Dtos.SKills
         public string? ImageUrl { get; set; }
         public decimal PositionX { get; set; }
         public decimal PositionY { get; set; }
-        //public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
         public ShapeType Shape { get; set; }
@@ -37,7 +36,6 @@ namespace Infrastructure.Dtos.SKills
                 ImageUrl = skill.ImageUrl,
                 PositionX = skill.PositionX,
                 PositionY = skill.PositionY,
-                //RequiredSubSkillCount = skill.RequiredSubSkillCount,
                 Color = skill.Color,
                 Icon = skill.Icon,
                 Shape = skill.Shape,
