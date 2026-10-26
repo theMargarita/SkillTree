@@ -27,6 +27,7 @@ export default function SkillNode({ skill, onClick }: SkillNodeProps) {
         {skill.subSkillCount === 0
           ? "No subskills"
           : `${skill.completedSubSkillCount}/${skill.subSkillCount}`}
+          
       </span>
     </div>
   );
