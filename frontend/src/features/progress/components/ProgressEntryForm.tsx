@@ -64,6 +64,19 @@ export default function ProgressEntryForm({
                   className="progress-entry__image"
                 />
               )}
+              {image && (
+                <div>
+                  <img
+                    src={image}
+                    alt="Preveiw"
+                    style={{
+                      maxWidth: "330px",
+                      maxHeight: "400px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+              )}
 
               <time>{new Date(entry.createdAt).toLocaleDateString()}</time>
             </li>
@@ -87,19 +100,6 @@ export default function ProgressEntryForm({
           onChange={handleImageUploader}
         />
 
-        {/* {image && (
-          <div>
-            <img
-              src={image}
-              alt="Förhandsgranskning"
-              style={{
-                maxWidth: "330px",
-                maxHeight: "400px",
-                objectFit: "contain",
-              }}
-            />
-          </div>
-        )} */}
         {submitError && (
           <p className="progress-entries__error">{submitError}</p>
         )}
