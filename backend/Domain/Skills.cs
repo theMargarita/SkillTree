@@ -11,7 +11,7 @@
         public decimal PositionY { get; set; }
         //would be cool to create a 3d skill tree - perhapns in the future
         //public decimal PositionZ { get; set; } 
-        public int RequiredSubSkillCount { get; set; }
+        //public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
 

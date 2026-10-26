@@ -36,7 +36,12 @@ export function useProgressEntries(subSkillId: string) {
     const res = await fetch(`${API_URL}/api/ProgressEntry/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subSkillId, type, imageUrl, contentText: hasText ? contentText.trim() : null }),
+      body: JSON.stringify({
+        subSkillId,
+        type,
+        imageUrl,
+        contentText: hasText ? contentText.trim() : null,
+      }),
     });
 
     if (!res.ok) {

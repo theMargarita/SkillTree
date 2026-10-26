@@ -37,7 +37,7 @@ namespace Services.Services
                 SkillBoardId = request.SkillBoardId,
                 Name = request.Name,
                 Description = request.Description,
-                RequiredSubSkillCount = request.RequiredSubSkillCount,
+                //RequiredSubSkillCount = request.RequiredSubSkillCount,
                 Color = request.Color,
                 Icon = request.Icon,
                 PositionX = request.PositionX,
@@ -120,7 +120,7 @@ namespace Services.Services
             skillId.PositionY = request.PositionY;
             skillId.Shape = request.Shape;
             skillId.UpdatedAt = DateTimeOffset.UtcNow;
-            skillId.RequiredSubSkillCount = request.RequiredSubSkillCount; //shall remove this eventually 
+            //skillId.RequiredSubSkillCount = request.RequiredSubSkillCount; //shall remove this eventually 
 
             _ctx.Skills.Update(skillId);
             await _ctx.SaveChangesAsync();

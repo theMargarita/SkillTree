@@ -13,16 +13,19 @@ namespace Infrastructure.Dtos.SKills
         public string? ImageUrl { get; set; }
         public decimal PositionX { get; set; }
         public decimal PositionY { get; set; }
-        public int RequiredSubSkillCount { get; set; }
         public string? Color { get; set; }
         public string? Icon { get; set; }
         public ShapeType Shape { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public int CompletedSubSkillCount { get; set; }
+        public int SubSkillCount { get; set; }
         public SkillStatus Status { get; set; }
 
-  public static SkillResponse FromSkill(Skills skill, int completedSubSkillCount = 0, SkillStatus status = SkillStatus.Unlocked)
+  public static SkillResponse FromSkill(Skills skill,
+    int completedSubSkillCount = 0,
+    int subSkillCount = 0,
+    SkillStatus status = SkillStatus.Unlocked)
         {
             return new SkillResponse
             {
@@ -33,13 +36,13 @@ namespace Infrastructure.Dtos.SKills
                 ImageUrl = skill.ImageUrl,
                 PositionX = skill.PositionX,
                 PositionY = skill.PositionY,
-                RequiredSubSkillCount = skill.RequiredSubSkillCount,
                 Color = skill.Color,
                 Icon = skill.Icon,
                 Shape = skill.Shape,
                 CreatedAt = skill.CreatedAt,
                 UpdatedAt = skill.UpdatedAt,
                 CompletedSubSkillCount = completedSubSkillCount,
+                SubSkillCount = subSkillCount,  
                 Status = status,
             };
         }

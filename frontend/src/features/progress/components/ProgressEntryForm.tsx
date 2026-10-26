@@ -32,12 +32,12 @@ export default function ProgressEntryForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() && !image) return;
 
     setSubmitting(true);
     setSubmitError(null);
     try {
-      await addEntry(text.trim());
+      await addEntry(text.trim(), image);
       setText("");
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Unknown error");
@@ -55,7 +55,29 @@ export default function ProgressEntryForm({
         <ul className="progress-entries__list">
           {entries.map((entry) => (
             <li key={entry.id}>
-              <p>{entry.contentText}</p>
+              {entry.contentText && <p>{entry.contentText}</p>}
+
+              {entry.imageUrl && (
+                <img
+                  src={entry.imageUrl}
+                  alt="Progress evidence"
+                  className="progress-entry__image"
+                />
+              )}
+              {image && (
+                <div>
+                  <img
+                    src={image}
+                    alt="Preveiw"
+                    style={{
+                      maxWidth: "330px",
+                      maxHeight: "400px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+              )}
+
               <time>{new Date(entry.createdAt).toLocaleDateString()}</time>
             </li>
           ))}
@@ -78,23 +100,10 @@ export default function ProgressEntryForm({
           onChange={handleImageUploader}
         />
 
-        {image && (
-          <div>
-            <img
-              src={image}
-              alt="Förhandsgranskning"
-              style={{
-                maxWidth: "330px",
-                maxHeight: "400px",
-                objectFit: "contain",
-              }}
-            />
-          </div>
-        )}
         {submitError && (
           <p className="progress-entries__error">{submitError}</p>
         )}
-        <button type="submit" disabled={submitting || !text.trim()}>
+        <button type="submit" disabled={submitting || (!text.trim() && !image)}>
           {submitting ? "Adding..." : "Add entry"}
         </button>
       </form>

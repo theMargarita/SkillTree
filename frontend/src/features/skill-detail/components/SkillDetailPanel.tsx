@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "../styles/skill-detail.css";
 import type { SubSkillResponse } from "../../../shared/types/subskills";
 import ProgressEntryForm from "../../progress/components/ProgressEntryForm";
+import AddSubSkillModal from "../../subskill/component/AddSubSkillModal";
+import RemoveSubSkillModal from "../../subskill/component/RemoveSubSkill";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -10,6 +12,7 @@ interface SkillDetailPanelProps {
   skillName: string;
   onClose: () => void;
   onChanged?: () => void;
+  onRemovingRequested: () => void;
 }
 
 export default function SkillDetailPanel({
@@ -17,8 +20,12 @@ export default function SkillDetailPanel({
   skillName,
   onClose,
   onChanged,
+  onRemovingRequested,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
+  const [addingSubSkill, setAddingSubskill] = useState(false);
+  const [removingSubSkill, setRemovingSubSkill] =
+    useState<SubSkillResponse | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,11 +70,22 @@ export default function SkillDetailPanel({
       <div className="skill-panel__header">
         <h2>{skillName}</h2>
         <button
+          type="button"
+          className="skill-panel__remove"
+          onClick={onRemovingRequested}
+        >
+          Remove Skill
+        </button>
+        <button type="button" onClick={() => setAddingSubskill(true)}>
+          Add subskill
+        </button>
+        <button
+          type="button"
           className="skill-panel__close"
           onClick={onClose}
           aria-label="Close"
         >
-          ×
+          X
         </button>
       </div>
 
@@ -76,28 +94,70 @@ export default function SkillDetailPanel({
       {actionError && <p className="skill-panel__error">{actionError}</p>}
 
       {!loading && !loadError && (
-        <ul className="skill-panel__list">
-          {subSkills.map((subSkill) => (
-            <li
-              key={subSkill.id}
-              className={`subskill-row ${subSkill.isComplete ? "is-complete" : ""}`}
-            >
-              <div className="subskill-row__top">
-                <div>
-                  <p className="subskill-row__name">{subSkill.name}</p>
-                  {subSkill.description && (
-                    <p className="subskill-row__desc">{subSkill.description}</p>
-                  )}
+        // a fragment: JSX must return ONE parent, and the list and the button are siblings
+        <>
+          <ul className="skill-panel__list">
+            {subSkills.map((subSkill) => (
+              <li key={subSkill.id}>
+                <div className="subskill-row__top">
+                  <div>
+                    <p className="subskill-row__name">{subSkill.name}</p>
+                    {subSkill.description && (
+                      <p className="subskill-row__desc">
+                        {subSkill.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleComplete(subSkill)}
+                  >
+                    {subSkill.isComplete ? "Mark incomplete" : "Mark complete"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setRemovingSubSkill(subSkill)}
+                  >
+                    X
+                  </button>
                 </div>
-                <button onClick={() => toggleComplete(subSkill)}>
-                  {subSkill.isComplete ? "Mark incomplete" : "Mark complete"}
-                </button>
-              </div>
-              <ProgressEntryForm subSkillId={subSkill.id} />
-            </li>
-          ))}
-          {subSkills.length === 0 && <li>No subskills yet.</li>}
-        </ul>
+
+                <ProgressEntryForm subSkillId={subSkill.id} />
+              </li>
+            ))}
+            {subSkills.length === 0 && <li>No subskills yet.</li>}
+          </ul>
+        </>
+      )}
+
+      {addingSubSkill && (
+        <AddSubSkillModal
+          skillId={skillId}
+          onClose={() => setAddingSubskill(false)}
+          onCreated={(created) => {
+            setSubSkills((prev) => [...prev, created]); // server puts it last, so appending matches
+            setAddingSubskill(false);
+            onChanged?.(); // refetch the board: the node's counter and status change
+          }}
+        />
+      )}
+      {removingSubSkill && (
+        <RemoveSubSkillModal
+          subSkillId={removingSubSkill.id}
+          subSkillName={removingSubSkill.name}
+          onClose={() => setRemovingSubSkill(null)}
+          onRemoved={() => {
+            setSubSkills((previous) =>
+              previous.filter(
+                (subSkill) => subSkill.id !== removingSubSkill.id,
+              ),
+            );
+            setRemovingSubSkill(null);
+            onChanged?.(); // refetch the board: the node's counter and status change
+          }}
+        />
       )}
     </aside>
   );
