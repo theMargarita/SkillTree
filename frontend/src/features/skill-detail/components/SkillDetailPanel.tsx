@@ -4,6 +4,7 @@ import type { SubSkillResponse } from "../../../shared/types/subskills";
 import ProgressEntryForm from "../../progress/components/ProgressEntryForm";
 import AddSubSkillModal from "../../subskill/component/AddSubSkillModal";
 import RemoveSubSkillModal from "../../subskill/component/RemoveSubSkill";
+import UpdateSubSkillModal from "../../subskill/component/UpdateSubSkillModal";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
@@ -29,6 +30,8 @@ export default function SkillDetailPanel({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingSubSkill, setEditingSubSkill] =
+    useState<SubSkillResponse | null>(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/SubSkill/byskill/${skillId}`)
@@ -108,7 +111,12 @@ export default function SkillDetailPanel({
                       </p>
                     )}
                   </div>
-
+                  <button
+                    type="button"
+                    onClick={() => setEditingSubSkill(subSkill)}
+                  >
+                    Edit
+                  </button>
                   <button
                     type="button"
                     onClick={() => toggleComplete(subSkill)}
@@ -156,6 +164,26 @@ export default function SkillDetailPanel({
             );
             setRemovingSubSkill(null);
             onChanged?.(); // refetch the board: the node's counter and status change
+          }}
+        />
+      )}
+      {editingSubSkill && (
+        <UpdateSubSkillModal
+          subSkillId={editingSubSkill.id}
+          skillId={editingSubSkill.skillId}
+          initialName={editingSubSkill.name}
+          initialDescription={editingSubSkill.description}
+          initialOrderIndex={editingSubSkill.orderIndex}
+          initialProgressText={editingSubSkill.progressText}
+          initialProgressURL={editingSubSkill.progressURL}
+          initialColor={editingSubSkill.color}
+          onClose={() => setEditingSubSkill(null)}
+          onUpdate={(updated) => {
+            setSubSkills((previous) =>
+              previous.map((item) => (item.id === updated.id ? updated : item)),
+            );
+            setEditingSubSkill(null);
+            onChanged?.();
           }}
         />
       )}
