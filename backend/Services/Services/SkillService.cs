@@ -70,7 +70,7 @@ namespace Services.Services
 
             _ctx.SkillConnections.RemoveRange(connections);
             _ctx.Skills.Remove(skill);
-            await _ctx.SaveChangesAsync(); 
+            await _ctx.SaveChangesAsync();
             _logger.LogInformation($"Skill removed: {id}");
             return true;
         }
@@ -97,7 +97,7 @@ namespace Services.Services
                 _logger.LogError($"Could not find skill with id {id}");
                 throw new KeyNotFoundException($"Could not find the skill id: {id}");
             }
-     
+
             return SkillResponse.FromSkill(skill);
         }
 
@@ -105,7 +105,7 @@ namespace Services.Services
         {
             var skillId = await _ctx.Skills.FindAsync(id);
 
-            if (skillId == null) 
+            if (skillId == null)
             {
                 _logger.LogError($"Could not find the given tree id to update: {id}");
                 throw new KeyNotFoundException($"Could not find the skill id: {id}");
@@ -125,6 +125,22 @@ namespace Services.Services
             _ctx.Skills.Update(skillId);
             await _ctx.SaveChangesAsync();
             return SkillResponse.FromSkill(skillId);
+        }
+
+        public async Task UpdatePosition(Guid id, SkillPositionRequest request)
+        {
+            var skill = await _ctx.Skills.FindAsync(id);
+            if (skill == null)
+            {
+                _logger.LogWarning($"Could not find skill id: {id}");
+                throw new KeyNotFoundException($"Could not find the skill id: {id}");
+            }
+
+            skill.PositionX = request.PositionX; 
+            skill.PositionY = request.PositionY;
+            skill.UpdatedAt = DateTimeOffset.UtcNow;
+
+            await _ctx.SaveChangesAsync();
         }
     }
 }

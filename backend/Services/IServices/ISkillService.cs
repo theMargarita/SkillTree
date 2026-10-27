@@ -12,5 +12,6 @@ namespace Services.IServices
         //perhaps get tree through skill name? 
         Task<SkillResponse> GetSkillTreeById(Guid id);
         Task<List<SkillResponse>> GetAllSkillsAsync();
+        Task UpdatePosition(Guid id, SkillPositionRequest request);
     }
 }
