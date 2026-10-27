@@ -34,3 +34,8 @@ export interface SkillRequest {
   icon: string | null;
   shape: SkillShape;
 }
+
+export interface UpdateSkillPositionRequest {
+  positionX: number;
+  positionY: number;
+}
