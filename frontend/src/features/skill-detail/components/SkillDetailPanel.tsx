@@ -5,22 +5,28 @@ import ProgressEntryForm from "../../progress/components/ProgressEntryForm";
 import AddSubSkillModal from "../../subskill/component/AddSubSkillModal";
 import RemoveSubSkillModal from "../../subskill/component/RemoveSubSkill";
 import UpdateSubSkillModal from "../../subskill/component/UpdateSubSkillModal";
+import type { SkillResponse } from "../../../shared/types/skills";
+import UpdateSkillModal from "../../skill/components/UpdateSkillsModal";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
 interface SkillDetailPanelProps {
+  skill: SkillResponse;
   skillId: string;
   skillName: string;
   onClose: () => void;
   onChanged?: () => void;
+  onSkillUpdated: (skill: SkillResponse) => void;
   onRemovingRequested: () => void;
 }
 
 export default function SkillDetailPanel({
+  skill,
   skillId,
   skillName,
   onClose,
   onChanged,
+  onSkillUpdated,
   onRemovingRequested,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
@@ -32,6 +38,7 @@ export default function SkillDetailPanel({
   const [loading, setLoading] = useState(true);
   const [editingSubSkill, setEditingSubSkill] =
     useState<SubSkillResponse | null>(null);
+  const [editSkill, setEditSkill] = useState<SkillResponse | null>(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/SubSkill/byskill/${skillId}`)
@@ -72,6 +79,13 @@ export default function SkillDetailPanel({
     <aside className="skill-panel">
       <div className="skill-panel__header">
         <h2>{skillName}</h2>
+        <button
+          type="button"
+          className="skill-panel__update"
+          onClick={() => setEditSkill(skill)}
+        >
+          Edit skill
+        </button>
         <button
           type="button"
           className="skill-panel__remove"
@@ -179,10 +193,30 @@ export default function SkillDetailPanel({
           initialColor={editingSubSkill.color}
           onClose={() => setEditingSubSkill(null)}
           onUpdate={(updated) => {
+            setEditSkill(null);
             setSubSkills((previous) =>
               previous.map((item) => (item.id === updated.id ? updated : item)),
             );
-            setEditingSubSkill(null);
+            onChanged?.();
+          }}
+        />
+      )}
+      {editSkill && (
+        <UpdateSkillModal
+          skillId={editSkill.id}
+          boardId={editSkill.skillBoardId}
+          initialName={editSkill.name}
+          initialDescription={editSkill.description}
+          newImageURL={editSkill.imageUrl}
+          newPositionX={editSkill.positionX}
+          newPositionY={editSkill.positionY}
+          newColor={editSkill.color}
+          icon={editSkill.icon}
+          shape={editSkill.shape}
+          onClose={() => setEditSkill(null)}
+          onUpdate={(updated) => {
+            setEditSkill(null);
+            onSkillUpdated(updated);
             onChanged?.();
           }}
         />
