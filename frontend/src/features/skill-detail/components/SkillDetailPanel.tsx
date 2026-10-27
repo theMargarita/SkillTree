@@ -4,22 +4,29 @@ import type { SubSkillResponse } from "../../../shared/types/subskills";
 import ProgressEntryForm from "../../progress/components/ProgressEntryForm";
 import AddSubSkillModal from "../../subskill/component/AddSubSkillModal";
 import RemoveSubSkillModal from "../../subskill/component/RemoveSubSkill";
+import UpdateSubSkillModal from "../../subskill/component/UpdateSubSkillModal";
+import type { SkillResponse } from "../../../shared/types/skills";
+import UpdateSkillModal from "../../skill/components/UpdateSkillsModal";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
 interface SkillDetailPanelProps {
+  skill: SkillResponse;
   skillId: string;
   skillName: string;
   onClose: () => void;
   onChanged?: () => void;
+  onSkillUpdated: (skill: SkillResponse) => void;
   onRemovingRequested: () => void;
 }
 
 export default function SkillDetailPanel({
+  skill,
   skillId,
   skillName,
   onClose,
   onChanged,
+  onSkillUpdated,
   onRemovingRequested,
 }: SkillDetailPanelProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
@@ -29,6 +36,9 @@ export default function SkillDetailPanel({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingSubSkill, setEditingSubSkill] =
+    useState<SubSkillResponse | null>(null);
+  const [editSkill, setEditSkill] = useState<SkillResponse | null>(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/SubSkill/byskill/${skillId}`)
@@ -71,6 +81,13 @@ export default function SkillDetailPanel({
         <h2>{skillName}</h2>
         <button
           type="button"
+          className="skill-panel__update"
+          onClick={() => setEditSkill(skill)}
+        >
+          Edit skill
+        </button>
+        <button
+          type="button"
           className="skill-panel__remove"
           onClick={onRemovingRequested}
         >
@@ -108,7 +125,12 @@ export default function SkillDetailPanel({
                       </p>
                     )}
                   </div>
-
+                  <button
+                    type="button"
+                    onClick={() => setEditingSubSkill(subSkill)}
+                  >
+                    Edit
+                  </button>
                   <button
                     type="button"
                     onClick={() => toggleComplete(subSkill)}
@@ -156,6 +178,46 @@ export default function SkillDetailPanel({
             );
             setRemovingSubSkill(null);
             onChanged?.(); // refetch the board: the node's counter and status change
+          }}
+        />
+      )}
+      {editingSubSkill && (
+        <UpdateSubSkillModal
+          subSkillId={editingSubSkill.id}
+          skillId={editingSubSkill.skillId}
+          initialName={editingSubSkill.name}
+          initialDescription={editingSubSkill.description}
+          initialOrderIndex={editingSubSkill.orderIndex}
+          initialProgressText={editingSubSkill.progressText}
+          initialProgressURL={editingSubSkill.progressURL}
+          initialColor={editingSubSkill.color}
+          onClose={() => setEditingSubSkill(null)}
+          onUpdate={(updated) => {
+            setEditSkill(null);
+            setSubSkills((previous) =>
+              previous.map((item) => (item.id === updated.id ? updated : item)),
+            );
+            onChanged?.();
+          }}
+        />
+      )}
+      {editSkill && (
+        <UpdateSkillModal
+          skillId={editSkill.id}
+          boardId={editSkill.skillBoardId}
+          initialName={editSkill.name}
+          initialDescription={editSkill.description}
+          newImageURL={editSkill.imageUrl}
+          newPositionX={editSkill.positionX}
+          newPositionY={editSkill.positionY}
+          newColor={editSkill.color}
+          icon={editSkill.icon}
+          shape={editSkill.shape}
+          onClose={() => setEditSkill(null)}
+          onUpdate={(updated) => {
+            setEditSkill(null);
+            onSkillUpdated(updated);
+            onChanged?.();
           }}
         />
       )}

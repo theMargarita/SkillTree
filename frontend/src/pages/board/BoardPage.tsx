@@ -30,10 +30,14 @@ export default function BoardPage({ boardId }: BoardPageProps) {
       {selected && (
         <SkillDetailPanel
           key={selected.id}
+          skill={selected}
           skillId={selected.id}
           skillName={selected.name}
           onClose={() => setSelected(null)}
           onChanged={() => setReloadKey((k) => k + 1)}
+          onSkillUpdated={(updated) => {
+            setSelected(updated);
+          }}
           onRemovingRequested={() => {
             setRemoving(selected);
             setSelected(null);

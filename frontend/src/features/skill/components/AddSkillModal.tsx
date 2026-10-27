@@ -60,7 +60,7 @@ export default function AddSkillModal({
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
 
-  async function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!canSubmit) return;
 
