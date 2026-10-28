@@ -34,3 +34,17 @@ export interface SkillRequest {
   icon: string | null;
   shape: SkillShape;
 }
+
+export interface skillPosition {
+  x: number; //postion - although it should be obvious
+  y: number;
+}
+
+export interface DragState {
+  id: string;
+  pointerId: number;
+  startPointer: skillPosition;
+  startPos: skillPosition;
+  lastPos: skillPosition;
+  moved: boolean;
+}

@@ -5,7 +5,7 @@ using Services.IServices;
 namespace SkillTree.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] 
+    [Route("api/[controller]")]
     public class SkillController : ControllerBase
     {
         private readonly ILogger<SkillController> _logger;
@@ -68,6 +68,23 @@ namespace SkillTree.Controllers
             try
             {
                 return Ok(await _service.Update(id, request));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPatch("position/{id:guid}")]
+        public async Task<IActionResult> UpdatePosition(Guid id, [FromBody] SkillPositionRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                await _service.UpdatePosition(id, request);
+                return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
