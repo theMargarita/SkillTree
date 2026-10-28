@@ -35,7 +35,16 @@ export interface SkillRequest {
   shape: SkillShape;
 }
 
-export interface UpdateSkillPositionRequest {
-  positionX: number;
-  positionY: number;
+export interface skillPosition {
+  x: number; //postion - although it should be obvious
+  y: number;
+}
+
+export interface DragState {
+  id: string;
+  pointerId: number;
+  startPointer: skillPosition;
+  startPos: skillPosition;
+  lastPos: skillPosition;
+  moved: boolean;
 }
