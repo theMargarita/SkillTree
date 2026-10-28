@@ -112,8 +112,8 @@ export function useNodeDrag({
         }
 
         const next = clamp({
-          x: d.startPointer.x + dx,
-          y: d.startPointer.y + dy,
+          x: d.startPos.x + dx,
+          y: d.startPos.y + dy,
         });
         d.lastPos = next;
         setOverrides((prev) => ({ ...prev, [id]: next }));
