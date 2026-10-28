@@ -23,7 +23,6 @@ function App() {
     //   </Routes>
     // </BrowserRouter>
     <div>
-      <h1>Skill Tree</h1>
       <BoardPage boardId={testBoardId} />
     </div>
   );
