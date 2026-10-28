@@ -3,7 +3,7 @@ import { jsonInit, request } from "../../../shared/api/Http";
 import type {
   SkillRequest,
   SkillResponse,
-  UpdateSkillPositionRequest,
+  skillPosition,
 } from "../../../shared/types/skills";
 
 export function createSkill(data: SkillRequest) {
@@ -25,7 +25,7 @@ export function updateSkill(id: string, data: SkillRequest) {
   );
 }
 
-export function updatePosition(id: string, data: UpdateSkillPositionRequest) {
+export function updatePosition(id: string, data: skillPosition) {
   return request<SkillResponse>(
     `/api/Skill/position/${id}`,
     jsonInit("PATCH", data),
