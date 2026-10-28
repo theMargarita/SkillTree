@@ -29,8 +29,8 @@ export default function SkillNode({
   onClick,
 }: SkillNodeProps) {
   const style = {
-    left: `${position}px`,
-    top: `${position}px`,
+    left: `${position.x}px`,
+    top: `${position.y}px`,
     "--node-accent": skill.color ?? STATUS_COLOR[skill.status],
     // backgroundColor: skill.color ?? "#1f2227",
   } as CSSProperties;
