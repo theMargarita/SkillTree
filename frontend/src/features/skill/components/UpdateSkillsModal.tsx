@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import type { SkillResponse, SkillShape } from "../../../shared/types/skills";
 import { updateSkill } from "../api/skillApi";
+import ColorSwatches from "../../../shared/components/ColorSwatches";
 
 interface UpdateSkillModalProps {
   skillId: string;
   boardId: string;
   initialName: string;
   initialDescription: string;
-  newImageURL: string |null;
+  newImageURL: string | null;
   newPositionX: number;
   newPositionY: number;
   newColor: string | null;
@@ -33,6 +34,7 @@ export default function UpdateSkillModal({
 }: UpdateSkillModalProps) {
   const [name, setName] = useState(initialName);
   const [desc, setDesc] = useState(initialDescription);
+  const [color, setColor] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +62,7 @@ export default function UpdateSkillModal({
         skillBoardId: boardId,
         name: name.trim(),
         description: desc.trim(),
-        color: newColor,
+        color: color,
         positionX: newPositionX,
         positionY: newPositionY,
         imageUrl: newImageURL,
@@ -102,6 +104,12 @@ export default function UpdateSkillModal({
               onChange={(e) => setDesc(e.target.value)}
               rows={3}
             />
+          </label>
+
+          <label>
+            Color
+            <span className="modal__label">Colour</span>
+            <ColorSwatches value={newColor} onChange={setColor} />
           </label>
 
           {error && <p className="modal__error">{error}</p>}

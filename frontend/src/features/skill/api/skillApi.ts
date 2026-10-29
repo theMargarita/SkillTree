@@ -1,10 +1,5 @@
-// src/api/skill/skillApi.ts
 import { jsonInit, request } from "../../../shared/api/Http";
-import type {
-  SkillRequest,
-  SkillResponse,
-  skillPosition,
-} from "../../../shared/types/skills";
+import type { SkillRequest, SkillResponse } from "../../../shared/types/skills";
 
 export function createSkill(data: SkillRequest) {
   return request<SkillResponse>(`/api/Skill/create`, jsonInit("POST", data));
@@ -25,9 +20,9 @@ export function updateSkill(id: string, data: SkillRequest) {
   );
 }
 
-export function updatePosition(id: string, data: skillPosition) {
+export function updateSkillPosition(id: string, posX: number, posY: number) {
   return request<SkillResponse>(
     `/api/Skill/position/${id}`,
-    jsonInit("PATCH", data),
+    jsonInit("PATCH", { posX, posY }),
   );
 }
