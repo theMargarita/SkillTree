@@ -6,6 +6,10 @@ const SWATCHES: (string | null)[] = [
   "#6c8cff",
   "#b56cff",
   "#e8e6e1",
+  "#66bd63",
+  "#fa3434",
+  "#2890f2",
+  "#48f228",
 ];
 
 interface ColorSwatchesProps {
