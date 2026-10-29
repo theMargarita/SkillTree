@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 380px;
+  width: 480px;
   height: 100%;
   background: #1b1e22;
   color: var(--board-text);
@@ -44,7 +44,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 4rem;
 }
 
 .subskill-row {
