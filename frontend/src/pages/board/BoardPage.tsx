@@ -14,6 +14,17 @@ export default function BoardPage({ boardId }: BoardPageProps) {
   const [reloadKey, setReloadKey] = useState(0);
   const [addingAt, setAddingAt] = useState<number | null>(null);
   const [removing, setRemoving] = useState<SkillResponse | null>(null);
+  const [connecting, setConnecting] = useState<{
+    fromSkillId: string;
+    toSkillId: string;
+  } | null>(null);
+
+  const onConnectionRequested = () => {
+    setConnecting({
+      fromSkillId: selected?.id || "",
+      toSkillId: "",
+    });
+  };
 
   return (
     <>
@@ -67,6 +78,15 @@ export default function BoardPage({ boardId }: BoardPageProps) {
             setReloadKey((key) => key + 1);
           }}
         />
+      )}
+
+      {connecting && (
+        <div>
+          <p>
+            Connecting {connecting.fromSkillId} to {connecting.toSkillId}...
+          </p>
+          <button onClick={onConnectionRequested}>Cancel</button>
+        </div>
       )}
     </>
   );
