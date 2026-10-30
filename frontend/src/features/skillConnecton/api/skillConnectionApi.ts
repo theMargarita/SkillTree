@@ -1,18 +1,12 @@
 import { jsonInit, request } from "../../../shared/api/Http";
+import type { SkillConnectionResponse } from "../../../shared/types/board";
 
 interface SkillConnectionRequest {
   skillBoardId: string;
   fromSkillId: string;
   toSkillId: string;
   lineColor: string;
-  lineStyle: string;
-}
-
-interface SkillConnectionResponse {
-  id: string;
-  skillBoardId: string;
-  fromSkillId: string;
-  toSkillId: string;
+  lineStyle: string | null;
 }
 
 export function createSkillConnection(data: SkillConnectionRequest) {
