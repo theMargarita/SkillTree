@@ -1,4 +1,4 @@
-import { jsonInit, request } from "../../shared/api/Http";
+import { jsonInit, request } from "../../../shared/api/Http";
 
 interface SkillConnectionRequest {
   skillBoardId: string;
