@@ -1,5 +1,8 @@
 import { jsonInit, request } from "../../../shared/api/Http";
-import type { SubSkillResponse, SubSkillRequest } from "../../../shared/types/subskills";
+import type {
+  SubSkillResponse,
+  SubSkillRequest,
+} from "../../../shared/types/subskills";
 
 export function createSubSkill(data: SubSkillRequest) {
   return request<SubSkillResponse>(
@@ -17,4 +20,14 @@ export function updateSubskill(id: string, data: SubSkillRequest) {
     `/api/SubSkill/update/${id}`,
     jsonInit("PATCH", data),
   );
+}
+
+export function getSubSkillsBySkill(skillId: string) {
+  return request<SubSkillResponse[]>(`/api/SubSkill/byskill/${skillId}`);
+}
+
+export function toggleSubSkill(id: string) {
+  return request<SubSkillResponse>(`/api/SubSkill/toggle/${id}`, {
+    method: "PATCH",
+  });
 }
