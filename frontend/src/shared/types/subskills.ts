@@ -9,6 +9,7 @@ export interface SubSkillResponse {
   description: string;
   progressURL: string | null;
   progressText: string | null;
+  imageUrl: string;
   orderIndex: number;
   color: string | null;
   isComplete: boolean;
