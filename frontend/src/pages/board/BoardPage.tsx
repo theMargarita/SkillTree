@@ -1,9 +1,10 @@
 import { useState } from "react";
 import type { SkillResponse } from "../../shared/types/skills";
 import BoardCanvas from "../../features/board/components/BoardCanvas";
-import SkillDetailPanel from "../../features/skill-detail/components/SkillDetailPanel";
+// import SkillDetailPanel from "../../features/skill-detail/components/SkillDetailPanel";
 import AddSkillModal from "../../features/skill/components/AddSkillModal";
 import RemoveSkillModal from "../../features/skill/components/RemoveSkillModal";
+import SkillModal from "../../features/skill/components/SkillCard.tsx/SkillModal";
 
 interface BoardPageProps {
   boardId: string;
@@ -39,16 +40,16 @@ export default function BoardPage({ boardId }: BoardPageProps) {
       />
 
       {selected && (
-        <SkillDetailPanel
+        <SkillModal
           key={selected.id}
           skill={selected}
-          skillId={selected.id}
-          skillName={selected.name}
+          // skillId={selected.id}
+          // skillName={selected.name}
           onClose={() => setSelected(null)}
           onChanged={() => setReloadKey((k) => k + 1)}
-          onSkillUpdated={(updated) => {
-            setSelected(updated);
-          }}
+          // onSkillUpdated={(updated) => {
+          //   setSelected(updated);
+          // }}
           onRemovingRequested={() => {
             setRemoving(selected);
             setSelected(null);
