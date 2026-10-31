@@ -34,7 +34,7 @@ export default function UpdateSkillModal({
 }: UpdateSkillModalProps) {
   const [name, setName] = useState(initialName);
   const [desc, setDesc] = useState(initialDescription);
-  const [color, setColor] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(newColor);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
