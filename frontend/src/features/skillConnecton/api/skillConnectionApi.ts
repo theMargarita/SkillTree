@@ -5,7 +5,7 @@ interface SkillConnectionRequest {
   skillBoardId: string;
   fromSkillId: string;
   toSkillId: string;
-  lineColor: string;
+  lineColor: string | null;
   lineStyle: string | null;
 }
 
