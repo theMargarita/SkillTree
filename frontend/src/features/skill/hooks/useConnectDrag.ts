@@ -1,4 +1,4 @@
-import { useState, type RefObject } from "react";
+import { useState, type HTMLAttributes, type RefObject } from "react";
 import type { skillPosition } from "../../../shared/types/skills";
 
 interface Draft {
@@ -42,6 +42,7 @@ export function useConnectDrag({
     setTargetId(null);
   }
 
+  //end pointer function
   async function finish(fromId: string, toId: string | null) {
     reset();
     if (!toId || toId === fromId) return;
@@ -53,4 +54,40 @@ export function useConnectDrag({
   }
 
   //spread the result onto rhe handle element of the node
+  function bindHandle(
+    fromId: string,
+    fromPos: skillPosition,
+  ): HTMLAttributes<HTMLSpanElement> {
+    return {
+      onPointerDown(e) {
+        //only primary mouse button or touch interaction is accepted
+        if (e.button !== 0) return;
+        e.stopPropagation(); // pressing the handle must not start dragging the node itself
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDraft({ fromId, from: fromPos, to: toCanvas(e) });
+      },
+
+      onPointerMove(e) {
+        if (!e.currentTarget.hasPointerCapture(e.pointerId)) return; // only while pressed
+        setDraft((prev) => (prev ? { ...prev, to: toCanvas(e) } : prev));
+        const id = skillIdAt(e.clientX, e.clientY);
+        setTargetId(id && id !== fromId ? id : null);
+      },
+
+      onPointerUp(e) {
+        if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
+        e.currentTarget.releasePointerCapture(e.pointerId);
+        void finish(fromId, skillIdAt(e.clientX, e.clientY));
+      },
+
+      onPointerCancel(e) {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        reset();
+      },
+    };
+  }
+
+  return { draft, targetId, bindHandle };
 }
