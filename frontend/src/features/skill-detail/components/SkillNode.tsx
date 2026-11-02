@@ -15,6 +15,8 @@ interface SkillNodeProps {
   skill: SkillResponse;
   position: skillPosition;
   drag?: boolean;
+  connectTarget?: boolean; //a connection is being dragged and the pointer is over this node
+  handleProps?: HTMLAttributes<HTMLSpanElement>;
   dragProps?: HTMLAttributes<HTMLDivElement>;
   shouldIgnoreClick?: () => boolean;
   onClick?: (skill: SkillResponse) => void;
@@ -24,6 +26,8 @@ export default function SkillNode({
   skill,
   position,
   drag = false,
+  connectTarget = false,
+  handleProps,
   dragProps,
   shouldIgnoreClick,
   onClick,
@@ -32,12 +36,13 @@ export default function SkillNode({
     left: `${position.x}px`,
     top: `${position.y}px`,
     "--node-accent": skill.color ?? STATUS_COLOR[skill.status],
-    // backgroundColor: skill.color ?? "#1f2227",
+    backgroundColor: skill.color ?? "#1f2227", //hmmmmm
   } as CSSProperties;
 
   return (
     <div
-      className={`skill-node ${drag ? "is-dragging" : ""}`}
+      data-skill-id={skill.id}
+      className={`skill-node ${drag ? "is-dragging" : ""} ${connectTarget ? "is-connect-target" : ""}`}
       style={style}
       {...dragProps}
       onClick={() => {
@@ -52,6 +57,12 @@ export default function SkillNode({
           ? "No subskills"
           : `${skill.completedSubSkillCount}/${skill.subSkillCount}`}
       </span>
+      <span
+        className="skill-node__handle"
+        title="Drag to another skill to connect"
+        {...handleProps}
+        onClick={(e) => e.stopPropagation()} // releasing on the handle must not open the skill
+      />
     </div>
   );
 }
