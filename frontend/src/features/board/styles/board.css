@@ -136,7 +136,6 @@
   opacity: 1;
 }
 
-/* connection part */
 .skill-node.is-dragging {
   z-index: 10; /* the dragged node is drawn on top of overlapping nodes */
   cursor: grabbing;
@@ -154,6 +153,7 @@
   font-size: 0.85rem;
 }
 
+/* connection part */
 .skill-node__handle {
   position: fixed;
   right: 8px;
