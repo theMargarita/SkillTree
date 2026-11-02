@@ -9,6 +9,11 @@ import SkillNode from "../../skill-detail/components/SkillNode";
 import { API_URL } from "../../../shared/config";
 import { useNodeDrag } from "../../skill/hooks/useNodeDrag";
 import { updateSkillPosition } from "../../skill/api/skillApi";
+import { useConnectDrag } from "../../skill/hooks/useConnectDrag";
+import { createSkillConnection } from "../../skillConnecton/api/skillConnectionApi";
+import { edgePoint } from "../../skillConnecton/utlis/geometry";
+
+const DEFAULT_LINE_COLOR = "#8a93a3";
 
 interface BoardCanvasProps {
   boardId: string;
@@ -27,6 +32,7 @@ export default function BoardCanvas({
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // only true for the first load
+  const [localReload, setLocalReload] = useState(0);
   const [moveError, setMoveError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -53,6 +59,26 @@ export default function BoardCanvas({
       ),
   });
 
+  const { draft, targetId, bindHandle } = useConnectDrag({
+    canvasRef,
+    onConnect: async (fromId, toId) => {
+      setMoveError(null);
+      await createSkillConnection({
+        skillBoardId: boardId,
+        fromSkillId: fromId,
+        toSkillId: toId,
+        lineColor: DEFAULT_LINE_COLOR,
+        lineStyle: "solid",
+      });
+      // refetch: the new line appears AND the target's status (Locked/Unlocked) is recomputed
+      setLocalReload((k) => k + 1);
+    },
+    onError: (err) =>
+      setMoveError(
+        `Could not connect${err instanceof Error ? `: ${err.message}` : "."}`,
+      ),
+  });
+
   useEffect(() => {
     fetch(`${API_URL}/api/SkillBoard/${boardId}`)
       .then((res) => {
@@ -68,7 +94,7 @@ export default function BoardCanvas({
         setError(e instanceof Error ? e.message : "Error unknown"),
       )
       .finally(() => setLoading(false));
-  }, [boardId, reloadKey]);
+  }, [boardId, reloadKey, localReload]);
 
   if (loading) return <p>Loading board...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -82,6 +108,10 @@ export default function BoardCanvas({
 
   const posOf = (s: SkillResponse): skillPosition =>
     overrides[s.id] ?? { x: s.positionX, y: s.positionY };
+
+  // const colors = Array.from(
+  //   new Set(board.connections.map((c) => c.lineColor ?? DEFAULT_LINE_COLOR)),
+  // );
 
   return (
     <div className="board">
@@ -103,28 +133,86 @@ export default function BoardCanvas({
 
       <div className="board-canvas" ref={canvasRef}>
         <svg className="board-connections">
+          <defs>
+            <marker
+              id="arrow-default"
+              viewBox="0 0 10 10"
+              refX="10"
+              refY="5"
+              markerWidth="12"
+              markerHeight="12"
+              markerUnits="userSpaceOnUse"
+              orient="auto"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill={DEFAULT_LINE_COLOR} />
+            </marker>
+            {/* {colors.map((c, i) => (
+              <marker
+                key={c}
+                id={`arrow-${i}`}
+                viewBox="0 0 10 10"
+                refX="10"
+                refY="5"
+                markerWidth="12"
+                markerHeight="12"
+                markerUnits="userSpaceOnUse"
+                orient="auto"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill={c} />
+              </marker>
+            ))} */}
+          </defs>
+
           {board.connections.map((conn) => {
             const from = skillById.get(conn.fromSkillId);
             const to = skillById.get(conn.toSkillId);
+
             if (!from || !to) return null;
-            const a = posOf(from);
-            const b = posOf(to);
+
+            const start = edgePoint(posOf(from), posOf(to));
+            const end = edgePoint(posOf(to), posOf(from));
+            const color = conn.lineColor ?? DEFAULT_LINE_COLOR;
 
             return (
-              <line
-                key={conn.id}
-                x1={a.x}
-                y1={a.y}
-                x2={b.x}
-                y2={b.y}
-                stroke={conn.lineColor ?? "#3a3d42"}
-                strokeWidth={2}
-                strokeDasharray={
-                  conn.lineStyle === "dashed" ? "6 4" : undefined
-                }
-              />
+              <g key={conn.id} className="connection">
+                <line
+                  className="connection-line"
+                  x1={start.x}
+                  y1={start.y}
+                  x2={end.x}
+                  y2={end.y}
+                  stroke={color}
+                  strokeWidth={2}
+                  strokeDasharray={
+                    conn.lineStyle === "dashed" ? "6 4" : undefined
+                  }
+                  markerEnd="url(#arrow-default)"
+                />
+
+                <line
+                  className="connection-hit"
+                  x1={start.x}
+                  y1={start.y}
+                  x2={end.x}
+                  y2={end.y}
+                  stroke="transparent"
+                  strokeWidth={16}
+                />
+              </g>
             );
           })}
+
+          {draft && (
+            <line
+              x1={draft.from.x}
+              y1={draft.from.y}
+              x2={draft.to.x}
+              y2={draft.to.y}
+              stroke={DEFAULT_LINE_COLOR}
+              strokeWidth={2}
+              strokeDasharray="6 4"
+            />
+          )}
         </svg>
 
         {skillCount === 0 && (
@@ -137,7 +225,6 @@ export default function BoardCanvas({
             )}
           </div>
         )}
-
         {board.skills.map((skill) => {
           const pos = posOf(skill);
           return (
@@ -145,8 +232,10 @@ export default function BoardCanvas({
               key={skill.id}
               skill={skill}
               position={pos}
-              drag={dragId == skill.id}
+              drag={dragId === skill.id}
+              connectTarget={targetId === skill.id}
               dragProps={bind(skill.id, pos)}
+              handleProps={bindHandle(skill.id, pos)}
               shouldIgnoreClick={shouldIgnoreClick}
               onClick={onSkillClick}
             />

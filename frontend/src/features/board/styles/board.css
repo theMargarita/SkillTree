@@ -136,11 +136,6 @@
   opacity: 1;
 }
 
-/* board.css: CHANGES for dragging */
-
-/* 1) in the existing .skill-node rule: change  cursor: pointer;  to  cursor: grab;  and ADD: */
-
-/* 2) ADD at the end */
 .skill-node.is-dragging {
   z-index: 10; /* the dragged node is drawn on top of overlapping nodes */
   cursor: grabbing;
@@ -156,4 +151,44 @@
   padding: 0.5rem 1.5rem;
   color: var(--status-locked);
   font-size: 0.85rem;
+}
+
+/* connection part */
+.skill-node__handle {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--node-accent, var(--status-locked));
+  border: 9px solid #1f2227;
+  opacity: 0.35;
+  touch-action: cross-slide-x;
+}
+
+.skill-node:hover .skill-node__handle,
+.skill-node.is-connect-target .skill-node__handle {
+  opacity: 1;
+}
+
+/* the node under the pointer while a connection is dragged (an outline would be clipped, so use border and background) */
+/* .skill-node.is-connect-target {
+  background: #2c3138;
+  border-color: var(--status-unlocked);
+} */
+
+/* ---- lines ---- */
+.connection-line {
+  transition: stroke-width 0.1s ease;
+}
+
+.connection:hover .connection-line {
+  stroke-width: 4.5;
+}
+
+/* the svg itself ignores the pointer, but the invisible wide copy of each line must catch it */
+.connection-hit {
+  pointer-events: stroke;
+  cursor: pointer;
 }

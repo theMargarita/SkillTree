@@ -20,9 +20,20 @@ export function updateSkill(id: string, data: SkillRequest) {
   );
 }
 
-export function updateSkillPosition(id: string, posX: number, posY: number) {
+// export function updateSkillPosition(id: string, posX: number, posY: number) {
+//   return request<SkillResponse>(
+//     `/api/Skill/position/${id}`,
+//     jsonInit("PATCH", { posX, posY }),
+//   );
+// }
+
+export function updateSkillPosition(
+  id: string,
+  positionX: number,
+  positionY: number,
+) {
   return request<SkillResponse>(
     `/api/Skill/position/${id}`,
-    jsonInit("PATCH", { posX, posY }),
+    jsonInit("PATCH", { positionX, positionY }),
   );
 }
