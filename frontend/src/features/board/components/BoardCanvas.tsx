@@ -109,9 +109,9 @@ export default function BoardCanvas({
   const posOf = (s: SkillResponse): skillPosition =>
     overrides[s.id] ?? { x: s.positionX, y: s.positionY };
 
-  const colors = Array.from(
-    new Set(board.connections.map((c) => c.lineColor ?? DEFAULT_LINE_COLOR)),
-  );
+  // const colors = Array.from(
+  //   new Set(board.connections.map((c) => c.lineColor ?? DEFAULT_LINE_COLOR)),
+  // );
 
   return (
     <div className="board">
