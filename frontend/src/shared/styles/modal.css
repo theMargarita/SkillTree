@@ -169,6 +169,19 @@
   z-index: 200;
 }
 
+.subskill-detail {
+  position: relative;
+  padding-top: 2.5rem;
+}
+
+.subskill-detail__actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
 @media (max-width: 600px) {
   .skill-modal {
     width: calc(100vw - 2rem);
