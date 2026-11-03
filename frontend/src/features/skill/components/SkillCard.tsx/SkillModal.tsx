@@ -90,29 +90,35 @@ export default function SkillModal({
         aria-modal="true"
         aria-label={skill.name}
       >
-        <header className="skill-modal__header">
-          <h2>{skill.name}</h2>
-          {!loading && !loadError && (
-            <span className="skill-modal__progress">
-              {subSkills.length === 0
-                ? "No subskills"
-                : `${doneCount}/${subSkills.length} done`}
-            </span>
-          )}
-          <button
-            type="button"
-            className="skill-panel__update"
-            onClick={() => setEditSkill(skill)}
-          >
-            Edit Skill
-          </button>
-          <button type="button" onClick={onRemovingRequested}>
-            Remove skill
-          </button>
-          <button type="button" onClick={onClose} aria-label="Close">
-            ×
-          </button>
-        </header>
+        {!open && (
+          <header className="skill-modal__header">
+            <h2>{skill.name}</h2>
+
+            {!loading && !loadError && (
+              <span className="skill-modal__progress">
+                {subSkills.length === 0
+                  ? "No subskills"
+                  : `${doneCount}/${subSkills.length} done`}
+              </span>
+            )}
+
+            <button
+              type="button"
+              className="skill-panel__update"
+              onClick={() => setEditSkill(skill)}
+            >
+              Edit Skill
+            </button>
+
+            <button type="button" onClick={onRemovingRequested}>
+              Remove skill
+            </button>
+
+            <button type="button" onClick={onClose} aria-label="Close">
+              ×
+            </button>
+          </header>
+        )}
 
         {open ? (
           <SubSkillDetail
