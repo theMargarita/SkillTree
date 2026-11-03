@@ -47,9 +47,9 @@ export default function BoardPage({ boardId }: BoardPageProps) {
           // skillName={selected.name}
           onClose={() => setSelected(null)}
           onChanged={() => setReloadKey((k) => k + 1)}
-          // onSkillUpdated={(updated) => {
-          //   setSelected(updated);
-          // }}
+          onSkillUpdated={(updated) => {
+            setSelected(updated);
+          }}
           onRemovingRequested={() => {
             setRemoving(selected);
             setSelected(null);
