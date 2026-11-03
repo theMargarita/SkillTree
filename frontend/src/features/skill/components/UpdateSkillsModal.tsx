@@ -109,7 +109,7 @@ export default function UpdateSkillModal({
           <label>
             Color
             <span className="modal__label">Colour</span>
-            <ColorSwatches value={newColor} onChange={setColor} />
+            <ColorSwatches value={color} onChange={setColor} />
           </label>
 
           {error && <p className="modal__error">{error}</p>}
