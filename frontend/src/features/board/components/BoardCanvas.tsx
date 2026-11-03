@@ -10,8 +10,9 @@ import { API_URL } from "../../../shared/config";
 import { useNodeDrag } from "../../skill/hooks/useNodeDrag";
 import { updateSkillPosition } from "../../skill/api/skillApi";
 import { useConnectDrag } from "../../skill/hooks/useConnectDrag";
-import { createSkillConnection } from "../../skillConnecton/api/skillConnectionApi";
+// import { createSkillConnection } from "../../skillConnecton/api/skillConnectionApi";
 import { edgePoint } from "../../skillConnecton/utlis/geometry";
+import AddSkillConnectionModal from "../../skillConnecton/component/AddSkillConnection";
 
 const DEFAULT_LINE_COLOR = "#8a93a3";
 
@@ -30,6 +31,10 @@ export default function BoardCanvas({
   onAddSkill,
 }: BoardCanvasProps) {
   const [board, setBoard] = useState<SkillBoardDetailResponse | null>(null);
+  const [pendingConnection, setPendingConnection] = useState<{
+    fromSkillId: string;
+    toSkillId: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true); // only true for the first load
   const [localReload, setLocalReload] = useState(0);
@@ -61,17 +66,8 @@ export default function BoardCanvas({
 
   const { draft, targetId, bindHandle } = useConnectDrag({
     canvasRef,
-    onConnect: async (fromId, toId) => {
-      setMoveError(null);
-      await createSkillConnection({
-        skillBoardId: boardId,
-        fromSkillId: fromId,
-        toSkillId: toId,
-        lineColor: DEFAULT_LINE_COLOR,
-        lineStyle: "solid",
-      });
-      // refetch: the new line appears AND the target's status (Locked/Unlocked) is recomputed
-      setLocalReload((k) => k + 1);
+    onConnect: (fromSkillId, toSkillId) => {
+      setPendingConnection({ fromSkillId, toSkillId });
     },
     onError: (err) =>
       setMoveError(
@@ -242,6 +238,19 @@ export default function BoardCanvas({
           );
         })}
       </div>
+
+      {pendingConnection && (
+        <AddSkillConnectionModal
+          skillBoardId={boardId}
+          fromSkillId={pendingConnection.fromSkillId}
+          toSkillId={pendingConnection.toSkillId}
+          onClose={() => setPendingConnection(null)}
+          onConnected={() => {
+            setPendingConnection(null);
+            setLocalReload((key) => key + 1);
+          }}
+        />
+      )}
     </div>
   );
 }
