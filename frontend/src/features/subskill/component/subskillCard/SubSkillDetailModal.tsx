@@ -9,6 +9,7 @@ interface SubSkillDetailProps {
   onBack: () => void;
   onUpdated: (updated: SubSkillResponse) => void;
   onEdit: () => void;
+  onRemove: () => void;
 }
 
 export default function SubSkillDetail({
@@ -16,6 +17,7 @@ export default function SubSkillDetail({
   onBack,
   onUpdated,
   onEdit,
+  onRemove,
 }: SubSkillDetailProps) {
   const [toggling, setToggling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +69,9 @@ export default function SubSkillDetail({
       {subSkill.description && <p>{subSkill.description}</p>}
       <button type="button" onClick={onEdit}>
         Edit
+      </button>
+      <button type="button" onClick={onRemove}>
+        Remove Subskill
       </button>
       <div>
         <button type="button" onClick={handleToggle} disabled={toggling}>

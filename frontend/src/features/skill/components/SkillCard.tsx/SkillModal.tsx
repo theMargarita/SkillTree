@@ -120,6 +120,7 @@ export default function SkillModal({
             onBack={() => setOpenId(null)}
             onUpdated={handleUpdated}
             onEdit={() => setEditingSubSkill(open)}
+            onRemove={() => setRemovingSubSkill(open)}
           />
         ) : (
           <>
@@ -200,7 +201,8 @@ export default function SkillModal({
                 ),
               );
               setRemovingSubSkill(null);
-              onChanged?.(); // refetch the board: the node's counter and status change
+              setOpenId(null);
+              onChanged?.();
             }}
           />
         )}
