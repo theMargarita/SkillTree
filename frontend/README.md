@@ -1,97 +1,144 @@
-# React + TypeScript + Vite
+# SkillTree
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SkillTree is a learning-progress tracker that represents learning paths as visual skill trees. It helps users break larger goals into skills and subskills, connect prerequisite relationships, and record evidence of progress.
 
-Currently, two official plugins are available:
+This directory contains the React frontend. The application uses the ASP.NET Core API in [`../backend/`](../backend/) for persistence and business operations.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Why use SkillTree?
 
-## React Compiler
+SkillTree is useful when a learning goal is easier to understand as a progression than as a checklist. A visual board can help you:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Organize skills into a clear learning path.
+- Show relationships and prerequisites between skills.
+- Break skills into smaller, actionable subskills.
+- Track completed and incomplete subskills.
+- Add text, image, or combined text-and-image progress entries.
+- See board and skill completion status.
+- Update the learning path as your goals change.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Visual board canvas with positioned skill nodes.
+- Connections between skills to represent progression or prerequisites.
+- Skill creation, editing, movement, and removal.
+- Subskill creation, editing, completion, and removal.
+- Skill and subskill detail views.
+- Progress entries with text and optional image URLs.
+- Board creation, editing, and deletion through the API layer.
+- Loading and API error states in the relevant views.
+- Swagger UI for exploring the backend API during development.
 
-````js
-  # SkillTree
+## Project architecture
 
-  SkillTree is a learning-progress tracker built around visual skill trees. A board represents a learning path, with skills arranged on a canvas and connected to show prerequisites or progression. Selecting a skill opens its detail panel, where users can work through subskills and record evidence of their progress.
+The project is split into a frontend and backend:
 
-  This repository contains the React frontend. The companion backend is an ASP.NET Core Web API that stores boards, skills, subskills, connections, users, and progress entries in SQL Server.
+```text
+SkillTree/
+├── frontend/                 # React, TypeScript, and Vite application
+│   ├── public/               # Static assets
+│   └── src/
+│       ├── features/         # Board, skill, subskill, and progress features
+│       ├── pages/            # Dashboard and board pages
+│       └── shared/           # API helpers, configuration, types, and styles
+└── backend/
+    ├── SkillTree/            # ASP.NET Core API host and controllers
+    ├── Domain/               # Domain entities
+    ├── Infrastructure/       # EF Core context, DTOs, and migrations
+    └── Services/             # Application service interfaces and implementations
+```
 
-  ## Features
+The frontend communicates with the backend over HTTP. The backend stores application data in SQL Server using Entity Framework Core.
 
-  - Render a skill board with positioned nodes and SVG connections.
-  - Display skill status and board completion progress.
-  - Open a skill to view its subskills and descriptions.
-  - Mark subskills complete or incomplete.
-  - Add and view text-based progress entries for each subskill.
-  - Show loading and API error states in the relevant views.
-  - Access the backend API through Swagger during development.
+## Technology
 
-  ## Technology
+### Frontend
 
-  - React 19 with TypeScript
-  - Vite 8
-  - ASP.NET Core 9 Web API
-  - Entity Framework Core with SQL Server
-  - ESLint and TypeScript project checks
+- React `19.2.8`
+- React DOM `19.2.8`
+- React Router DOM `7.18.4`
+- TypeScript `6.0.2`
+- Vite `8.3.0`
+- ESLint `10.10.0`
 
-  ## Project Structure
+### Backend
 
-  ```text
-  frontend/
-    src/
-      api/       API-backed React components and hooks
-      features/  Skill, subskill, and progress-entry UI
-      types/     TypeScript representations of backend DTOs
-      css/       Feature-specific styles
-
-  backend/
-    skilltree/   ASP.NET Core API host
-    Domain/      Domain models
-    Infrastructure/ Database and persistence code
-    Services/    Application services
-````
+- .NET `9`
+- ASP.NET Core Web API
+- Entity Framework Core `9.0.17`
+- Microsoft SQL Server
+- Swashbuckle ASP.NET Core `9.0.6`
 
 ## Prerequisites
 
+Install the following before running the project:
+
 - Node.js and npm
 - .NET 9 SDK
-- SQL Server running locally
-- A database named `SkillTreeDB`, or a connection string configured for the backend
+- SQL Server
+- Git
 
-## Configuration
+The backend expects a SQL Server database named `SkillTreeDB` by default. You can change the connection string in [`../backend/SkillTree/appsettings.json`](../backend/SkillTree/appsettings.json).
 
-The frontend reads the API base URL from `VITE_API_BASE`. Create or update `frontend/.env`:
+## Installation
+
+Clone the repository and move into the frontend directory:
+
+```bash
+git clone <repository-url>
+cd SkillTree/frontend
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Configure the frontend API URL by creating `frontend/.env`:
 
 ```env
 VITE_API_BASE=http://localhost:5001
 ```
 
-The backend's default connection string is in `backend/skilltree/appsettings.json`. Its HTTP development profile listens on `http://localhost:5001`; the HTTPS profile listens on `https://localhost:7282`.
+The `.env` file is local configuration and should not contain secrets committed to source control.
 
-## Running Locally
+## Running locally
 
-Start the backend from `backend/skilltree`:
+### 1. Start SQL Server
+
+Start a local SQL Server instance and ensure the `SkillTreeDB` database is available, or update the backend connection string to point to an existing database.
+
+### 2. Start the backend
+
+Open a terminal in `backend/SkillTree` and run:
 
 ```bash
 dotnet run --launch-profile http
 ```
 
-In a second terminal, install frontend dependencies and start Vite from `frontend`:
+The backend HTTP profile runs at `http://localhost:5001`. Swagger UI is available at:
+
+```text
+http://localhost:5001/swagger
+```
+
+An HTTPS development profile is also configured at `https://localhost:7282`.
+
+### 3. Start the frontend
+
+Open a second terminal in `frontend` and run:
 
 ```bash
-npm install
 npm run dev
 ```
 
-Open the frontend at `http://localhost:5173`. The API's Swagger UI is available at `http://localhost:5001/swagger` while the backend is running in Development mode.
+Vite starts the frontend at `http://localhost:5173`.
 
-## Available Frontend Commands
+The backend allows requests from this development origin through its configured CORS policy.
+
+## Frontend commands
+
+Run these commands from `frontend/`:
 
 ```bash
 npm run dev      # Start the Vite development server
@@ -100,8 +147,56 @@ npm run lint     # Run ESLint
 npm run preview  # Preview the production build locally
 ```
 
-## Current Development Notes
+Before opening a pull request, run:
 
-- The main screen currently loads a fixed board ID from `src/App.tsx`.
-- User list support exists in the API layer but is not currently rendered by the main app.
-- The frontend expects the backend API and SQL Server database to be available; it does not provide an offline data mode.
+```bash
+npm run lint
+npm run build
+```
+
+## Configuration
+
+The frontend reads its API base URL from `VITE_API_BASE` in [`src/shared/config/index.ts`](src/shared/config/index.ts).
+
+Example:
+
+```env
+VITE_API_BASE=http://localhost:5001
+```
+
+The backend connection string and logging settings are defined in [`../backend/SkillTree/appsettings.json`](../backend/SkillTree/appsettings.json). Local launch URLs and the Development environment are defined in [`../backend/SkillTree/Properties/launchSettings.json`](../backend/SkillTree/Properties/launchSettings.json).
+
+## Main frontend areas
+
+- [`src/features/board/`](src/features/board/): board canvas, board API functions, and board styles.
+- [`src/features/skill/`](src/features/skill/): skill modals, cards, API functions, and drag interactions.
+- [`src/features/subskill/`](src/features/subskill/): subskill management and detail views.
+- [`src/features/progress/`](src/features/progress/): progress-entry form and data access.
+- [`src/features/skill-detail/`](src/features/skill-detail/): skill and subskill detail presentation.
+- [`src/features/skillConnecton/`](src/features/skillConnecton/): skill-connection creation and geometry helpers.
+- [`src/pages/`](src/pages/): page-level board and dashboard components.
+- [`src/shared/api/`](src/shared/api/): shared HTTP and error-handling helpers.
+- [`src/shared/types/`](src/shared/types/): TypeScript types matching backend DTOs.
+
+## Data model overview
+
+The application works with the following main concepts:
+
+- **User**: owns or accesses boards.
+- **Skill board**: a learning path containing skills.
+- **Skill**: a major learning objective positioned on a board.
+- **Subskill**: a smaller objective belonging to a skill.
+- **Skill connection**: a relationship between two skills.
+- **Progress entry**: evidence or notes for a subskill. Entries can be text-only, image-only, or contain both.
+
+## Current development notes
+
+- The main application currently renders a fixed board ID from [`src/App.tsx`](src/App.tsx).
+- Dashboard and route components exist, but route registration is currently commented out in `App.tsx`.
+- User-list support exists in the API and frontend components but is not currently rendered by the main application.
+- The frontend requires the backend and SQL Server; there is no offline data mode.
+- The API base URL must be configured before the frontend can load board data.
+
+## License and contribution
+
+MIT License
