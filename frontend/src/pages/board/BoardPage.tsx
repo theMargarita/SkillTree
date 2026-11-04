@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { SkillResponse } from "../../shared/types/skills";
 import BoardCanvas from "../../features/board/components/BoardCanvas";
-// import SkillDetailPanel from "../../features/skill-detail/components/SkillDetailPanel";
 import AddSkillModal from "../../features/skill/components/AddSkillModal";
 import RemoveSkillModal from "../../features/skill/components/RemoveSkillModal";
 import SkillModal from "../../features/skill/components/SkillCard.tsx/SkillModal";

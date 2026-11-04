@@ -49,8 +49,14 @@ export default function SubSkillDetail({
         <button type="button" onClick={onRemove}>
           Remove
         </button>
+        <button type="button" onClick={handleToggle} disabled={toggling}>
+          {toggling
+            ? "Saving..."
+            : subSkill.isComplete
+              ? "Mark incomplete"
+              : "Mark complete"}
+        </button>
       </div>
-
       <div className="subskill-detail__title">
         <h3>{subSkill.name}</h3>
         <span
@@ -76,14 +82,15 @@ export default function SubSkillDetail({
         </button>
       )}
 
-      {subSkill.description && <p>{subSkill.description}</p>}
-      <button type="button" onClick={handleToggle} disabled={toggling}>
-        {toggling
-          ? "Saving..."
-          : subSkill.isComplete
-            ? "Mark incomplete"
-            : "Mark complete"}
-      </button>
+      {subSkill.description ? (
+        <div className="subskill-detail__description">
+          <h4>Description</h4>
+          <p>{subSkill.description}</p>
+        </div>
+      ) : (
+        <p className="muted">No description provided.</p>
+      )}
+
       {error && <p className="modal__error">{error}</p>}
 
       <h4>Progress</h4>
