@@ -13,6 +13,7 @@ import { useConnectDrag } from "../../skill/hooks/useConnectDrag";
 // import { createSkillConnection } from "../../skillConnecton/api/skillConnectionApi";
 import { edgePoint } from "../../skillConnecton/utlis/geometry";
 import AddSkillConnectionModal from "../../skillConnecton/component/AddSkillConnection";
+import RemoveSkillConnectionModal from "../../skillConnecton/component/RemoveSkillConnection";
 
 const DEFAULT_LINE_COLOR = "#8a93a3";
 
@@ -39,6 +40,7 @@ export default function BoardCanvas({
   const [loading, setLoading] = useState(true); // only true for the first load
   const [localReload, setLocalReload] = useState(0);
   const [moveError, setMoveError] = useState<string | null>(null);
+  const [removeConnection, setRemoveConnection] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const { bind, overrides, dragId, shouldIgnoreClick } = useNodeDrag({
@@ -193,6 +195,8 @@ export default function BoardCanvas({
                   y2={end.y}
                   stroke="transparent"
                   strokeWidth={16}
+                  onClick={() => setRemoveConnection(conn.id)}
+                  style={{ cursor: "pointer" }}
                 />
               </g>
             );
@@ -248,6 +252,17 @@ export default function BoardCanvas({
           onConnected={() => {
             setPendingConnection(null);
             setLocalReload((key) => key + 1);
+          }}
+        />
+      )}
+
+      {removeConnection && (
+        <RemoveSkillConnectionModal
+          skillConnectionId={removeConnection}
+          onClose={() => setRemoveConnection(null)}
+          onRemoved={() => {
+            setRemoveConnection(null);
+            setLocalReload((k) => k + 1);
           }}
         />
       )}
