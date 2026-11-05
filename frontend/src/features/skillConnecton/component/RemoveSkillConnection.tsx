@@ -2,14 +2,12 @@ import { useState } from "react";
 import { removeSkillConnection } from "../api/skillConnectionApi";
 
 interface RemoveSkillConnectionProps {
-  skillBoardId: string;
   skillConnectionId: string;
   onClose: () => void;
   onRemoved: () => void;
 }
 
 export default function RemoveSkillConnectionModal({
-  skillBoardId,
   skillConnectionId,
   onClose,
   onRemoved,
@@ -23,7 +21,7 @@ export default function RemoveSkillConnectionModal({
     setError(null);
 
     try {
-      const remove = await removeSkillConnection(skillConnectionId);
+      await removeSkillConnection(skillConnectionId);
       onRemoved();
     } catch (error) {
       setError(
@@ -32,4 +30,25 @@ export default function RemoveSkillConnectionModal({
       setSaving(false);
     }
   }
+  return (
+    <div className="modal-backdrop">
+      <div className="modal" role="dialog" aria-modal="true">
+        <h2>Remove connection?</h2>
+        <p>This will disconnect the two skills.</p>
+
+        <form onSubmit={handleSubmit} className="modal__form">
+          {error && <p className="modal__error">{error}</p>}
+
+          <div className="modal__actions">
+            <button type="button" onClick={onClose} disabled={saving}>
+              Cancel
+            </button>
+            <button type="submit" disabled={saving}>
+              {saving ? "Removing..." : "Remove connection"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
