@@ -42,7 +42,9 @@ export default function SkillNode({
   return (
     <div
       data-skill-id={skill.id}
-      className={`skill-node ${drag ? "is-dragging" : ""} ${connectTarget ? "is-connect-target" : ""}`}
+      className={`skill-node skill-node--${skill.shape.toLowerCase()} ${
+        drag ? "is-dragging" : ""
+      } ${connectTarget ? "is-connect-target" : ""}`}
       style={style}
       {...dragProps}
       onClick={() => {
@@ -63,6 +65,16 @@ export default function SkillNode({
         {...handleProps}
         onClick={(e) => e.stopPropagation()} // releasing on the handle must not open the skill
       />
+      {(["top", "right", "bottom", "left"] as const).map((side) => (
+        <span
+          key={side}
+          className={`skill-node__connect-zone skill-node__connect-zone--${side}`}
+          title="Drag to connect this skill"
+          aria-label="Drag to connect this skill"
+          {...handleProps}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ))}
     </div>
   );
 }
