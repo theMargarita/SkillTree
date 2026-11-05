@@ -303,3 +303,17 @@
 .skill-node__connect-zone--left::after {
   transform: translate(-50%, -50%) rotate(180deg);
 }
+
+.skill-node.is-locked {
+  opacity: 0.55;
+  filter: grayscale(0.7);
+  cursor: not-allowed;
+}
+
+.skill-node.is-locked:hover {
+  transform: translate(-50%, -50%);
+}
+
+.skill-node.is-locked .skill-node__connect-zone {
+  display: none;
+}
