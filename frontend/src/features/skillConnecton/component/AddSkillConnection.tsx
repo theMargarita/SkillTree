@@ -6,7 +6,7 @@ interface AddSkillConnectionProps {
   skillBoardId: string;
   fromSkillId: string;
   toSkillId: string;
-  onClose(): () => void;
+  onClose: () => void;
   onConnected: (connected: SkillConnectionResponse) => void;
 }
 

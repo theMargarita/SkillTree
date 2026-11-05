@@ -8,12 +8,16 @@ interface SubSkillDetailProps {
   subSkill: SubSkillResponse;
   onBack: () => void;
   onUpdated: (updated: SubSkillResponse) => void;
+  onEdit: () => void;
+  onRemove: () => void;
 }
 
 export default function SubSkillDetail({
   subSkill,
   onBack,
   onUpdated,
+  onEdit,
+  onRemove,
 }: SubSkillDetailProps) {
   const [toggling, setToggling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +37,26 @@ export default function SubSkillDetail({
 
   return (
     <div className="subskill-detail">
-      <button type="button" className="back-button" onClick={onBack}>
-        ← Back
-      </button>
+      <div className="subskill-detail__actions">
+        <button type="button" onClick={onBack}>
+          ← Back
+        </button>
 
+        <button type="button" onClick={onEdit}>
+          Edit
+        </button>
+
+        <button type="button" onClick={onRemove}>
+          Remove
+        </button>
+        <button type="button" onClick={handleToggle} disabled={toggling}>
+          {toggling
+            ? "Saving..."
+            : subSkill.isComplete
+              ? "Mark incomplete"
+              : "Mark complete"}
+        </button>
+      </div>
       <div className="subskill-detail__title">
         <h3>{subSkill.name}</h3>
         <span
@@ -62,18 +82,16 @@ export default function SubSkillDetail({
         </button>
       )}
 
-      {subSkill.description && <p>{subSkill.description}</p>}
+      {subSkill.description ? (
+        <div className="subskill-detail__description">
+          <h4>Description</h4>
+          <p>{subSkill.description}</p>
+        </div>
+      ) : (
+        <p className="muted">No description provided.</p>
+      )}
 
-      <div>
-        <button type="button" onClick={handleToggle} disabled={toggling}>
-          {toggling
-            ? "Saving..."
-            : subSkill.isComplete
-              ? "Mark incomplete"
-              : "Mark complete"}
-        </button>
-        {error && <p className="modal__error">{error}</p>}
-      </div>
+      {error && <p className="modal__error">{error}</p>}
 
       <h4>Progress</h4>
       <ProgressEntryForm subSkillId={subSkill.id} />

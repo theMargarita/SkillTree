@@ -6,11 +6,15 @@ import SubSkillDetail from "../../../subskill/component/subskillCard/SubSkillDet
 import SubSkillCard from "../../../subskill/component/subskillCard/SubSkillCard";
 import AddSubSkillModal from "../../../subskill/component/AddSubSkillModal";
 import ImageLightbox from "../../../../shared/components/ImageLightbox";
+import UpdateSkillModal from "../UpdateSkillsModal";
+import UpdateSubSkillModal from "../../../subskill/component/UpdateSubSkillModal";
+import RemoveSubSkillModal from "../../../subskill/component/RemoveSubSkill";
 
 interface SkillModalProps {
   skill: SkillResponse;
   onClose: () => void;
   onChanged?: () => void;
+  onSkillUpdated: (skill: SkillResponse) => void;
   onRemovingRequested: () => void;
 }
 
@@ -18,6 +22,7 @@ export default function SkillModal({
   skill,
   onClose,
   onChanged,
+  onSkillUpdated,
   onRemovingRequested,
 }: SkillModalProps) {
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
@@ -26,6 +31,11 @@ export default function SkillModal({
   const [openId, setOpenId] = useState<string | null>(null); // which subskill's detail is shown
   const [adding, setAdding] = useState(false);
   const [goalImageOpen, setGoalImageOpen] = useState(false);
+  const [editSkill, setEditSkill] = useState<SkillResponse | null>(null);
+  const [editingSubSkill, setEditingSubSkill] =
+    useState<SubSkillResponse | null>(null);
+  const [removingSubSkill, setRemovingSubSkill] =
+    useState<SubSkillResponse | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,28 +90,43 @@ export default function SkillModal({
         aria-modal="true"
         aria-label={skill.name}
       >
-        <header className="skill-modal__header">
-          <h2>{skill.name}</h2>
-          {!loading && !loadError && (
-            <span className="skill-modal__progress">
-              {subSkills.length === 0
-                ? "No subskills"
-                : `${doneCount}/${subSkills.length} done`}
-            </span>
-          )}
-          <button type="button" onClick={onRemovingRequested}>
-            Remove skill
-          </button>
-          <button type="button" onClick={onClose} aria-label="Close">
-            ×
-          </button>
-        </header>
+        {!open && (
+          <header className="skill-modal__header">
+            <h2>{skill.name}</h2>
+
+            {!loading && !loadError && (
+              <span className="skill-modal__progress">
+                {subSkills.length === 0
+                  ? "No subskills"
+                  : `${doneCount}/${subSkills.length} done`}
+              </span>
+            )}
+
+            <button
+              type="button"
+              className="skill-panel__update"
+              onClick={() => setEditSkill(skill)}
+            >
+              Edit Skill
+            </button>
+
+            <button type="button" onClick={onRemovingRequested}>
+              Remove skill
+            </button>
+
+            <button type="button" onClick={onClose} aria-label="Close">
+              ×
+            </button>
+          </header>
+        )}
 
         {open ? (
           <SubSkillDetail
             subSkill={open}
             onBack={() => setOpenId(null)}
             onUpdated={handleUpdated}
+            onEdit={() => setEditingSubSkill(open)}
+            onRemove={() => setRemovingSubSkill(open)}
           />
         ) : (
           <>
@@ -156,7 +181,7 @@ export default function SkillModal({
             skillId={skill.id}
             onClose={() => setAdding(false)}
             onCreated={(created) => {
-              setSubSkills((prev) => [...prev, created]); 
+              setSubSkills((prev) => [...prev, created]);
               setAdding(false);
               onChanged?.();
             }}
@@ -168,6 +193,61 @@ export default function SkillModal({
             src={skill.imageUrl}
             alt={`Goal: ${skill.name}`}
             onClose={() => setGoalImageOpen(false)}
+          />
+        )}
+        {removingSubSkill && (
+          <RemoveSubSkillModal
+            subSkillId={removingSubSkill.id}
+            subSkillName={removingSubSkill.name}
+            onClose={() => setRemovingSubSkill(null)}
+            onRemoved={() => {
+              setSubSkills((previous) =>
+                previous.filter(
+                  (subSkill) => subSkill.id !== removingSubSkill.id,
+                ),
+              );
+              setRemovingSubSkill(null);
+              setOpenId(null);
+              onChanged?.();
+            }}
+          />
+        )}
+        {editSkill && (
+          <UpdateSkillModal
+            skillId={editSkill.id}
+            boardId={editSkill.skillBoardId}
+            initialName={editSkill.name}
+            initialDescription={editSkill.description}
+            newImageURL={editSkill.imageUrl}
+            newPositionX={editSkill.positionX}
+            newPositionY={editSkill.positionY}
+            newColor={editSkill.color}
+            icon={editSkill.icon}
+            shape={editSkill.shape}
+            onClose={() => setEditSkill(null)}
+            onUpdate={(updated) => {
+              setEditSkill(null);
+              onSkillUpdated(updated);
+              onChanged?.();
+            }}
+          />
+        )}
+
+        {editingSubSkill && (
+          <UpdateSubSkillModal
+            subSkillId={editingSubSkill.id}
+            skillId={editingSubSkill.skillId}
+            initialName={editingSubSkill.name}
+            initialDescription={editingSubSkill.description}
+            initialOrderIndex={editingSubSkill.orderIndex}
+            initialProgressText={editingSubSkill.progressText}
+            initialProgressURL={editingSubSkill.progressURL}
+            initialColor={editingSubSkill.color}
+            onClose={() => setEditingSubSkill(null)}
+            onUpdate={(updated) => {
+              handleUpdated(updated);
+              setEditingSubSkill(null);
+            }}
           />
         )}
       </div>

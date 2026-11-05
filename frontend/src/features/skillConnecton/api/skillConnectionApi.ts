@@ -17,5 +17,7 @@ export function createSkillConnection(data: SkillConnectionRequest) {
 }
 
 export function removeSkillConnection(id: string) {
-  return request<void>(`/api/remove/${id}`, { method: "DELETE" });
+  return request<void>(`/api/SkillConnection/remove/${id}`, {
+    method: "DELETE",
+  });
 }

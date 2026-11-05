@@ -9,7 +9,8 @@ interface Draft {
 
 interface UseConnectionDragProps {
   canvasRef: RefObject<HTMLElement | null>;
-  onConnect: (fromId: string, toId: string) => Promise<void>;
+  // onConnect: (fromId: string, toId: string) => Promise<void>;
+  onConnect: (fromId: string, toId: string) => void;
   onError?: (error: unknown) => void;
 }
 
@@ -43,11 +44,11 @@ export function useConnectDrag({
   }
 
   //end pointer function
-  async function finish(fromId: string, toId: string | null) {
+  function finish(fromId: string, toId: string | null) {
     reset();
     if (!toId || toId === fromId) return;
     try {
-      await onConnect(fromId, toId);
+      onConnect(fromId, toId);
     } catch (error) {
       onError?.(error);
     }
