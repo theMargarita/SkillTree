@@ -68,21 +68,24 @@
 
 .skill-node {
   position: absolute;
+  overflow: visible;
+  box-sizing: border-box;
   width: 160px;
+  min-height: 70px;
   padding: 0.75rem 0.9rem;
   margin: 0;
   margin-left: 100px;
   background: #1f2227;
   border: 1px solid var(--board-border);
   border: 4px solid var(--node-accent, var(--status-locked));
-  /* -webkit-clip-path: polygon(
+  -webkit-clip-path: polygon(
     0 0,
     calc(100% - 14px) 0,
     100% 14px,
     100% 100%,
     0 100%
-  ); */
-  /* clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); */
+  );
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   border-radius: 10cap;
   transform: translate(-50%, -50%);
   cursor: grab;
@@ -191,4 +194,112 @@
 .connection-hit {
   pointer-events: stroke;
   cursor: pointer;
+}
+
+.skill-node--circle {
+  border-radius: 50%;
+}
+/*
+.skill-node--square {
+  border-radius: 0;
+}
+
+.skill-node--diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.skill-node--hexagon {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+} */
+
+.skill-node {
+  position: absolute;
+  overflow: visible;
+}
+
+.skill-node__connect-zone {
+  position: absolute;
+  z-index: 5;
+  opacity: 10;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.skill-node__connect-zone::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 2px dashed var(--node-accent, var(--status-locked));
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.skill-node__connect-zone::after {
+  content: "→";
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--node-accent, var(--status-locked));
+  color: #15171a;
+  font-size: 0.8rem;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.skill-node:hover .skill-node__connect-zone,
+.skill-node.is-connect-target .skill-node__connect-zone {
+  opacity: 1;
+}
+
+.skill-node__connect-zone--top,
+.skill-node__connect-zone--bottom {
+  left: 50%;
+  width: 32px;
+  height: 12px;
+  transform: translateX(-50%);
+}
+
+.skill-node__connect-zone--top {
+  top: -12px;
+}
+
+.skill-node__connect-zone--bottom {
+  bottom: -12px;
+}
+
+.skill-node__connect-zone--top::after,
+.skill-node__connect-zone--bottom::after {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.skill-node__connect-zone--left,
+.skill-node__connect-zone--right {
+  top: 50%;
+  width: 12px;
+  height: 32px;
+  transform: translateY(-50%);
+}
+
+.skill-node__connect-zone--left {
+  left: -12px;
+}
+
+.skill-node__connect-zone--right {
+  right: -12px;
+}
+
+.skill-node__connect-zone--left::after,
+.skill-node__connect-zone--right::after {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.skill-node__connect-zone--left::after {
+  transform: translate(-50%, -50%) rotate(180deg);
 }
