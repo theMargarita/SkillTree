@@ -42,13 +42,16 @@ export default function SkillNode({
   return (
     <div
       data-skill-id={skill.id}
+      //lock skill part
       className={`skill-node skill-node--${skill.shape.toLowerCase()} ${
-        drag ? "is-dragging" : ""
-      } ${connectTarget ? "is-connect-target" : ""}`}
+        skill.status === "Locked" ? "is-locked" : ""
+      } ${drag ? "is-dragging" : ""} ${
+        connectTarget ? "is-connect-target" : ""
+      }`}
       style={style}
       {...dragProps}
       onClick={() => {
-        if (shouldIgnoreClick?.()) return;
+        if (shouldIgnoreClick?.() || skill.status === "Locked") return;
         onClick?.(skill);
       }}
     >
@@ -65,7 +68,7 @@ export default function SkillNode({
         {...handleProps}
         onClick={(e) => e.stopPropagation()} // releasing on the handle must not open the skill
       />
-      {(["top", "right", "bottom", "left"] as const).map((side) => (
+      {/* {(["top", "right", "bottom", "left"] as const).map((side) => (
         <span
           key={side}
           className={`skill-node__connect-zone skill-node__connect-zone--${side}`}
@@ -74,7 +77,18 @@ export default function SkillNode({
           {...handleProps}
           onClick={(e) => e.stopPropagation()}
         />
-      ))}
+      ))} */}
+      {skill.status !== "Locked" &&
+        (["top", "right", "bottom", "left"] as const).map((side) => (
+          <span
+            key={side}
+            className={`skill-node__connect-zone skill-node__connect-zone--${side}`}
+            title="Drag to connect this skill"
+            aria-label="Drag to connect this skill"
+            {...handleProps}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ))}
     </div>
   );
 }
