@@ -11,7 +11,7 @@ import { API_URL } from "../../../shared/config";
 import { useNodeDrag } from "../../skill/hooks/useNodeDrag";
 import { updateSkillPosition } from "../../skill/api/skillApi";
 import { useConnectDrag } from "../../skill/hooks/useConnectDrag";
-import { connectionPath, edgePoint } from "../../skillConnecton/utlis/geometry";
+import { edgePoint } from "../../skillConnecton/utlis/geometry";
 import AddSkillConnectionModal from "../../skillConnecton/component/AddSkillConnection";
 import RemoveSkillConnectionModal from "../../skillConnecton/component/RemoveSkillConnection";
 
@@ -21,7 +21,6 @@ interface BoardCanvasProps {
   boardId: string;
   onSkillClick?: (skill: SkillResponse) => void;
   reloadKey?: number;
-  //receives how many skills the board has right now
   onAddSkill?: (existingCount: number) => void;
 }
 
@@ -43,12 +42,14 @@ export default function BoardCanvas({
   const [removeConnection, setRemoveConnection] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  const prevStatuses = useRef<Map<string, SkillStatus>>(new Map());
+  const [justUnlocked, setJustUnlocked] = useState<Set<string>>(new Set());
+
   const { bind, overrides, dragId, shouldIgnoreClick } = useNodeDrag({
     canvasRef,
     onCommit: async (id, pos) => {
       setMoveError(null);
       await updateSkillPosition(id, pos.x, pos.y);
-      // saved: put the new position into the board data (the hook then drops its override)
       setBoard((prev) =>
         prev
           ? {
@@ -66,11 +67,20 @@ export default function BoardCanvas({
       ),
   });
 
-  const prevStatuses = useRef<Map<string, SkillStatus>>(new Map());
-  const [justUnlocked, setJustUnlocked] = useState<Set<string>>(new Set());
+  const { draft, targetId, bindHandle } = useConnectDrag({
+    canvasRef,
+    onConnect: (fromSkillId, toSkillId) => {
+      setPendingConnection({ fromSkillId, toSkillId });
+    },
+    onError: (err) =>
+      setMoveError(
+        `Could not connect${err instanceof Error ? `: ${err.message}` : "."}`,
+      ),
+  });
 
   const load = useCallback(async () => {
     const res = await fetch(`${API_URL}/api/SkillBoard/${boardId}`);
+    if (res.status === 404) throw new Error("Board not found");
     if (!res.ok) throw new Error(`Request failed: ${res.status}`);
     const data = (await res.json()) as SkillBoardDetailResponse;
 
@@ -88,15 +98,17 @@ export default function BoardCanvas({
 
     setJustUnlocked(unlocked);
     setBoard(data);
+    setError(null);
   }, [boardId]);
 
+  // the single fetch: runs on first mount and whenever a reload key changes
   useEffect(() => {
     load()
       .catch((e: unknown) =>
         setError(e instanceof Error ? e.message : "Error unknown"),
       )
       .finally(() => setLoading(false));
-  }, [load]);
+  }, [load, reloadKey, localReload]);
 
   // stop the animation after it has played
   useEffect(() => {
@@ -105,50 +117,23 @@ export default function BoardCanvas({
     return () => clearTimeout(t);
   }, [justUnlocked]);
 
-  const { draft, targetId, bindHandle } = useConnectDrag({
-    canvasRef,
-    onConnect: (fromSkillId, toSkillId) => {
-      setPendingConnection({ fromSkillId, toSkillId });
-    },
-    onError: (err) =>
-      setMoveError(
-        `Could not connect${err instanceof Error ? `: ${err.message}` : "."}`,
-      ),
-  });
-
-  useEffect(() => {
-    fetch(`${API_URL}/api/SkillBoard/${boardId}`)
-      .then((res) => {
-        if (res.status === 404) throw new Error("Board not found");
-        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-        return res.json() as Promise<SkillBoardDetailResponse>;
-      })
-      .then((data) => {
-        setBoard(data);
-        setError(null);
-      })
-      .catch((e: unknown) =>
-        setError(e instanceof Error ? e.message : "Error unknown"),
-      )
-      .finally(() => setLoading(false));
-  }, [boardId, reloadKey, localReload]);
-
   if (loading) return <p>Loading board...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!board) return null;
 
+  const skillCount = board.skills.length;
   const completedCount = board.skills.filter(
     (s) => s.status === "Completed",
   ).length;
   const skillById = new Map(board.skills.map((s) => [s.id, s]));
-  const skillCount = board.skills.length;
 
   const posOf = (s: SkillResponse): skillPosition =>
     overrides[s.id] ?? { x: s.positionX, y: s.positionY };
 
-  // const colors = Array.from(
-  //   new Set(board.connections.map((c) => c.lineColor ?? DEFAULT_LINE_COLOR)),
-  // );
+  function handleNodeClick(skill: SkillResponse) {
+    if (shouldIgnoreClick()) return; // the click that follows a drag
+    onSkillClick?.(skill);
+  }
 
   return (
     <div className="board">
@@ -166,66 +151,13 @@ export default function BoardCanvas({
         </div>
       </div>
 
-      <svg className="board-connections">
-        <defs>
-          <marker
-            id="arrow-dim"
-            viewBox="0 0 10 10"
-            refX="9"
-            refY="5"
-            markerWidth="7"
-            markerHeight="7"
-            orient="auto-start-reverse"
-          >
-            <path d="M0,0 L10,5 L0,10 z" fill="#3a3d42" />
-          </marker>
-          <marker
-            id="arrow-lit"
-            viewBox="0 0 10 10"
-            refX="9"
-            refY="5"
-            markerWidth="7"
-            markerHeight="7"
-            orient="auto-start-reverse"
-          >
-            <path d="M0,0 L10,5 L0,10 z" fill="#f4c542" />
-          </marker>
-        </defs>
-
-        {board.connections.map((conn) => {
-          const from = skillById.get(conn.fromSkillId);
-          const to = skillById.get(conn.toSkillId);
-          if (!from || !to) return null;
-
-          const fromPos = { x: from.positionX, y: from.positionY };
-          const toPos = { x: to.positionX, y: to.positionY };
-          const a = edgePoint(fromPos, toPos);
-          const b = edgePoint(toPos, fromPos, 8); // stops short so the arrow stays visible
-
-          const lit = from.status === "Completed";
-
-          return (
-            <line
-              key={conn.id}
-              x1={a.x}
-              y1={a.y}
-              x2={b.x}
-              y2={b.y}
-              stroke={lit ? "#f4c542" : "#3a3d42"}
-              strokeWidth={2}
-              strokeDasharray={conn.lineStyle === "dashed" ? "6 4" : undefined}
-              markerEnd={`url(#${lit ? "arrow-lit" : "arrow-dim"})`}
-            />
-          );
-        })}
-      </svg>
       {moveError && <p className="board-error">{moveError}</p>}
 
       <div className="board-canvas" ref={canvasRef}>
         <svg className="board-connections">
           <defs>
             <marker
-              id="arrow-default"
+              id="arrow-dim"
               viewBox="0 0 10 10"
               refX="10"
               refY="5"
@@ -234,52 +166,45 @@ export default function BoardCanvas({
               markerUnits="userSpaceOnUse"
               orient="auto"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={DEFAULT_LINE_COLOR} />
+              <path d="M0,0 L10,5 L0,10 z" fill="#3a3d42" />
             </marker>
-            {/* {colors.map((c, i) => (
-              <marker
-                key={c}
-                id={`arrow-${i}`}
-                viewBox="0 0 10 10"
-                refX="10"
-                refY="5"
-                markerWidth="12"
-                markerHeight="12"
-                markerUnits="userSpaceOnUse"
-                orient="auto"
-              >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill={c} />
-              </marker>
-            ))} */}
+            <marker
+              id="arrow-lit"
+              viewBox="0 0 10 10"
+              refX="10"
+              refY="5"
+              markerWidth="12"
+              markerHeight="12"
+              markerUnits="userSpaceOnUse"
+              orient="auto"
+            >
+              <path d="M0,0 L10,5 L0,10 z" fill="#f4c542" />
+            </marker>
           </defs>
 
           {board.connections.map((conn) => {
             const from = skillById.get(conn.fromSkillId);
             const to = skillById.get(conn.toSkillId);
-
             if (!from || !to) return null;
 
+            // posOf, so lines follow a node while it is being dragged
             const start = edgePoint(posOf(from), posOf(to));
             const end = edgePoint(posOf(to), posOf(from));
-            // const color = conn.lineColor ?? DEFAULT_LINE_COLOR;
-            const path = connectionPath(start, end);
+            const lit = from.status === "Completed";
 
             return (
               <g key={conn.id} className="connection">
                 <line
-                  className="connection-line"
+                  className={`connection-line${lit ? " is-lit" : ""}`}
                   x1={start.x}
                   y1={start.y}
                   x2={end.x}
                   y2={end.y}
-                  stroke={path}
-                  strokeWidth={2}
                   strokeDasharray={
                     conn.lineStyle === "dashed" ? "6 4" : undefined
                   }
-                  markerEnd="url(#arrow-default)"
+                  markerEnd={`url(#${lit ? "arrow-lit" : "arrow-dim"})`}
                 />
-
                 <line
                   className="connection-hit"
                   x1={start.x}
@@ -289,7 +214,6 @@ export default function BoardCanvas({
                   stroke="transparent"
                   strokeWidth={16}
                   onClick={() => setRemoveConnection(conn.id)}
-                  style={{ cursor: "pointer" }}
                 />
               </g>
             );
@@ -318,6 +242,7 @@ export default function BoardCanvas({
             )}
           </div>
         )}
+
         {board.skills.map((skill) => {
           const pos = posOf(skill);
           return (
@@ -325,12 +250,12 @@ export default function BoardCanvas({
               key={skill.id}
               skill={skill}
               position={pos}
-              drag={dragId === skill.id}
+              justUnlocked={justUnlocked.has(skill.id)}
+              dragging={dragId === skill.id}
               connectTarget={targetId === skill.id}
-              dragProps={bind(skill.id, pos)}
               handleProps={bindHandle(skill.id, pos)}
-              shouldIgnoreClick={shouldIgnoreClick}
-              onClick={onSkillClick}
+              dragProps={bind(skill.id, pos)}
+              onClick={handleNodeClick}
             />
           );
         })}
@@ -344,7 +269,7 @@ export default function BoardCanvas({
           onClose={() => setPendingConnection(null)}
           onConnected={() => {
             setPendingConnection(null);
-            setLocalReload((key) => key + 1);
+            setLocalReload((k) => k + 1);
           }}
         />
       )}
