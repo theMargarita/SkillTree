@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "../styles/board.css";
 import type {
   skillPosition,
   SkillResponse,
+  SkillStatus,
 } from "../../../shared/types/skills";
 import type { SkillBoardDetailResponse } from "../../../shared/types/board";
 import SkillNode from "../../skill-detail/components/SkillNode";
@@ -10,8 +11,7 @@ import { API_URL } from "../../../shared/config";
 import { useNodeDrag } from "../../skill/hooks/useNodeDrag";
 import { updateSkillPosition } from "../../skill/api/skillApi";
 import { useConnectDrag } from "../../skill/hooks/useConnectDrag";
-// import { createSkillConnection } from "../../skillConnecton/api/skillConnectionApi";
-import { edgePoint } from "../../skillConnecton/utlis/geometry";
+import { connectionPath, edgePoint } from "../../skillConnecton/utlis/geometry";
 import AddSkillConnectionModal from "../../skillConnecton/component/AddSkillConnection";
 import RemoveSkillConnectionModal from "../../skillConnecton/component/RemoveSkillConnection";
 
@@ -65,6 +65,45 @@ export default function BoardCanvas({
         `Could not save the new position${err instanceof Error ? `: ${err.message}` : "."}`,
       ),
   });
+
+  const prevStatuses = useRef<Map<string, SkillStatus>>(new Map());
+  const [justUnlocked, setJustUnlocked] = useState<Set<string>>(new Set());
+
+  const load = useCallback(async () => {
+    const res = await fetch(`${API_URL}/api/SkillBoard/${boardId}`);
+    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+    const data = (await res.json()) as SkillBoardDetailResponse;
+
+    // Locked -> not locked since the last load = just unlocked
+    const unlocked = new Set<string>();
+    for (const s of data.skills) {
+      if (
+        prevStatuses.current.get(s.id) === "Locked" &&
+        s.status !== "Locked"
+      ) {
+        unlocked.add(s.id);
+      }
+    }
+    prevStatuses.current = new Map(data.skills.map((s) => [s.id, s.status]));
+
+    setJustUnlocked(unlocked);
+    setBoard(data);
+  }, [boardId]);
+
+  useEffect(() => {
+    load()
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : "Error unknown"),
+      )
+      .finally(() => setLoading(false));
+  }, [load]);
+
+  // stop the animation after it has played
+  useEffect(() => {
+    if (justUnlocked.size === 0) return;
+    const t = setTimeout(() => setJustUnlocked(new Set()), 1800);
+    return () => clearTimeout(t);
+  }, [justUnlocked]);
 
   const { draft, targetId, bindHandle } = useConnectDrag({
     canvasRef,
@@ -127,6 +166,59 @@ export default function BoardCanvas({
         </div>
       </div>
 
+      <svg className="board-connections">
+        <defs>
+          <marker
+            id="arrow-dim"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path d="M0,0 L10,5 L0,10 z" fill="#3a3d42" />
+          </marker>
+          <marker
+            id="arrow-lit"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path d="M0,0 L10,5 L0,10 z" fill="#f4c542" />
+          </marker>
+        </defs>
+
+        {board.connections.map((conn) => {
+          const from = skillById.get(conn.fromSkillId);
+          const to = skillById.get(conn.toSkillId);
+          if (!from || !to) return null;
+
+          const fromPos = { x: from.positionX, y: from.positionY };
+          const toPos = { x: to.positionX, y: to.positionY };
+          const a = edgePoint(fromPos, toPos);
+          const b = edgePoint(toPos, fromPos, 8); // stops short so the arrow stays visible
+
+          const lit = from.status === "Completed";
+
+          return (
+            <line
+              key={conn.id}
+              x1={a.x}
+              y1={a.y}
+              x2={b.x}
+              y2={b.y}
+              stroke={lit ? "#f4c542" : "#3a3d42"}
+              strokeWidth={2}
+              strokeDasharray={conn.lineStyle === "dashed" ? "6 4" : undefined}
+              markerEnd={`url(#${lit ? "arrow-lit" : "arrow-dim"})`}
+            />
+          );
+        })}
+      </svg>
       {moveError && <p className="board-error">{moveError}</p>}
 
       <div className="board-canvas" ref={canvasRef}>
@@ -169,7 +261,8 @@ export default function BoardCanvas({
 
             const start = edgePoint(posOf(from), posOf(to));
             const end = edgePoint(posOf(to), posOf(from));
-            const color = conn.lineColor ?? DEFAULT_LINE_COLOR;
+            // const color = conn.lineColor ?? DEFAULT_LINE_COLOR;
+            const path = connectionPath(start, end);
 
             return (
               <g key={conn.id} className="connection">
@@ -179,7 +272,7 @@ export default function BoardCanvas({
                   y1={start.y}
                   x2={end.x}
                   y2={end.y}
-                  stroke={color}
+                  stroke={path}
                   strokeWidth={2}
                   strokeDasharray={
                     conn.lineStyle === "dashed" ? "6 4" : undefined
