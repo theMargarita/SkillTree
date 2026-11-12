@@ -1,17 +1,22 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Oswald:wght@500;700&display=swap"); */
+
 /* ---- tokens ---- */
 :root {
   --board-bg: #15171a;
   --board-text: #e8e6e1;
   --board-border: #3a3d42;
 
-  --status-locked: #ff5a1f;
-  --status-unlocked: #2bd4c4;
+  --status-locked: #5b5f66;
+  --status-unlocked: #ff8a1f;
   --status-completed: #f4c542;
+
+  --node-size: 96px;
 
   --font-display: "Oswald", "Arial Narrow", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
+/* ---- board frame ---- */
 .board {
   position: relative;
   background: var(--board-bg);
@@ -45,85 +50,33 @@
   margin: 0;
 }
 
+.board-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .board-header .board-progress {
   font-family: var(--font-display);
   font-size: 0.95rem;
-  color: var(--board-text);
   opacity: 0.8;
 }
 
-.board-canvas {
-  position: relative;
-  width: 100%;
-  height: 1100px;
+.board-error {
+  margin: 0;
+  padding: 0.5rem 1.5rem;
+  color: #ff5a1f;
+  font-size: 0.85rem;
 }
 
-.board-connections {
+.board-empty {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.skill-node {
-  position: absolute;
-  overflow: visible;
-  box-sizing: border-box;
-  width: 160px;
-  min-height: 70px;
-  padding: 0.75rem 0.9rem;
-  margin: 0;
-  margin-left: 100px;
-  background: #1f2227;
-  border: 1px solid var(--board-border);
-  border: 4px solid var(--node-accent, var(--status-locked));
-  -webkit-clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
-    100% 100%,
-    0 100%
-  );
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-  border-radius: 10cap;
-  transform: translate(-50%, -50%);
-  cursor: grab;
-  transition: transform 0.12s ease;
-
-  touch-action: none; /* a finger drag moves the node instead of scrolling the page */
-  -webkit-user-select: none;
-  user-select: none; /* dragging must not select the text inside the node */
-}
-
-.skill-node:hover {
-  transform: translate(-50%, -50%) scale(1.03);
-}
-
-.skill-node__name {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin: 0 0 0rem 0;
-  margin-left: 2cap;
-}
-
-.skill-node__stat {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.03em;
-  color: var(--node-accent, var(--status-locked));
-  margin-left: 6cap;
-}
-
-.skill-node.is-dragging {
-  z-index: 10; /* the dragged node is drawn on top of overlapping nodes */
-  cursor: grabbing;
-  transition: none; /* no easing while following the pointer */
-}
-
-.skill-node.is-dragging:hover {
-  transform: translate(-50%, -50%); /* no hover grow while dragging */
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  opacity: 0.7;
 }
 
 .back-link {
@@ -134,172 +87,188 @@
   text-decoration: none;
   opacity: 0.8;
 }
-
 .back-link:hover {
   opacity: 1;
 }
 
-.skill-node.is-dragging {
-  z-index: 10; /* the dragged node is drawn on top of overlapping nodes */
-  cursor: grabbing;
-  transition: none; /* no easing while following the pointer */
+/* ---- canvas (one rule only; the drag clamp uses this height) ---- */
+.board-canvas {
+  position: relative;
+  /* width: 100%;
+  height: 800px; */
+  width: 2000px;
+  height: 1600px;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: var(--board-bg);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-.skill-node.is-dragging:hover {
-  transform: translate(-50%, -50%); /* no hover grow while dragging */
+.board-connections {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
-
-.board-error {
-  margin: 0;
-  padding: 0.5rem 1.5rem;
-  color: var(--status-locked);
-  font-size: 0.85rem;
-}
-
-/* connection part */
-.skill-node__handle {
-  position: fixed;
-  right: 8px;
-  bottom: 8px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--node-accent, var(--status-locked));
-  border: 9px solid #1f2227;
-  opacity: 0.35;
-  touch-action: cross-slide-x;
-}
-
-.skill-node:hover .skill-node__handle,
-.skill-node.is-connect-target .skill-node__handle {
-  opacity: 1;
-}
-
-/* the node under the pointer while a connection is dragged (an outline would be clipped, so use border and background) */
-/* .skill-node.is-connect-target {
-  background: #2c3138;
-  border-color: var(--status-unlocked);
-} */
 
 /* ---- lines ---- */
 .connection-line {
-  transition: stroke-width 0.1s ease;
+  stroke: #3a3d42;
+  stroke-width: 2;
+  transition:
+    stroke 0.2s ease,
+    stroke-width 0.1s ease;
 }
-
+.connection-line.is-lit {
+  stroke: var(--status-completed);
+}
 .connection:hover .connection-line {
-  stroke-width: 4.5;
+  stroke-width: 4;
 }
 
-/* the svg itself ignores the pointer, but the invisible wide copy of each line must catch it */
+/* the svg ignores the pointer, but this invisible wide copy must catch it */
 .connection-hit {
   pointer-events: stroke;
   cursor: pointer;
 }
 
-.skill-node--circle {
-  border-radius: 50%;
-}
-/*
-.skill-node--square {
-  border-radius: 0;
-}
-
-.skill-node--diamond {
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
-
-.skill-node--hexagon {
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-} */
-
+/* ---- skill node ---- */
 .skill-node {
+  --accent: var(--status-locked);
   position: absolute;
-  overflow: visible;
+  width: var(--node-size);
+  height: var(--node-size);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  touch-action: none; /* a finger drag moves the node instead of scrolling */
+  -webkit-user-select: none;
+  user-select: none; /* dragging must not select text */
+  transition:
+    transform 0.12s ease,
+    opacity 0.2s ease,
+    filter 0.2s ease;
 }
 
-.skill-node__connect-zone {
-  position: absolute;
-  z-index: 5;
-  opacity: 10;
-  pointer-events: auto;
-  touch-action: none;
+.skill-node[data-status="Unlocked"] {
+  --accent: var(--status-unlocked);
+}
+.skill-node[data-status="Completed"] {
+  --accent: var(--status-completed);
 }
 
-.skill-node__connect-zone::before {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border: 2px dashed var(--node-accent, var(--status-locked));
-  border-radius: 12px;
-  pointer-events: none;
+.skill-node:hover {
+  transform: translate(-50%, -50%) scale(1.06);
 }
 
-.skill-node__connect-zone::after {
-  content: "→";
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--node-accent, var(--status-locked));
-  color: #15171a;
-  font-size: 0.8rem;
-  font-weight: bold;
-  pointer-events: none;
+.skill-node.is-dragging {
+  z-index: 10;
+  cursor: grabbing;
+  transition: none;
 }
-
-.skill-node:hover .skill-node__connect-zone,
-.skill-node.is-connect-target .skill-node__connect-zone {
-  opacity: 1;
-}
-
-.skill-node__connect-zone--top,
-.skill-node__connect-zone--bottom {
-  left: 50%;
-  width: 32px;
-  height: 12px;
-  transform: translateX(-50%);
-}
-
-.skill-node__connect-zone--top {
-  top: -12px;
-}
-
-.skill-node__connect-zone--bottom {
-  bottom: -12px;
-}
-
-.skill-node__connect-zone--top::after,
-.skill-node__connect-zone--bottom::after {
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) rotate(90deg);
-}
-
-.skill-node__connect-zone--left,
-.skill-node__connect-zone--right {
-  top: 50%;
-  width: 12px;
-  height: 32px;
-  transform: translateY(-50%);
-}
-
-.skill-node__connect-zone--left {
-  left: -12px;
-}
-
-.skill-node__connect-zone--right {
-  right: -12px;
-}
-
-.skill-node__connect-zone--left::after,
-.skill-node__connect-zone--right::after {
-  left: 50%;
-  top: 50%;
+.skill-node.is-dragging:hover {
   transform: translate(-50%, -50%);
 }
 
-.skill-node__connect-zone--left::after {
-  transform: translate(-50%, -50%) rotate(180deg);
+.skill-node__shape {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.skill-node__shape :is(polygon, circle) {
+  fill: #1f2227;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linejoin: miter;
+}
+
+.skill-node[data-status="Locked"] {
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+
+.skill-node[data-status="Unlocked"] .skill-node__shape {
+  filter: drop-shadow(0 0 8px var(--accent));
+}
+
+.skill-node[data-status="Completed"] .skill-node__shape :is(polygon, circle) {
+  fill: color-mix(in srgb, var(--accent) 22%, #1f2227);
+}
+
+/* node under the pointer while a connection is being dragged */
+.skill-node.is-connect-target .skill-node__shape :is(polygon, circle) {
+  stroke: #ffffff;
+}
+
+.skill-node__center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.skill-node__name {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* connect handle: one dot on the right edge */
+.skill-node__handle {
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #1f2227;
+  opacity: 0.35;
+  cursor: crosshair;
+  touch-action: none;
+  z-index: 2;
+}
+.skill-node:hover .skill-node__handle,
+.skill-node.is-connect-target .skill-node__handle {
+  opacity: 1;
+}
+
+@keyframes unlock-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+.skill-node--just-unlocked {
+  animation: unlock-pulse 0.8s ease-out 2;
+}
+
+.skill-modal__locked {
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid var(--status-locked);
+  background: #1f2227;
+  font-size: 0.85rem;
 }

@@ -87,6 +87,10 @@ export function useConnectDrag({
         }
         reset();
       },
+
+      onClick(e) {
+        e.stopPropagation();
+      },
     };
   }
 
