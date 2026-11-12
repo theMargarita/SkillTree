@@ -94,8 +94,12 @@
 /* ---- canvas (one rule only; the drag clamp uses this height) ---- */
 .board-canvas {
   position: relative;
-  width: 100%;
-  height: 800px;
+  /* width: 100%;
+  height: 800px; */
+  width: 2000px;
+  height: 1600px;
+  min-width: 100%;
+  min-height: 100%;
   background-color: var(--board-bg);
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
