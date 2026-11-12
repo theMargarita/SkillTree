@@ -34,13 +34,12 @@ interface SkillNodeProps extends Omit<
   "onClick"
 > {
   skill: SkillResponse;
-  position?: { x: number; y: number }; // drag override
+  position?: { x: number; y: number };
   justUnlocked?: boolean;
-  drag: boolean;
+  dragging?: boolean;
   connectTarget?: boolean;
-  dragProps: HTMLAttributes<HTMLDivElement>;
-  handleProps: HTMLAttributes<HTMLSpanElement>;
-  shouldIgnoreClick?: () => boolean;
+  handleProps?: HTMLAttributes<HTMLSpanElement>;
+  dragProps?: HTMLAttributes<HTMLDivElement>;
   onClick?: (skill: SkillResponse) => void;
 }
 
@@ -48,32 +47,34 @@ export default function SkillNode({
   skill,
   position,
   justUnlocked,
-  drag,
+  dragging,
   connectTarget,
-  dragProps,
   handleProps,
-  shouldIgnoreClick,
+  dragProps,
   onClick,
   ...rest
 }: SkillNodeProps) {
   const x = position?.x ?? skill.positionX;
   const y = position?.y ?? skill.positionY;
 
+  const classes = [
+    "skill-node",
+    justUnlocked && "skill-node--just-unlocked",
+    dragging && "is-dragging",
+    connectTarget && "is-connect-target",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
-      {...rest} //... is when passing properties = spread syntax & when extracting properties = rest syntax
+      {...rest}
       {...dragProps}
-      className={`skill-node${drag ? " is-dragging" : ""}${
-        connectTarget ? " is-connect-target" : ""
-      }${justUnlocked ? " skill-node--just-unlocked" : ""}`}
+      className={classes}
       data-skill-id={skill.id}
       data-status={skill.status}
       style={{ left: `${x}px`, top: `${y}px` }}
-      onClick={() => {
-        if (!shouldIgnoreClick?.()) {
-          onClick?.(skill);
-        }
-      }}
+      onClick={() => onClick?.(skill)}
     >
       <svg className="skill-node__shape" viewBox="0 0 100 100">
         <Outline shape={skill.shape} />
@@ -93,12 +94,21 @@ export default function SkillNode({
 
       <p className="skill-node__name">{skill.name}</p>
 
-      <span
-        {...handleProps}
-        className="skill-node__connect-zone skill-node__connect-zone--right"
-        aria-label="Connect skill"
-        role="button"
-      />
+      {handleProps && (
+        <span
+          {...handleProps}
+          className="skill-node__handle"
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            handleProps.onPointerDown?.(e);
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          aria-label="Drag to connect to another skill"
+        />
+      )}
     </div>
   );
 }
