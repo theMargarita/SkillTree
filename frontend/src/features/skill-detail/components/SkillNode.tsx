@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { CSSProperties, HTMLAttributes } from "react";
 import type { SkillResponse, SkillShape } from "../../../shared/types/skills";
 
 const POLYGONS: Record<Exclude<SkillShape, "Circle">, string> = {
@@ -66,6 +66,11 @@ export default function SkillNode({
     .filter(Boolean)
     .join(" ");
 
+  const accentOverride: CSSProperties =
+    skill.color && skill.status !== "Locked"
+      ? ({ "--accent": skill.color } as CSSProperties)
+      : {};
+
   return (
     <div
       {...rest}
@@ -73,7 +78,7 @@ export default function SkillNode({
       className={classes}
       data-skill-id={skill.id}
       data-status={skill.status}
-      style={{ left: `${x}px`, top: `${y}px` }}
+      style={{ left: `${x}px`, top: `${y}px`, ...accentOverride }}
       onClick={() => onClick?.(skill)}
     >
       <svg className="skill-node__shape" viewBox="0 0 100 100">
