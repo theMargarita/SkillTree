@@ -8,7 +8,7 @@ export interface SkillResponse {
   skillBoardId: string;
   name: string;
   description: string;
-  imageUrl: string;
+  imageUrl: boolean; //was string before
   positionX: number;
   positionY: number;
   subSkillCount: number;

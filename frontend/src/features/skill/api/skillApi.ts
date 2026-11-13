@@ -20,13 +20,6 @@ export function updateSkill(id: string, data: SkillRequest) {
   );
 }
 
-// export function updateSkillPosition(id: string, posX: number, posY: number) {
-//   return request<SkillResponse>(
-//     `/api/Skill/position/${id}`,
-//     jsonInit("PATCH", { posX, posY }),
-//   );
-// }
-
 export function updateSkillPosition(
   id: string,
   positionX: number,
@@ -36,4 +29,8 @@ export function updateSkillPosition(
     `/api/Skill/position/${id}`,
     jsonInit("PATCH", { positionX, positionY }),
   );
+}
+
+export function getSkillImage(skillId: string) {
+  return request<{ imageUrl: string | null }>(`/api/Skill/${skillId}/imageUrl`); //not sure what the props name is hehe and a lil lazy to check it out  now
 }
