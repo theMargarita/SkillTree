@@ -8,14 +8,15 @@ interface Draft {
 }
 
 interface UseConnectionDragProps {
-  canvasRef: RefObject<HTMLElement | null>;
-  // onConnect: (fromId: string, toId: string) => Promise<void>;
+  canvasRef: RefObject<HTMLElement | null>; // now the WORLD element
+  scale: number;
   onConnect: (fromId: string, toId: string) => void;
   onError?: (error: unknown) => void;
 }
 
 export function useConnectDrag({
   canvasRef,
+  scale,
   onConnect,
   onError,
 }: UseConnectionDragProps) {
@@ -25,10 +26,11 @@ export function useConnectDrag({
   //pointer positon in canvas coordinates
   //zoom later: divide by the scale
   function toCanvas(e: { clientX: number; clientY: number }): skillPosition {
+    // the world element's rect already includes the pan, so only zoom is left
     const rect = canvasRef.current?.getBoundingClientRect();
     return {
-      x: e.clientX - (rect?.left ?? 0),
-      y: e.clientY - (rect?.top ?? 0),
+      x: (e.clientX - (rect?.left ?? 0)) / scale,
+      y: (e.clientY - (rect?.top ?? 0)) / scale,
     };
   }
 

@@ -1,37 +1,24 @@
-import { useRef, useState, type HTMLAttributes, type RefObject } from "react";
+import { useRef, useState, type HTMLAttributes } from "react";
 import type { skillPosition, DragState } from "../../../shared/types/skills";
 
-const DRAG_THRESHOLD = 4; //px the pointer must travel before a press counts as a drag (else its a click)
-const NODE_HALF_WIDTH = 80; //nodes are 160px wide and centred on their point
-const NODE_HALF_HEIGHT = 35; //roughly half the node height
+const DRAG_THRESHOLD = 4; // screen px before a press counts as a drag
+
+type PointerHandlers = Pick<
+  HTMLAttributes<HTMLDivElement>,
+  "onPointerDown" | "onPointerMove" | "onPointerUp" | "onPointerCancel"
+>;
 
 interface UseNodeDragOptions {
-  canvasRef: RefObject<HTMLElement | null>;
-  onCommit: (id: string, position: skillPosition) => Promise<void>; //saves new position - throws to signal failure
+  scale: number; // current zoom
+  onCommit: (id: string, position: skillPosition) => Promise<void>;
   onError?: (error: unknown) => void;
 }
 
-export function useNodeDrag({
-  canvasRef,
-  onCommit,
-  onError,
-}: UseNodeDragOptions) {
+export function useNodeDrag({ scale, onCommit, onError }: UseNodeDragOptions) {
   const [overrides, setOverrides] = useState<Record<string, skillPosition>>({});
   const [dragId, setDragId] = useState<string | null>(null);
   const drag = useRef<DragState | null>(null);
   const suppressClick = useRef(false);
-
-  function clamp(p: skillPosition): skillPosition {
-    const el = canvasRef.current;
-    if (!el) return { x: Math.round(p.x), y: Math.round(p.y) };
-    const { width, height } = el.getBoundingClientRect();
-    const maxX = Math.max(width - NODE_HALF_WIDTH, NODE_HALF_WIDTH);
-    const maxY = Math.max(height - NODE_HALF_HEIGHT, NODE_HALF_HEIGHT);
-    return {
-      x: Math.round(Math.min(Math.max(p.x, NODE_HALF_WIDTH), maxX)),
-      y: Math.round(Math.min(Math.max(p.y, NODE_HALF_HEIGHT), maxY)),
-    };
-  }
 
   function clearOverride(id: string) {
     setOverrides((prev) => {
@@ -57,7 +44,7 @@ export function useNodeDrag({
 
     if (!d.moved) return;
 
-    //a real drag also fires a click on release: ignore that one
+    // a real drag also fires a click on release: ignore that one
     suppressClick.current = true;
     setTimeout(() => {
       suppressClick.current = false;
@@ -71,23 +58,19 @@ export function useNodeDrag({
     }
 
     try {
-      await onCommit(id, d.lastPos); //the overridekeeps the node in place while this runs
+      await onCommit(id, d.lastPos);
     } catch (error) {
-      onError?.(error); //the finally below removes the override, so that the node snaps back
+      onError?.(error);
     } finally {
       clearOverride(id);
     }
   }
 
-  //spread the result onto the node element
-  function bind(
-    id: string,
-    current: skillPosition,
-  ): HTMLAttributes<HTMLDivElement> {
+  function bind(id: string, current: skillPosition): PointerHandlers {
     return {
       onPointerDown(e) {
-        if (e.button !== 0) return; //left button / primary touch only
-        e.currentTarget.setPointerCapture(e.pointerId); //keep track even if the pointer leaves the node
+        if (e.button !== 0) return;
+        e.currentTarget.setPointerCapture(e.pointerId);
         drag.current = {
           id,
           pointerId: e.pointerId,
@@ -102,22 +85,24 @@ export function useNodeDrag({
         const d = drag.current;
         if (!d || d.id !== id || d.pointerId !== e.pointerId) return;
 
-        const dx = e.clientX - d.startPointer.x; //zoom later: divide by scale
-        const dy = e.clientY - d.startPointer.y; //zoom later: divide by scale
-        if (!d.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+        const dxScreen = e.clientX - d.startPointer.x;
+        const dyScreen = e.clientY - d.startPointer.y;
+        if (!d.moved && Math.hypot(dxScreen, dyScreen) < DRAG_THRESHOLD) return;
 
         if (!d.moved) {
           d.moved = true;
           setDragId(id);
         }
 
-        const next = clamp({
-          x: d.startPos.x + dx,
-          y: d.startPos.y + dy,
-        });
+        // screen movement -> world movement
+        const next = {
+          x: Math.round(d.startPos.x + dxScreen / scale),
+          y: Math.round(d.startPos.y + dyScreen / scale),
+        };
         d.lastPos = next;
         setOverrides((prev) => ({ ...prev, [id]: next }));
       },
+
       onPointerUp(e) {
         void finish(e, id, true);
       },
