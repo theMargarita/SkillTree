@@ -29,7 +29,7 @@ export default function SkillModal({
   const [subSkills, setSubSkills] = useState<SubSkillResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [openId, setOpenId] = useState<string | null>(null); // which subskill's detail is shown
+  const [openId, setOpenId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [hasImage, setHasImage] = useState(skill.hasImage); // rename if your field is hasImage
   const [goalImage, setGoalImage] = useState<string | null>(null);
@@ -46,8 +46,8 @@ export default function SkillModal({
 
   // follow the board data when a different skill (or a fresh copy) arrives
   useEffect(() => {
-    setHasImage(skill.hasImage); // rename if your field is hasImage
-  }, [skill.id, skill.hasImage]); // rename if your field is hasImage
+    setHasImage(skill.hasImage); 
+  }, [skill.id, skill.hasImage]); 
 
   // fetch the image only when the skill has one
   useEffect(() => {
@@ -58,21 +58,16 @@ export default function SkillModal({
       return;
     }
     let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    getSubSkillsBySkill(skill.id);
-
     setImageLoading(true);
     setImageFailed(false);
     getSkillImage(skill.id)
       .then((r) => {
         if (!cancelled) setGoalImage(r.imageUrl);
       })
-      .catch((err: unknown) => {
+      .catch(() => {
         if (!cancelled) {
           setGoalImage(null);
           setImageFailed(true);
-          setLoadError(err instanceof Error ? err.message : "Unknown error");
         }
       })
       .finally(() => {
@@ -82,6 +77,26 @@ export default function SkillModal({
       cancelled = true;
     };
   }, [skill.id, hasImage, imageVersion]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setLoadError(null);
+    getSubSkillsBySkill(skill.id)
+      .then((data) => {
+        if (!cancelled) setSubSkills(data);
+      })
+      .catch((err: unknown) => {
+        if (!cancelled)
+          setLoadError(err instanceof Error ? err.message : "Unknown error");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [skill.id]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -100,14 +115,14 @@ export default function SkillModal({
     setSubSkills((prev) =>
       prev.map((s) => (s.id === updated.id ? updated : s)),
     );
-    onChanged?.(); // refetch the board so the node's counter and status update
+    onChanged?.();
   }
 
   return (
     <div
       className="modal-backdrop"
       onClick={(e) => {
-        if (e.target === e.currentTarget && !adding) onClose(); // click outside = closes
+        if (e.target === e.currentTarget && !adding) onClose();
       }}
     >
       <div
@@ -229,6 +244,7 @@ export default function SkillModal({
             onClose={() => setGoalImageOpen(false)}
           />
         )}
+
         {removingSubSkill && (
           <RemoveSubSkillModal
             subSkillId={removingSubSkill.id}
@@ -246,6 +262,7 @@ export default function SkillModal({
             }}
           />
         )}
+
         {editSkill && (
           <UpdateSkillModal
             skillId={editSkill.id}
