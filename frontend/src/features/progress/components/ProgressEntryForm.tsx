@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/progress-entry.css";
 import { useProgressEntries } from "../hooks/useProgressEntries";
+import ImagePicker from "../../../shared/components/ImagePicker";
 
 interface ProgressEntryFormProps {
   subSkillId: string;
@@ -11,33 +12,20 @@ export default function ProgressEntryForm({
 }: ProgressEntryFormProps) {
   const { entries, loading, error, addEntry } = useProgressEntries(subSkillId);
   const [text, setText] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageBusy, setImageBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  //this will do for now
-  const handleImageUploader = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
 
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Chose anther format");
-      return;
-    }
-
-    const imageUrl = URL.createObjectURL(file);
-    setImage(imageUrl);
-  };
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    if (!text.trim() && !image) return;
+    if (!text.trim() && !imageUrl) return;
 
     setSubmitting(true);
     setSubmitError(null);
     try {
-      await addEntry(text.trim(), image);
+      await addEntry(text.trim(), imageUrl);
       setText("");
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Unknown error");
@@ -64,10 +52,10 @@ export default function ProgressEntryForm({
                   className="progress-entry__image"
                 />
               )}
-              {image && (
+              {imageUrl && (
                 <div>
                   <img
-                    src={image}
+                    src={imageUrl}
                     alt="Preveiw"
                     style={{
                       maxWidth: "330px",
@@ -94,16 +82,24 @@ export default function ProgressEntryForm({
           placeholder="Add a note about your progress..."
           rows={2}
         />
-        <input
+        {/* <input
           type="file"
           accept="image/png,image/jpeg,image/webp"
           onChange={handleImageUploader}
+        /> */}
+        <ImagePicker
+          value={imageUrl}
+          onChange={setImageUrl}
+          onBusyChange={setImageBusy}
         />
 
         {submitError && (
           <p className="progress-entries__error">{submitError}</p>
         )}
-        <button type="submit" disabled={submitting || (!text.trim() && !image)}>
+        <button
+          type="submit"
+          disabled={submitting || (!text.trim() && !imageUrl)}
+        >
           {submitting ? "Adding..." : "Add entry"}
         </button>
       </form>
