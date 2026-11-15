@@ -9,6 +9,7 @@ import ImageLightbox from "../../../../shared/components/ImageLightbox";
 import UpdateSkillModal from "../UpdateSkillsModal";
 import UpdateSubSkillModal from "../../../subskill/component/UpdateSubSkillModal";
 import RemoveSubSkillModal from "../../../subskill/component/RemoveSubSkill";
+import Modal from "../../../../shared/components/modal";
 
 interface SkillModalProps {
   skill: SkillResponse;
@@ -36,6 +37,7 @@ export default function SkillModal({
     useState<SubSkillResponse | null>(null);
   const [removingSubSkill, setRemovingSubSkill] =
     useState<SubSkillResponse | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -190,14 +192,15 @@ export default function SkillModal({
             }}
           />
         )}
-
-        {goalImageOpen && skill.imageUrl && (
-          <ImageLightbox
-            src={skill.imageUrl}
-            alt={`Goal: ${skill.name}`}
-            onClose={() => setGoalImageOpen(false)}
-          />
-        )}
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          {goalImageOpen && skill.imageUrl && (
+            <ImageLightbox
+              src={skill.imageUrl}
+              alt={`Goal: ${skill.name}`}
+              onClose={() => setGoalImageOpen(false)}
+            />
+          )}
+        </Modal>
 
         {removingSubSkill && (
           <RemoveSubSkillModal
