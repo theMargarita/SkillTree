@@ -291,3 +291,44 @@
   background: #1f2227;
   font-size: 0.85rem;
 }
+
+.help-button {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 850px;
+}
+
+.instructions-panel {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 150;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  padding: 1rem;
+  background: #1b1e22;
+  border: 1px solid var(--board-border);
+  color: var(--board-text);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.instructions-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.instructions-panel h2 {
+  margin: 0;
+}
+
+.instructions-panel li {
+  margin: 0.75rem 0;
+}

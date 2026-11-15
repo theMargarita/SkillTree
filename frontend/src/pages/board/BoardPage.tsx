@@ -18,6 +18,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
     fromSkillId: string;
     toSkillId: string;
   } | null>(null);
+  const [instructionsOpen, setInstructionsOpen] = useState(true);
 
   const onConnectionRequested = () => {
     setConnecting({
@@ -87,6 +88,40 @@ export default function BoardPage({ boardId }: BoardPageProps) {
           </p>
           <button onClick={onConnectionRequested}>Cancel</button>
         </div>
+      )}
+
+      <button
+        type="button"
+        className="help-button"
+        onClick={() => setInstructionsOpen(true)}
+        aria-label="Open instructions"
+      >
+        ?
+      </button>
+
+      {instructionsOpen && (
+        <aside className="instructions-panel" aria-label="How to use SkillTree">
+          <div className="instructions-panel__header">
+            <h2>How to use SkillTree</h2>
+
+            <button
+              type="button"
+              onClick={() => setInstructionsOpen(false)}
+              aria-label="Close instructions"
+            >
+              ×
+            </button>
+          </div>
+
+          <ol>
+            <li>Click a skill to open its details.</li>
+            <li>Drag a skill to move it around the board.</li>
+            <li>Use the connection handle to connect skills.</li>
+            <li>Click a subskill to view its progress.</li>
+            <li>Add notes or images in the progress section.</li>
+            <li>Click an image to enlarge it.</li>
+          </ol>
+        </aside>
       )}
     </>
   );
