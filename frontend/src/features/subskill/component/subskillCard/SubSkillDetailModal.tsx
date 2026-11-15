@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { SubSkillResponse } from "../../../../shared/types/subskills";
 import ProgressEntryForm from "../../../progress/components/ProgressEntryForm";
 import { toggleSubSkill } from "../../api/subskillApi";
-import ImageLightbox from "../../../../shared/components/ImageLightbox";
+import Modal from "../../../../shared/components/modal";
 
 interface SubSkillDetailProps {
   subSkill: SubSkillResponse;
@@ -72,14 +72,7 @@ export default function SubSkillDetail({
           className="image-button"
           onClick={() => setImageOpen(true)}
           aria-label="Enlarge image"
-        >
-          <img
-            className="goal-image"
-            src={subSkill.imageUrl}
-            alt={subSkill.name}
-            loading="lazy"
-          />
-        </button>
+        ></button>
       )}
 
       {subSkill.description ? (
@@ -88,7 +81,7 @@ export default function SubSkillDetail({
           <p>{subSkill.description}</p>
         </div>
       ) : (
-        <p className="muted">No description provided.</p>
+        <p className="">No description provided.</p>
       )}
 
       {error && <p className="modal__error">{error}</p>}
@@ -96,13 +89,15 @@ export default function SubSkillDetail({
       <h4>Progress</h4>
       <ProgressEntryForm subSkillId={subSkill.id} />
 
-      {imageOpen && subSkill.imageUrl && (
-        <ImageLightbox
-          src={subSkill.imageUrl}
-          alt={subSkill.name}
-          onClose={() => setImageOpen(false)}
-        />
-      )}
+      <Modal
+        isOpen={imageOpen}
+        onClose={() => setImageOpen(false)}
+        className="image-dialog"
+      >
+        {subSkill.imageUrl && (
+          <img src={subSkill.imageUrl} alt={subSkill.name} />
+        )}
+      </Modal>
     </div>
   );
 }
