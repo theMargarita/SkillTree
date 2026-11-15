@@ -17,7 +17,6 @@ export default function ProgressEntryForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     if (!text.trim() && !imageUrl) return;
@@ -52,19 +51,7 @@ export default function ProgressEntryForm({
                   className="progress-entry__image"
                 />
               )}
-              {imageUrl && (
-                <div>
-                  <img
-                    src={imageUrl}
-                    alt="Preveiw"
-                    style={{
-                      maxWidth: "330px",
-                      maxHeight: "400px",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-              )}
+              
 
               <time>{new Date(entry.createdAt).toLocaleDateString()}</time>
             </li>
@@ -82,11 +69,6 @@ export default function ProgressEntryForm({
           placeholder="Add a note about your progress..."
           rows={2}
         />
-        {/* <input
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={handleImageUploader}
-        /> */}
         <ImagePicker
           value={imageUrl}
           onChange={setImageUrl}
