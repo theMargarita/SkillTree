@@ -7,11 +7,11 @@ namespace Infrastructure.Dtos.SubSkill
     {
         [JsonPropertyName("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
-        [JsonPropertyName("skillsId")]
+        [JsonPropertyName("skillId")]
         public Guid SkillsId { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
-        [JsonPropertyName("decsription")]
+        [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         [JsonPropertyName("progressUrl")]
         public string? ProgressURL { get; set; }
