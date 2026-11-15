@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/progress-entry.css";
 import { useProgressEntries } from "../hooks/useProgressEntries";
 import ImagePicker from "../../../shared/components/ImagePicker";
+import Modal from "../../../shared/components/modal";
 
 interface ProgressEntryFormProps {
   subSkillId: string;
@@ -13,9 +14,10 @@ export default function ProgressEntryForm({
   const { entries, loading, error, addEntry } = useProgressEntries(subSkillId);
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageBusy, setImageBusy] = useState(false);
+  const [imageBusy, setImageBusy] = useState(false); 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
@@ -45,13 +47,19 @@ export default function ProgressEntryForm({
               {entry.contentText && <p>{entry.contentText}</p>}
 
               {entry.imageUrl && (
-                <img
-                  src={entry.imageUrl}
-                  alt="Progress evidence"
-                  className="progress-entry__image"
-                />
+                <button
+                  type="button"
+                  className="image-button"
+                  onClick={() => setSelectedImage(entry.imageUrl)}
+                  aria-label="Enlarge progress image"
+                >
+                  <img
+                    src={entry.imageUrl}
+                    alt="Progress evidence"
+                    className="goal-image"
+                  />
+                </button>
               )}
-              
 
               <time>{new Date(entry.createdAt).toLocaleDateString()}</time>
             </li>
@@ -85,6 +93,22 @@ export default function ProgressEntryForm({
           {submitting ? "Adding..." : "Add entry"}
         </button>
       </form>
+
+      {selectedImage && (
+        <Modal
+          isOpen={selectedImage !== null}
+          onClose={() => setSelectedImage(null)}
+          className="image-dialog"
+        >
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Progress evidence"
+              className="lightbox__image"
+            />
+          )}
+        </Modal>
+      )}
     </div>
   );
 }
