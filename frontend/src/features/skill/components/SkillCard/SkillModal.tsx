@@ -5,7 +5,6 @@ import { getSubSkillsBySkill } from "../../../subskill/api/subskillApi";
 import SubSkillDetail from "../../../subskill/component/subskillCard/SubSkillDetailModal";
 import SubSkillCard from "../../../subskill/component/subskillCard/SubSkillCard";
 import AddSubSkillModal from "../../../subskill/component/AddSubSkillModal";
-import ImageLightbox from "../../../../shared/components/ImageLightbox";
 import UpdateSkillModal from "../UpdateSkillsModal";
 import UpdateSubSkillModal from "../../../subskill/component/UpdateSubSkillModal";
 import RemoveSubSkillModal from "../../../subskill/component/RemoveSubSkill";
@@ -37,7 +36,7 @@ export default function SkillModal({
     useState<SubSkillResponse | null>(null);
   const [removingSubSkill, setRemovingSubSkill] =
     useState<SubSkillResponse | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -192,14 +191,20 @@ export default function SkillModal({
             }}
           />
         )}
-        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          {goalImageOpen && skill.imageUrl && (
-            <ImageLightbox
-              src={skill.imageUrl}
-              alt={`Goal: ${skill.name}`}
-              onClose={() => setGoalImageOpen(false)}
-            />
+
+        <Modal
+          isOpen={goalImageOpen}
+          onClose={() => setGoalImageOpen(false)}
+          className="image-dialog"
+        >
+          {skill.imageUrl && (
+            <img src={skill.imageUrl} alt={`Goal: ${skill.name}`} />
           )}
+          <img
+            className="goal-image"
+            src={skill.imageUrl}
+            alt={`Goal: ${skill.name}`}
+          />
         </Modal>
 
         {removingSubSkill && (
