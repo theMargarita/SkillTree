@@ -5,6 +5,7 @@ import { createSkill, removeSkill } from "../api/skillApi";
 import { createSubSkill } from "../../subskill/api/subskillApi";
 import type { SubSkillRow } from "../../../shared/types/subskills";
 import "../../../shared/styles/modal.css";
+import ImagePicker from "../../../shared/components/ImagePicker";
 
 const SHAPES: SkillShape[] = ["Circle", "Square", "Hexagon", "Diamond"];
 const MAX_SUBSKILLS = 20;
@@ -40,6 +41,8 @@ export default function AddSkillModal({
   const [description, setDescription] = useState("");
   const [shape, setShape] = useState<SkillShape>("Circle");
   const [color, setColor] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageBusy, setImageBusy] = useState(false);
   const [rows, setRows] = useState<SubSkillRow[]>([newRow()]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +57,8 @@ export default function AddSkillModal({
   }, [onClose, submitting]);
 
   const filled = rows.filter((r) => r.name.trim());
-  const canSubmit = !submitting && name.trim() !== "" && filled.length >= 1;
+  const canSubmit =
+    !submitting && !imageBusy && name.trim() !== "" && filled.length >= 1;
 
   function updateRow(id: number, patch: Partial<SubSkillRow>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -75,7 +79,7 @@ export default function AddSkillModal({
         skillBoardId: boardId,
         name: name.trim(),
         description: description.trim(),
-        imageUrl: null,
+        imageUrl: imageUrl,
         positionX: x,
         positionY: y,
         color,
@@ -151,6 +155,11 @@ export default function AddSkillModal({
               rows={2}
             />
           </label>
+          <ImagePicker
+            value={imageUrl}
+            onChange={setImageUrl}
+            onBusyChange={setImageBusy}
+          />
 
           <div className="modal__row">
             <label>
@@ -168,7 +177,7 @@ export default function AddSkillModal({
             </label>
 
             <div>
-              <span className="modal__label">Colour</span>
+              <span className="modal__label">Color</span>
               <ColorSwatches value={color} onChange={setColor} />
             </div>
           </div>

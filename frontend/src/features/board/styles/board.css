@@ -1,12 +1,11 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Oswald:wght@500;700&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Oswald:wght@500;700&display=swap");
 
-/* ---- tokens ---- */
 :root {
   --board-bg: #15171a;
   --board-text: #e8e6e1;
   --board-border: #3a3d42;
 
-  --status-locked: #5b5f66;
+  --status-locked: #abc0e3;
   --status-unlocked: #ff8a1f;
   --status-completed: #f4c542;
 
@@ -69,16 +68,6 @@
   font-size: 0.85rem;
 }
 
-.board-empty {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 0.75rem;
-  opacity: 0.7;
-}
-
 .back-link {
   display: inline-block;
   margin: 0.5rem 0;
@@ -91,49 +80,81 @@
   opacity: 1;
 }
 
-/* ---- canvas (one rule only; the drag clamp uses this height) ---- */
-.board-canvas {
+/* ---- viewport (the visible window) ---- */
+.board-viewport {
   position: relative;
-  /* width: 100%;
-  height: 800px; */
-  width: 2000px;
-  height: 1600px;
-  min-width: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: 95vh;
+  min-height: 500px;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
   background-color: var(--board-bg);
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  /* size and position are set inline so the grid follows pan and zoom */
+}
+.board-viewport.is-panning {
+  cursor: grabbing;
+}
+
+/* ---- world (moved and scaled with a transform) ---- */
+.board-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0px;
+  height: 0px;
+  transform-origin: 0 0;
 }
 
 .board-connections {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
   pointer-events: none;
 }
 
-/* ---- lines ---- */
 .connection-line {
-  stroke: #3a3d42;
   stroke-width: 2;
   transition:
     stroke 0.2s ease,
     stroke-width 0.1s ease;
 }
-.connection-line.is-lit {
-  stroke: var(--status-completed);
-}
 .connection:hover .connection-line {
   stroke-width: 4;
 }
 
-/* the svg ignores the pointer, but this invisible wide copy must catch it */
 .connection-hit {
   pointer-events: stroke;
   cursor: pointer;
+}
+
+.board-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 20;
+  display: flex;
+  gap: 6px;
+}
+
+.board-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.board-empty button {
+  pointer-events: auto;
 }
 
 /* ---- skill node ---- */
@@ -144,9 +165,9 @@
   height: var(--node-size);
   transform: translate(-50%, -50%);
   cursor: pointer;
-  touch-action: none; /* a finger drag moves the node instead of scrolling */
+  touch-action: none;
   -webkit-user-select: none;
-  user-select: none; /* dragging must not select text */
+  user-select: none;
   transition:
     transform 0.12s ease,
     opacity 0.2s ease,
@@ -199,7 +220,6 @@
   fill: color-mix(in srgb, var(--accent) 22%, #1f2227);
 }
 
-/* node under the pointer while a connection is being dragged */
 .skill-node.is-connect-target .skill-node__shape :is(polygon, circle) {
   stroke: #ffffff;
 }
@@ -230,7 +250,6 @@
   pointer-events: none;
 }
 
-/* connect handle: one dot on the right edge */
 .skill-node__handle {
   position: absolute;
   right: -8px;
@@ -271,4 +290,45 @@
   border-left: 3px solid var(--status-locked);
   background: #1f2227;
   font-size: 0.85rem;
+}
+
+.help-button {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 850px;
+}
+
+.instructions-panel {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 150;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  padding: 1rem;
+  background: #1b1e22;
+  border: 1px solid var(--board-border);
+  color: var(--board-text);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.instructions-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.instructions-panel h2 {
+  margin: 0;
+}
+
+.instructions-panel li {
+  margin: 0.75rem 0;
 }

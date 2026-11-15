@@ -37,6 +37,7 @@ namespace Services.Services
                 SkillBoardId = request.SkillBoardId,
                 Name = request.Name,
                 Description = request.Description,
+                ImageUrl = request.ImageUrl,
                 //RequiredSubSkillCount = request.RequiredSubSkillCount,
                 Color = request.Color,
                 Icon = request.Icon,

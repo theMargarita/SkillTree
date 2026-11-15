@@ -8,6 +8,7 @@ export interface SkillResponse {
   skillBoardId: string;
   name: string;
   description: string;
+  hasImage: boolean;
   imageUrl: string;
   positionX: number;
   positionY: number;

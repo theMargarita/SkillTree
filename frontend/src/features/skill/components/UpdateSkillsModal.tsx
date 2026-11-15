@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { SkillResponse, SkillShape } from "../../../shared/types/skills";
 import { updateSkill } from "../api/skillApi";
 import ColorSwatches from "../../../shared/components/ColorSwatches";
+import ImagePicker from "../../../shared/components/ImagePicker";
 
 interface UpdateSkillModalProps {
   skillId: string;
@@ -36,6 +37,8 @@ export default function UpdateSkillModal({
   const [desc, setDesc] = useState(initialDescription);
   const [color, setColor] = useState<string | null>(newColor);
   const [submitting, setSubmitting] = useState(false);
+  const [image, setImage] = useState<string | null>(newImageURL);
+  const [imageBusy, setImageBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ export default function UpdateSkillModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose, submitting]);
 
-  const canSubmit = !submitting && name.trim() !== "";
+  const canSubmit = !submitting && !imageBusy && name.trim() !== "";
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,7 +68,7 @@ export default function UpdateSkillModal({
         color: color,
         positionX: newPositionX,
         positionY: newPositionY,
-        imageUrl: newImageURL,
+        imageUrl: image,
         icon: icon,
         shape,
       });
@@ -105,12 +108,16 @@ export default function UpdateSkillModal({
               rows={3}
             />
           </label>
+          <ImagePicker
+            value={image}
+            onChange={setImage}
+            onBusyChange={setImageBusy}
+          />
 
-          <label>
-            Color
-            <span className="modal__label">Colour</span>
+          <div>
+            <span className="modal__label">Color</span>
             <ColorSwatches value={color} onChange={setColor} />
-          </label>
+          </div>
 
           {error && <p className="modal__error">{error}</p>}
 

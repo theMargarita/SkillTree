@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../styles/progress-entry.css";
 import { useProgressEntries } from "../hooks/useProgressEntries";
+import ImagePicker from "../../../shared/components/ImagePicker";
+import Modal from "../../../shared/components/modal";
 
 interface ProgressEntryFormProps {
   subSkillId: string;
@@ -11,33 +13,20 @@ export default function ProgressEntryForm({
 }: ProgressEntryFormProps) {
   const { entries, loading, error, addEntry } = useProgressEntries(subSkillId);
   const [text, setText] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageBusy, setImageBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  //this will do for now
-  const handleImageUploader = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Chose anther format");
-      return;
-    }
-
-    const imageUrl = URL.createObjectURL(file);
-    setImage(imageUrl);
-  };
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    if (!text.trim() && !image) return;
+    if (!text.trim() && !imageUrl) return;
 
     setSubmitting(true);
     setSubmitError(null);
     try {
-      await addEntry(text.trim(), image);
+      await addEntry(text.trim(), imageUrl);
       setText("");
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Unknown error");
@@ -58,24 +47,18 @@ export default function ProgressEntryForm({
               {entry.contentText && <p>{entry.contentText}</p>}
 
               {entry.imageUrl && (
-                <img
-                  src={entry.imageUrl}
-                  alt="Progress evidence"
-                  className="progress-entry__image"
-                />
-              )}
-              {image && (
-                <div>
+                <button
+                  type="button"
+                  className="image-button"
+                  onClick={() => setSelectedImage(entry.imageUrl)}
+                  aria-label="Enlarge progress image"
+                >
                   <img
-                    src={image}
-                    alt="Preveiw"
-                    style={{
-                      maxWidth: "330px",
-                      maxHeight: "400px",
-                      objectFit: "contain",
-                    }}
+                    src={entry.imageUrl}
+                    alt="Progress evidence"
+                    className="goal-image"
                   />
-                </div>
+                </button>
               )}
 
               <time>{new Date(entry.createdAt).toLocaleDateString()}</time>
@@ -94,19 +77,38 @@ export default function ProgressEntryForm({
           placeholder="Add a note about your progress..."
           rows={2}
         />
-        <input
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={handleImageUploader}
+        <ImagePicker
+          value={imageUrl}
+          onChange={setImageUrl}
+          onBusyChange={setImageBusy}
         />
 
         {submitError && (
           <p className="progress-entries__error">{submitError}</p>
         )}
-        <button type="submit" disabled={submitting || (!text.trim() && !image)}>
+        <button
+          type="submit"
+          disabled={submitting || (!text.trim() && !imageUrl)}
+        >
           {submitting ? "Adding..." : "Add entry"}
         </button>
       </form>
+
+      {selectedImage && (
+        <Modal
+          isOpen={selectedImage !== null}
+          onClose={() => setSelectedImage(null)}
+          className="image-dialog"
+        >
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Progress evidence"
+              className="lightbox__image"
+            />
+          )}
+        </Modal>
+      )}
     </div>
   );
 }
