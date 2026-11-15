@@ -14,7 +14,7 @@ export default function ProgressEntryForm({
   const { entries, loading, error, addEntry } = useProgressEntries(subSkillId);
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageBusy, setImageBusy] = useState(false); 
+  const [imageBusy, setImageBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);

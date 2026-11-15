@@ -75,13 +75,13 @@ export default function SubSkillDetail({
         ></button>
       )}
 
-      {subSkill.description ? (
+      {subSkill.description?.trim() ? (
         <div className="subskill-detail__description">
           <h4>Description</h4>
           <p>{subSkill.description}</p>
         </div>
       ) : (
-        <p className="">No description provided.</p>
+        <p className="muted">No description provided.</p>
       )}
 
       {error && <p className="modal__error">{error}</p>}
