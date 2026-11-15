@@ -9,7 +9,6 @@ import ImageLightbox from "../../../../shared/components/ImageLightbox";
 import UpdateSkillModal from "../UpdateSkillsModal";
 import UpdateSubSkillModal from "../../../subskill/component/UpdateSubSkillModal";
 import RemoveSubSkillModal from "../../../subskill/component/RemoveSubSkill";
-import { getSkillImage } from "../../api/skillApi";
 
 interface SkillModalProps {
   skill: SkillResponse;
@@ -31,52 +30,12 @@ export default function SkillModal({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
-  const [hasImage, setHasImage] = useState(skill.hasImage); // rename if your field is hasImage
-  const [goalImage, setGoalImage] = useState<string | null>(null);
-  const [imageLoading, setImageLoading] = useState(false); // fetching only
-  const [imageFailed, setImageFailed] = useState(false);
-  const [imageVersion, setImageVersion] = useState(0);
-  const [goalImageOpen, setGoalImageOpen] = useState(false); // lightbox only
-
+  const [goalImageOpen, setGoalImageOpen] = useState(false);
   const [editSkill, setEditSkill] = useState<SkillResponse | null>(null);
   const [editingSubSkill, setEditingSubSkill] =
     useState<SubSkillResponse | null>(null);
   const [removingSubSkill, setRemovingSubSkill] =
     useState<SubSkillResponse | null>(null);
-
-  // follow the board data when a different skill (or a fresh copy) arrives
-  useEffect(() => {
-    setHasImage(skill.hasImage); 
-  }, [skill.id, skill.hasImage]); 
-
-  // fetch the image only when the skill has one
-  useEffect(() => {
-    if (!hasImage) {
-      setGoalImage(null);
-      setImageLoading(false);
-      setImageFailed(false);
-      return;
-    }
-    let cancelled = false;
-    setImageLoading(true);
-    setImageFailed(false);
-    getSkillImage(skill.id)
-      .then((r) => {
-        if (!cancelled) setGoalImage(r.imageUrl);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setGoalImage(null);
-          setImageFailed(true);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setImageLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [skill.id, hasImage, imageVersion]);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,8 +105,6 @@ export default function SkillModal({
             <button
               type="button"
               className="skill-panel__update"
-              // saving before the image has loaded would erase it
-              disabled={imageLoading}
               onClick={() => setEditSkill(skill)}
             >
               Edit Skill
@@ -173,17 +130,8 @@ export default function SkillModal({
           />
         ) : (
           <>
-            {/* the goal: image first, then the text */}
             <section className="skill-modal__goal">
-              {hasImage && imageLoading && (
-                <div className="goal-image-placeholder">Loading image...</div>
-              )}
-
-              {hasImage && imageFailed && (
-                <p className="modal__error">Could not load the goal image.</p>
-              )}
-
-              {goalImage && (
+              {skill.imageUrl && (
                 <button
                   type="button"
                   className="image-button"
@@ -192,16 +140,22 @@ export default function SkillModal({
                 >
                   <img
                     className="goal-image"
-                    src={goalImage}
+                    src={skill.imageUrl}
                     alt={`Goal: ${skill.name}`}
+                    style={{
+                      maxWidth: "330px",
+                      maxHeight: "400px",
+                      objectFit: "contain",
+                    }}
                   />
                 </button>
               )}
-
               {skill.description ? (
                 <p>{skill.description}</p>
               ) : (
-                !hasImage && <p className="muted">No goal described yet.</p>
+                !skill.imageUrl && (
+                  <p className="muted">No goal described yet.</p>
+                )
               )}
             </section>
 
@@ -237,9 +191,9 @@ export default function SkillModal({
           />
         )}
 
-        {goalImageOpen && goalImage && (
+        {goalImageOpen && skill.imageUrl && (
           <ImageLightbox
-            src={goalImage}
+            src={skill.imageUrl}
             alt={`Goal: ${skill.name}`}
             onClose={() => setGoalImageOpen(false)}
           />
@@ -269,7 +223,7 @@ export default function SkillModal({
             boardId={editSkill.skillBoardId}
             initialName={editSkill.name}
             initialDescription={editSkill.description}
-            newImageURL={goalImage} // the loaded image, not the board data
+            newImageURL={editSkill.imageUrl}
             newPositionX={editSkill.positionX}
             newPositionY={editSkill.positionY}
             newColor={editSkill.color}
@@ -278,8 +232,6 @@ export default function SkillModal({
             onClose={() => setEditSkill(null)}
             onUpdate={(updated) => {
               setEditSkill(null);
-              setHasImage(updated.hasImage); // rename if your field is hasImage
-              setImageVersion((v) => v + 1); // fetch the new image
               onSkillUpdated(updated);
               onChanged?.();
             }}
