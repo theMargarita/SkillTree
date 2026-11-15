@@ -9,6 +9,7 @@ export interface SkillResponse {
   name: string;
   description: string;
   hasImage: boolean;
+  imageUrl: string;
   positionX: number;
   positionY: number;
   subSkillCount: number;
