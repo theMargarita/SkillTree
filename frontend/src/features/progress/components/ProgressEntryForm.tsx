@@ -22,7 +22,7 @@ export default function ProgressEntryForm({
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     if (!text.trim() && !imageUrl) return;
-
+    console.log(imageBusy);
     setSubmitting(true);
     setSubmitError(null);
     try {

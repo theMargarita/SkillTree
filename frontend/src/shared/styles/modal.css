@@ -69,8 +69,8 @@
 
 /* small image in the modal */
 .goal-image {
-  max-width: 300px;
-  max-height: 370px;
+  max-width: 250px;
+  max-height: 320px;
   object-fit: contain;
 }
 
