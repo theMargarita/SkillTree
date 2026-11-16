@@ -29,7 +29,7 @@ export default function RemoveSkillModal({
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose, submitting]);
+  }, [onClose, onRemoved, submitting]);
 
   async function handleSubmit(e: React.SubmitEvent<HTMLElement>) {
     e.preventDefault();
