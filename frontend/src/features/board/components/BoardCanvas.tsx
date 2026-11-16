@@ -167,7 +167,9 @@ export default function BoardCanvas({
   }, [boardId]);
 
   useEffect(() => {
-    load()
+    //data fetching in effect, updating state after request
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load()
       .catch((e: unknown) =>
         setError(e instanceof Error ? e.message : "Error unknown"),
       )
