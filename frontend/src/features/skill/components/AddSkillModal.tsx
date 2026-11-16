@@ -54,7 +54,7 @@ export default function AddSkillModal({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose, submitting]);
+  }, [onClose, onCreated, submitting]);
 
   const filled = rows.filter((r) => r.name.trim());
   const canSubmit =

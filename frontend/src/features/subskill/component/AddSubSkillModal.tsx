@@ -59,7 +59,7 @@ export default function AddSubSkillModal({
         try {
           await removeSubSkill(createdSubSkillId);
           setError(`${message}: Nothing was saved, try again. `);
-        } catch (error) {
+        } catch {
           setError(`${message}. \n The subskill may have been saved without`);
         }
       } else {

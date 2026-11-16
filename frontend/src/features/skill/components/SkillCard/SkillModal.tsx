@@ -40,19 +40,23 @@ export default function SkillModal({
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
+
     getSubSkillsBySkill(skill.id)
-      .then((data) => {
-        if (!cancelled) setSubSkills(data);
-      })
+      // .then((data) => {
+      //   if (!cancelled) {
+      //     setLoadError(null);
+      //     setSubSkills(data);
+      //   }
+      // })
       .catch((err: unknown) => {
-        if (!cancelled)
+        if (!cancelled) {
           setLoadError(err instanceof Error ? err.message : "Unknown error");
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
