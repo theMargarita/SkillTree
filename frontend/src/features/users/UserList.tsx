@@ -3,6 +3,7 @@ import type { UserResponse } from "../../shared/types/user";
 
 const API_URL = import.meta.env.VITE_API_BASE as string;
 
+//this one if just for admin - so why created so early
 export default function UserList() {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
