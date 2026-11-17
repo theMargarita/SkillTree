@@ -94,7 +94,14 @@ export default function DashboardPage() {
       {error && (
         <p className="dashboard__error">
           {error}{" "}
-          <button type="button" onClick={() => setAttempt((n) => n + 1)}>
+          <button
+            type="button"
+            onClick={() => {
+              setError(null);
+              setLoading(true);
+              setAttempt((n) => n + 1);
+            }}
+          >
             Retry
           </button>
         </p>
