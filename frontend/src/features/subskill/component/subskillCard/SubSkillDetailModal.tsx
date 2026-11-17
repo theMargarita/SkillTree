@@ -58,11 +58,11 @@ export default function SubSkillDetail({
         </button>
       </div>
       <div className="subskill-detail__title">
-        <h3>{subSkill.name}</h3>
+        <h2>{subSkill.name}</h2>
         <span
           className={`subskill-detail__badge ${subSkill.isComplete ? "is-complete" : ""}`}
         >
-          {subSkill.isComplete ? "✓ Done" : "To do"}
+          {subSkill.isComplete ? "✓ Done" : ""}
         </span>
       </div>
 

@@ -40,12 +40,12 @@ export default function CreateBoardModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!name.trim()) return;
-
     setSubmitting(true);
     setError(null);
+    //create board 
     try {
       const created = await createBoard(userId, {
         name: name.trim(),

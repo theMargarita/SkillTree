@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { SkillResponse } from "../../shared/types/skills";
-import BoardCanvas from "../../features/board/components/BoardCanvas";
-import AddSkillModal from "../../features/skill/components/AddSkillModal";
-import RemoveSkillModal from "../../features/skill/components/RemoveSkillModal";
-import SkillModal from "../../features/skill/components/SkillCard/SkillModal";
+import type { SkillResponse } from "../../../shared/types/skills";
+import BoardCanvas from "./BoardCanvas";
+import SkillModal from "../../skill/components/SkillCard/SkillModal";
+import AddSkillModal from "../../skill/components/AddSkillModal";
+import RemoveSkillModal from "../../skill/components/RemoveSkillModal";
 
 interface BoardPageProps {
   boardId: string;
@@ -18,7 +18,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
     fromSkillId: string;
     toSkillId: string;
   } | null>(null);
-  const [instructionsOpen, setInstructionsOpen] = useState(true);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
 
   const onConnectionRequested = () => {
     setConnecting({

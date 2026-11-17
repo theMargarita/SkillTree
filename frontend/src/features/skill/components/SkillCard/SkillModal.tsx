@@ -42,12 +42,12 @@ export default function SkillModal({
     let cancelled = false;
 
     getSubSkillsBySkill(skill.id)
-      // .then((data) => {
-      //   if (!cancelled) {
-      //     setLoadError(null);
-      //     setSubSkills(data);
-      //   }
-      // })
+      .then((data) => {
+        if (!cancelled) {
+          setLoadError(null);
+          setSubSkills(data);
+        }
+      })
       .catch((err: unknown) => {
         if (!cancelled) {
           setLoadError(err instanceof Error ? err.message : "Unknown error");
