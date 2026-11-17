@@ -1,4 +1,3 @@
-// src/pages/BoardRoute.tsx - reads the board id from the URL (/boards/:boardId)
 import { Link, useParams } from "react-router-dom";
 import BoardPage from "./BoardPage";
 
