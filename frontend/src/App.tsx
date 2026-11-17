@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import BoardPage from "./pages/board/BoardPage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import BoardRoute from "./pages/board/BoardRoute";
+import DashboardPage from "./features/board/dashboard/DashboardPage";
+import BoardRoute from "./features/board/components/BoardRoute";
 import "./shared/styles/globals.css";
 
 function App() {

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import CreateBoardModal from "../../features/board/components/CreateBoardModal";
-import type { SkillBoardResponse } from "../../shared/types/board";
+import CreateBoardModal from "../components/CreateBoardModal";
+import type { SkillBoardResponse } from "../../../shared/types/board";
 import { useEffect, useState } from "react";
-import { getBoardsForUser } from "../../features/board/api/boardsApi";
-import { CURRENT_USER_ID } from "../../shared/config";
+import { getBoardsForUser } from "../api/boardsApi";
+import { CURRENT_USER_ID } from "../../../shared/config";
+import "./dashboard.css";
 
 export default function DashboardPage() {
   const [boards, setBoards] = useState<SkillBoardResponse[]>([]);
