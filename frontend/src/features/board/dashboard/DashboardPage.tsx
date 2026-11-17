@@ -17,8 +17,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
+    // setLoading(true);
+    // setError(null);
 
     getGuestId()
       .then(async (id) => {
