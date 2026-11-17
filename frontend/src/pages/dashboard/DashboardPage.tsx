@@ -36,13 +36,26 @@ export default function DashboardPage() {
 
       {boards.length === 0 && <p>No boards yet</p>}
 
-      <ul>
+      <div className="board-grid">
         {boards.map((board) => (
-          <li key={board.id}>
-            <Link to={`/boards/${board.id}`}>{board.name}</Link>
-          </li>
+          <Link
+            key={board.id}
+            to={`/boards/${board.id}`}
+            className="board-card"
+            style={{
+              borderColor: board.backgroundColor ?? undefined,
+            }}
+          >
+            <h2>{board.name}</h2>
+
+            {board.description && <p>{board.description}</p>}
+
+            <span>
+              {board.skillCount} {board.skillCount === 1 ? "skill" : "skills"}
+            </span>
+          </Link>
         ))}
-      </ul>
+      </div>
 
       {showCreateModal && (
         <CreateBoardModal
