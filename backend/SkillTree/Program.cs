@@ -46,7 +46,7 @@ namespace SkillTree
             {
                 opt.AddPolicy("AllowFrontend", p =>
                 {
-                    p.WithOrigins("http://localhost:5173")
+                    p.WithOrigins("http://localhost:5173", "https://din-app.vercel.app")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
