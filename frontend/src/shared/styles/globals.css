@@ -15,7 +15,7 @@
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
+  font: 22px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -63,7 +63,7 @@
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 200;
   color: var(--text-h);
 }
 
@@ -110,8 +110,14 @@ h2 {
   color: var(--board-muted);
 }
 
-main {
+/* main {
   height: 200px;
   padding: 10px;
   position: relative;
-}
+} */
+
+/* .button {
+  padding: 12px;
+  position: relative;
+  font-size: medium;
+} */

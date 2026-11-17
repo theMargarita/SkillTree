@@ -25,7 +25,7 @@ export default function SubSkillCard({ subSkill, onOpen }: SubSkillCardProps) {
         <span className="subskill-card__desc">{subSkill.description}</span>
       )}
       <span className="subskill-card__status">
-        {subSkill.isComplete ? "✓ Done" : "To do"}
+        {subSkill.isComplete ? "✓ Done" : ""}
       </span>
     </button>
   );

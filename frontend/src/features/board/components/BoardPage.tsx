@@ -18,7 +18,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
     fromSkillId: string;
     toSkillId: string;
   } | null>(null);
-  const [instructionsOpen, setInstructionsOpen] = useState(true);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
 
   const onConnectionRequested = () => {
     setConnecting({

@@ -134,8 +134,12 @@ export default function DashboardPage() {
                   <button type="button" onClick={() => handleRename(board)}>
                     Rename
                   </button>
-                  <button type="button" onClick={() => handleDelete(board)}>
-                    Delete
+                  <button
+                    className="remove-btn"
+                    type="button"
+                    onClick={() => handleDelete(board)}
+                  >
+                    x
                   </button>
                 </div>
               </li>
