@@ -15,11 +15,11 @@ namespace SkillTree
 
             // Add services to the container.
             builder.Services.AddScoped<ISkillService, SkillService>();
-            builder.Services.AddScoped<IUserService,  UserService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubSkillService, SubSkillService>();
             builder.Services.AddScoped<ISkillBoardService, SkillBoardService>();
-            builder.Services.AddScoped<ISkillConnectionService,  SkillConnectionService>();
-            builder.Services.AddScoped<IStatusService,  StatusService>();
+            builder.Services.AddScoped<ISkillConnectionService, SkillConnectionService>();
+            builder.Services.AddScoped<IStatusService, StatusService>();
             builder.Services.AddScoped<IProgressEntryService, ProgressEntryService>();
 
             // Controllers
@@ -33,7 +33,13 @@ namespace SkillTree
             builder.Services.AddSwaggerGen();
 
             //database
-            builder.Services.AddDbContext<SkillDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            // builder.Services.AddDbContext<SkillDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' was not found.");
+
+builder.Services.AddDbContext<SkillDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
             builder.Services.AddScoped<ISkillTreeDbContext>(sp =>
                 sp.GetRequiredService<SkillDbContext>());
@@ -47,9 +53,9 @@ namespace SkillTree
                 opt.AddPolicy("AllowFrontend", p =>
                 {
                     p.WithOrigins(
-    "http://localhost:5173",
-    "https://skill-tree-1hdt.vercel.app/"
-)
+                    "http://localhost:5173",
+                    "https://skill-tree-1hdt.vercel.app/"
+                    )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
