@@ -12,8 +12,8 @@ export async function getGuestId(): Promise<string> {
     "/api/User/create",
     jsonInit("POST", {
       name: `Guest ${tag.slice(0, 8)}`,
-      userEmail: `guest-${tag}@example.com`,
-      hashPassword: crypto.randomUUID(), // placeholder, not a real password hash
+      email: `guest-${tag}@example.com`,
+      password: crypto.randomUUID(), // placeholder, not a real password hash
     }),
   );
 

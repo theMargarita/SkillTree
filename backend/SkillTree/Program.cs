@@ -54,7 +54,7 @@ builder.Services.AddDbContext<SkillDbContext>(options =>
                 {
                     p.WithOrigins(
                     "http://localhost:5173",
-                    "https://skill-tree-4n7n.vercel.app/"
+                    "https://skill-tree-4n7n.vercel.app"
                     )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
