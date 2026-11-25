@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /SkillTree/appsettings.json
 /SkillTree/appsettings.json
+
+#env files
+.env
+*.env
