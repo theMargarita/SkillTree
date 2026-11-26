@@ -53,5 +53,25 @@ namespace Services.Services
 
             return entries.Select(ProgressEntryResponse.FromEntry).ToList();
         }
+
+        public async Task<bool> Remove(Guid id)
+        {
+           var remove = await _ctx.ProgressEntries.FindAsync(id);
+           if(remove == null)
+            {
+                _logger.LogWarning($"Could not find entry id: {id}");
+                throw new KeyNotFoundException(nameof(id));
+            }
+
+            _ctx.Remove(remove);
+            await _ctx.SaveChangesAsync();
+            _logger.LogInformation($"Entry now deleted, id: {id}");
+            return true;
+        }
+
+        public async Task<ProgressEntryResponse> Update(Guid id, ProgressEntryRequest request)
+        {
+             throw new NotImplementedException();
+        }
     }
 }
