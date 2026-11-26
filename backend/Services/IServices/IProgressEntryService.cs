@@ -7,5 +7,7 @@ namespace Services.IServices
     {
         Task<ProgressEntryResponse> Create(ProgressEntryRequest request);
         Task<List<ProgressEntryResponse>> GetAllBySubSkill(Guid subSkillId);
+        Task<ProgressEntryResponse>Update(Guid id, ProgressEntryRequest request);
+        Task<bool> Remove(Guid id);
     }
 }
