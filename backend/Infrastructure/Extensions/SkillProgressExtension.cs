@@ -19,5 +19,6 @@ namespace Infrastructure.Extensions
                 .Where(p => p.SubSkillId == subSkillId)
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(1);
+        public static IQueryable<ProgressEntries>GetById(this IQueryable<ProgressEntries> q, Guid entryId) => q.Where(e => e.Id == entryId);
     }
 }
