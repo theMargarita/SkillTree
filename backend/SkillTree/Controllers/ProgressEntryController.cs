@@ -44,5 +44,25 @@ namespace SkillTree.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPatch("update/{id:guid}")]
+        public async Task<ActionResult<ProgressEntryResponse>> Update(Guid id, [FromBody] ProgressEntryRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var update = await _service.Update(id, request);
+                return Ok(update);
+            }
+            catch (KeyNotFoundException)
+            {
+                _logger.LogWarning($"Could not find entry: {id}");
+                return NotFound();
+            }
+        }
     }
 }
