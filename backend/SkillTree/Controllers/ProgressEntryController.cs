@@ -64,5 +64,20 @@ namespace SkillTree.Controllers
                 return NotFound();
             }
         }
+
+        [HttpDelete("remove/{id:guid}")]
+        public async Task<IActionResult>Remove(Guid id)
+        {
+            var removed = await _service.Remove(id);
+
+            if (!removed)
+            {
+                _logger.LogWarning($"Could not find the entry id to remove: {id}");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"Entry {id} removed");
+            return NoContent();
+        }
     }
 }
