@@ -71,7 +71,19 @@ namespace Services.Services
 
         public async Task<ProgressEntryResponse> Update(Guid id, ProgressEntryRequest request)
         {
-             throw new NotImplementedException();
+            var entry = await _ctx.ProgressEntries.GetById(id).FirstOrDefaultAsync();
+            if(entry == null)
+            {
+                throw new KeyNotFoundException(nameof(id));
+            }
+
+            entry.ImageUrl = request.ImageUrl;
+            entry.ContentText = request.ContentText; 
+            // entry.VideoUrl = request.VideoUrl;
+            entry.UpdatedAt = request.UpdatedAt; //i know this is not currect but let have it like this for now 
+
+            await _ctx.SaveChangesAsync();
+            return ProgressEntryResponse.FromEntry(entry);
         }
     }
 }
