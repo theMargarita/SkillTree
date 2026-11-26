@@ -31,7 +31,7 @@ namespace Infrastructure.Dto
                 Id = i.Id,
                 ProgressEntryId  = i.ProgressEntryId,
                 ImageUrl = i.ImageUrl,
-                Notes = i.Notes,
+                Caption = i.Caption,
                 OrderIndex = i.OrderIndex,
             }).ToList(),
         };
@@ -48,8 +48,8 @@ namespace Infrastructure.Dto
         [JsonPropertyName("imageUrl")]
         public string? ImageUrl { get; set; }
 
-        [JsonPropertyName("Notes")]
-        public string? Notes {get; set; }
+        [JsonPropertyName("Caption")]
+        public string? Caption {get; set; }
 
         [JsonPropertyName("OrderIndex")]
         public int OrderIndex {get; set; }
