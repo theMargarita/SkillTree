@@ -32,10 +32,14 @@ namespace Services.Services
             var entry = new ProgressEntries
             {
                 SubSkillId = request.SubSkillId,
-                Type = request.Type,
-                ImageUrl = request.ImageUrl,
                 ContentText = request.ContentText,
                 CreatedAt = DateTimeOffset.UtcNow,
+                Images = request.Images.Select(i => new ProgressEntryImage
+                {
+                    ImageUrl = i.ImageUrl,
+                    Caption = i.Caption,
+                    OrderIndex = i.OrderIndex
+                }).ToList(),
             };
 
             _ctx.ProgressEntries.Add(entry);
@@ -49,6 +53,7 @@ namespace Services.Services
         {
             var entries = await _ctx.ProgressEntries
                 .GetAllBySubSkillId(subSkillId)
+                .Include(e => e.Images)
                 .ToListAsync();
 
             return entries.Select(ProgressEntryResponse.FromEntry).ToList();
@@ -77,10 +82,14 @@ namespace Services.Services
                 throw new KeyNotFoundException(nameof(id));
             }
 
-            entry.ImageUrl = request.ImageUrl;
             entry.ContentText = request.ContentText; 
-            // entry.VideoUrl = request.VideoUrl;
-            entry.UpdatedAt = request.UpdatedAt; //i know this is not currect but let have it like this for now 
+            entry.UpdatedAt = DateTimeOffset.UtcNow; 
+            entry.Images = request.Images.Select(i => new ProgressEntryImage
+            {
+                ImageUrl = i.ImageUrl,
+                Caption = i.Caption,
+                OrderIndex = i.OrderIndex
+            }).ToList();
 
             await _ctx.SaveChangesAsync();
             return ProgressEntryResponse.FromEntry(entry);

@@ -9,6 +9,7 @@ namespace Infrastructure.Data
         DbSet<SkillBoard> SkillBoard { get; set; }
         DbSet<Skills> Skills { get; set; }
         DbSet<ProgressEntries> ProgressEntries { get; set; }
+        DbSet<ProgressEntryImage> Images {get; set; }
         DbSet<SkillConnections> SkillConnections { get; set; }
         DbSet<SubSkills> SubSkills { get; set; }
         DbSet<User> User { get; set; }
@@ -23,6 +24,7 @@ namespace Infrastructure.Data
         }
         public DbSet<SkillBoard> SkillBoard { get; set; }
         public DbSet<Skills> Skills { get; set; }
+        public DbSet<ProgressEntryImage> Images {get; set; }
         public DbSet<ProgressEntries> ProgressEntries { get; set; }
         public DbSet<SkillConnections> SkillConnections { get; set; }
         public DbSet<SubSkills> SubSkills { get; set; }
@@ -63,6 +65,12 @@ namespace Infrastructure.Data
             modelBuilder.Entity<ProgressEntries>()
                 .HasOne(p => p.SubSkills).WithMany(s => s.ProgressEntries)
                 .HasForeignKey(p => p.SubSkillId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProgressEntries>()
+                .HasMany(entry => entry.Images)
+                .WithOne(image => image.ProgressEntry)
+                .HasForeignKey(image => image.ProgressEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
