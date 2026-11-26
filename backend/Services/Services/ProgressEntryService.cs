@@ -53,5 +53,37 @@ namespace Services.Services
 
             return entries.Select(ProgressEntryResponse.FromEntry).ToList();
         }
+
+        public async Task<bool> Remove(Guid id)
+        {
+           var remove = await _ctx.ProgressEntries.FindAsync(id);
+           if(remove == null)
+            {
+                _logger.LogWarning($"Could not find entry id: {id}");
+                throw new KeyNotFoundException(nameof(id));
+            }
+
+            _ctx.Remove(remove);
+            await _ctx.SaveChangesAsync();
+            _logger.LogInformation($"Entry now deleted, id: {id}");
+            return true;
+        }
+
+        public async Task<ProgressEntryResponse> Update(Guid id, ProgressEntryRequest request)
+        {
+            var entry = await _ctx.ProgressEntries.GetById(id).FirstOrDefaultAsync();
+            if(entry == null)
+            {
+                throw new KeyNotFoundException(nameof(id));
+            }
+
+            entry.ImageUrl = request.ImageUrl;
+            entry.ContentText = request.ContentText; 
+            // entry.VideoUrl = request.VideoUrl;
+            entry.UpdatedAt = request.UpdatedAt; //i know this is not currect but let have it like this for now 
+
+            await _ctx.SaveChangesAsync();
+            return ProgressEntryResponse.FromEntry(entry);
+        }
     }
 }
