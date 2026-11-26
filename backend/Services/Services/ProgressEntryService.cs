@@ -32,8 +32,8 @@ namespace Services.Services
             var entry = new ProgressEntries
             {
                 SubSkillId = request.SubSkillId,
-                Type = request.Type,
-                ImageUrl = request.ImageUrl,
+                //Type = request.Type,
+                //ImageUrl = request.ImageUrl,
                 ContentText = request.ContentText,
                 CreatedAt = DateTimeOffset.UtcNow,
             };
@@ -77,7 +77,7 @@ namespace Services.Services
                 throw new KeyNotFoundException(nameof(id));
             }
 
-            entry.ImageUrl = request.ImageUrl;
+            //entry.ImageUrl = request.ImageUrl;
             entry.ContentText = request.ContentText; 
             // entry.VideoUrl = request.VideoUrl;
             entry.UpdatedAt = request.UpdatedAt; //i know this is not currect but let have it like this for now 

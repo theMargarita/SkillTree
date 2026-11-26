@@ -34,14 +34,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("SubSkillId")
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("Type")
-                        .HasColumnType("integer");
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -229,6 +226,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("user");
                 });
 
+            modelBuilder.Entity("ProgressEntryImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Caption")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProgressEntryId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgressEntryId");
+
+                    b.ToTable("images");
+                });
+
             modelBuilder.Entity("Domain.ProgressEntries", b =>
                 {
                     b.HasOne("Domain.SubSkills", "SubSkills")
@@ -279,6 +302,22 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("ProgressEntryImage", b =>
+                {
+                    b.HasOne("Domain.ProgressEntries", "ProgressEntry")
+                        .WithMany("Images")
+                        .HasForeignKey("ProgressEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProgressEntry");
+                });
+
+            modelBuilder.Entity("Domain.ProgressEntries", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Domain.SkillBoard", b =>
